@@ -1,15 +1,16 @@
 USE BikeShop;
 GO
 
-INSERT INTO [User] VALUES('admin', 'admin');
-INSERT INTO [Data] VALUES('Admin', 'Admin', 1);
-INSERT INTO [Contact] VALUES('+48123456789', 'admin@admin.pl', 1);
+INSERT INTO [UserData] VALUES('Admin', 'Admin');
+INSERT INTO [UserContact] VALUES('+48123456789', 'admin@admin.pl', 1);
+INSERT INTO [User] VALUES('admin', 'admin', 1);
 
 INSERT INTO [ShopAssistant] VALUES(1);
 
-INSERT INTO [User] VALUES('client', 'example');
-INSERT INTO [Data] VALUES('Client', 'Example', 1);
-INSERT INTO [Contact] VALUES('+48123456788', 'client@gmail.com', 1);
+INSERT INTO [UserData] VALUES('Client', 'Example');
+INSERT INTO [UserContact] VALUES('+48123456788', 'client@gmail.com', 2);
+INSERT INTO [User] VALUES('client', 'example', 2);
+
 INSERT INTO [Client] VALUES(2);
 
 INSERT INTO [Bike] (Make, ModelName, Type, Price, QuantityInStock, FrameSize, Description, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 'MTB', 1999.00, 1, 'S', 'Lorem ipsum', 1);

@@ -3,8 +3,8 @@ GO
 
 -- TABLES
 SELECT * FROM [User];
-SELECT * FROM [Contact];
-SELECT * FROM [Data];
+SELECT * FROM [UserContact];
+SELECT * FROM [UserData];
 SELECT * FROM [ShopAssistant];
 SELECT * FROM [Client];
 SELECT * FROM [Order];
