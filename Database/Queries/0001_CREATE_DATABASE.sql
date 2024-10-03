@@ -57,11 +57,9 @@ CREATE TABLE [Bike](
 	Description VARCHAR(500) NOT NULL,
 	ShopAssistantId INT NOT NULL,
 	ClientId INT,
-	OrderId INT,
 	PRIMARY KEY(Id),
 	FOREIGN KEY(ShopAssistantId) REFERENCES [ShopAssistant](Id),
-	FOREIGN KEY(ClientId) REFERENCES [Client](Id),
-	FOREIGN KEY(OrderId) REFERENCES [Order](Id)
+	FOREIGN KEY(ClientId) REFERENCES [Client](Id)
 );
 
 CREATE TABLE [Part](
@@ -73,12 +71,10 @@ CREATE TABLE [Part](
 	BikeId INT,
 	ShopAssistantId INT NOT NULL,
 	ClientId INT,
-	OrderId INT,
 	PRIMARY KEY(Id),
 	FOREIGN KEY(BikeId) REFERENCES [Bike](Id),
 	FOREIGN KEY(ShopAssistantId) REFERENCES [ShopAssistant](Id),
-	FOREIGN KEY(ClientId) REFERENCES [Client](Id),
-	FOREIGN KEY(OrderId) REFERENCES [Order](Id)
+	FOREIGN KEY(ClientId) REFERENCES [Client](Id)
 );
 
 CREATE TABLE [Review](
@@ -152,4 +148,14 @@ CREATE TABLE [Shifter](
 	FOREIGN KEY(PartId) REFERENCES [Part](Id)
 );
 
+CREATE TABLE [Bike_Order](
+	BikeId INT FOREIGN KEY REFERENCES [Bike](Id),
+	OrderId INT FOREIGN KEY REFERENCES [Order](Id),
+	PRIMARY KEY(BikeId, OrderId)
+);
 
+CREATE TABLE [Order_Part](
+	PartId INT FOREIGN KEY REFERENCES [Part](Id),
+	OrderId INT FOREIGN KEY REFERENCES [Order](Id),
+	PRIMARY KEY(PartId, OrderId)
+);
