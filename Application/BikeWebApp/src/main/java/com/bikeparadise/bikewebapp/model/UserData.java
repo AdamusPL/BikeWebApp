@@ -2,9 +2,12 @@ package com.bikeparadise.bikewebapp.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -18,8 +21,8 @@ public class UserData {
     @OneToOne(mappedBy = "userData")
     User user;
 
-    @OneToOne(mappedBy = "userData")
-    UserContact userContact;
+    @OneToMany(mappedBy = "userData")
+    List<UserContact> userContact;
 
     @OneToOne(mappedBy = "userData")
     Client client;

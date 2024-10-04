@@ -4,17 +4,19 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserContact {
+public class PartType {
     @Id
     Integer id;
-    String phoneNumber;
-    String email;
+    String type;
 
-    @ManyToOne
-    @JoinColumn(name = "UserDataId")
-    UserData userData;
+    @OneToMany
+    List<PartAttribute> partAttribute;
 
+    @OneToMany
+    List<Part> part;
 }

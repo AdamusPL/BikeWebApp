@@ -1,11 +1,10 @@
 package com.bikeparadise.bikewebapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -17,5 +16,11 @@ public class ShopAssistant {
     @OneToOne
     @JoinColumn(name = "UserDataId")
     UserData userData;
+
+    @OneToMany
+    List<Part> part;
+
+    @OneToMany
+    List<Bike> bike;
 
 }

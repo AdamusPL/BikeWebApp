@@ -21,8 +21,5 @@ public class Client {
     private List<Review> review;
 
     @OneToMany
-    private List<Bike> bike;
-
-    @OneToMany
-    private List<Part> part;
+    private List<Order> order;
 }

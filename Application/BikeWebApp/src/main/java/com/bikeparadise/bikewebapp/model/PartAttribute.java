@@ -3,20 +3,20 @@ package com.bikeparadise.bikewebapp.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Derailleur {
+public class PartAttribute {
     @Id
     Integer id;
-    String type;
-    Integer numberOfRows;
+    String attribute;
 
-    @OneToOne
-    @JoinColumn(name = "PartId")
-    Part part;
+    @ManyToOne
+    @JoinColumn(name = "PartTypeId")
+    PartType partType;
+
 }

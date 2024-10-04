@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,13 +14,18 @@ import java.util.List;
 public class Order {
     @Id
     Integer id;
+    Date orderDate;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Order_Bike",
-            joinColumns = @JoinColumn(name = "OrderId"),
-            inverseJoinColumns = @JoinColumn(name = "BikeId"))
-    List<Bike> bike;
+    @ManyToOne
+    @JoinColumn(name = "ClientId")
+    Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "BikeIdentificationId")
+    BikeIdentification bikeIdentification;
+
+    @OneToMany
+    List<OrderStatus> orderStatus;
 
     @ManyToMany
     @JoinTable(

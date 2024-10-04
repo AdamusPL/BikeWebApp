@@ -14,10 +14,8 @@ public class Bike {
     Integer id;
     String make;
     String modelName;
-    String type;
-    String price;
-    String quantityInStock;
-    String frameSize;
+    Double price;
+    Integer quantityInStock;
     String description;
 
     @OneToMany(mappedBy = "bike")
@@ -26,19 +24,19 @@ public class Bike {
     @OneToMany(mappedBy = "bike")
     private List<Review> review;
 
+    @OneToMany
+    List<BikeIdentification> bikeIdentification;
+
+    @ManyToOne
+    @JoinColumn(name = "BikeTypeId")
+    BikeType bikeType;
+
+    @ManyToOne
+    @JoinColumn(name = "BikeFrameSizeId")
+    BikeFrameSize bikeFrameSize;
+
     @ManyToOne
     @JoinColumn(name = "ShopAssistantId")
     ShopAssistant shopAssistant;
-
-    @ManyToOne
-    @JoinColumn(name = "ClientId")
-    Client client;
-
-    @ManyToMany
-    @JoinTable(
-            name = "Bike_Order",
-            joinColumns = @JoinColumn(name = "BikeId"),
-            inverseJoinColumns = @JoinColumn(name = "OrderId"))
-    private List<Order> order;
 
 }

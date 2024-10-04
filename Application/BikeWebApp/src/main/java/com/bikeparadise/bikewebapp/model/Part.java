@@ -18,16 +18,16 @@ public class Part {
     Integer quantityInStock;
 
     @ManyToOne
+    @JoinColumn(name = "PartTypeId")
+    PartType partType;
+
+    @ManyToOne
     @JoinColumn(name = "BikeId")
     Bike bike;
 
     @ManyToOne
     @JoinColumn(name = "ShopAssistantId")
     ShopAssistant shopAssistant;
-
-    @ManyToOne
-    @JoinColumn(name = "ClientId")
-    Client client;
 
     @OneToMany
     private List<Review> review;

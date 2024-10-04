@@ -3,19 +3,23 @@ package com.bikeparadise.bikewebapp.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Crankset {
+public class BikeIdentification {
     @Id
     Integer id;
-    Integer numberOfRows;
+    String serialNumber;
 
-    @OneToOne
-    @JoinColumn(name = "PartId")
-    Part part;
+    @ManyToOne
+    @JoinColumn(name = "OrderId")
+    Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "BikeId")
+    Bike bike;
 }
