@@ -11,6 +11,12 @@ SELECT * FROM [Order];
 SELECT * FROM [Bike];
 SELECT * FROM [Part];
 SELECT * FROM [Review];
+SELECT * FROM [BikeIdentification];
+SELECT * FROM [BikeFrameSize];
+SELECT * FROM [BikeType];
+SELECT * FROM [PartType];
+SELECT * FROM [PartAttribute];
+SELECT * FROM [OrderStatus];
 
 -- VIEWS
 SELECT * FROM [GeneralInfoAboutBikes];
