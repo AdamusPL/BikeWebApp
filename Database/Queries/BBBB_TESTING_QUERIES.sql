@@ -11,13 +11,6 @@ SELECT * FROM [Order];
 SELECT * FROM [Bike];
 SELECT * FROM [Part];
 SELECT * FROM [Review];
-SELECT * FROM [Derailleur];
-SELECT * FROM [Crankset];
-SELECT * FROM [Tyres];
-SELECT * FROM [Chain];
-SELECT * FROM [Brakes];
-SELECT * FROM [Cassette];
-SELECT * FROM [Shifter];
 
 -- VIEWS
 SELECT * FROM [GeneralInfoAboutBikes];
