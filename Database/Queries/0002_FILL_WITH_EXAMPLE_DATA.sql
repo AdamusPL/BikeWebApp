@@ -13,7 +13,8 @@ INSERT INTO [User] VALUES('client', 'example', 2);
 
 INSERT INTO [Client] VALUES(2);
 
-INSERT INTO [Bike] (Make, ModelName, Type, Price, QuantityInStock, FrameSize, Description, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 'MTB', 1999.00, 1, 'S', 'Lorem ipsum', 1);
+INSERT INTO [BikeType] VALUES(
+INSERT INTO [Bike] (Make, ModelName, Price, QuantityInStock, Description, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 1999.00, 1, 'Lorem ipsum', 1);
 
 INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, BikeId, ShopAssistantId) VALUES('SwiftZPart', 'E-500 F', 79.99, 10, 1, 1);
 INSERT INTO [Derailleur] VALUES ('Front', 3, 1);
