@@ -3,27 +3,12 @@ GO
 
 CREATE PROCEDURE [DetailedInfoAboutBike] (@BikeId INT) AS
 SELECT b.Make, b.ModelName, b.Type, b.Price, b.QuantityInStock, FrameSize,
-MIN(p.Make + ' ' + p.ModelName + ', ' + CAST(d.NumberOfRows AS VARCHAR) + 'rows') AS FrontDerailleur,
-MAX(p.Make + ' ' + p.ModelName + ', ' + CAST(d.NumberOfRows AS VARCHAR) + 'rows') AS RearDerailleur,
-MAX(p.Make + ' ' + p.ModelName + ', ' + CAST(t.size AS VARCHAR) + '"') AS Tyres, 
-MAX(p.Make + ' ' + p.ModelName + ', ' + br.Type) AS Brakes, 
-MAX(p.Make + ' ' + p.ModelName + ', ' + CAST(ca.NumberOfRows AS VARCHAR) + 'rows') AS Cassette, 
-MIN(p.Make + ' ' + p.ModelName + ', ' + 'number of gears: '+ CAST(s.NumberOfGears AS VARCHAR)) AS FrontShifter, 
-MAX(p.Make + ' ' + p.ModelName + ', ' + 'number of gears: '+ CAST(s.NumberOfGears AS VARCHAR)) AS RearShifter, 
-MAX(p.Make + ' ' + p.ModelName + ', ' + CAST(c.NumberOfRows AS VARCHAR)  + 'rows') AS Crankset,
-MAX(p.Make + ' ' + p.ModelName + ', ' + CAST(ch.NumberOfRows AS VARCHAR)  + 'rows') AS Chain 
+(SELECT * FROM Part 
+WHERE BikeId = @BikeId)
 FROM [Bike] b
 JOIN [Part] p ON b.Id = p.BikeId
-LEFT JOIN [Derailleur] d ON d.PartId = p.Id
-LEFT JOIN [Crankset] c ON c.PartId = p.Id
-LEFT JOIN [Tyres] t ON t.PartId = p.Id
-LEFT JOIN [Chain] ch ON ch.PartId = p.Id
-LEFT JOIN [Brakes] br ON br.PartId = p.Id
-LEFT JOIN [Cassette] ca ON ca.PartId = p.Id
-LEFT JOIN [Shifter] s ON s.PartId = p.Id
 WHERE b.Id = @BikeId
 GROUP BY b.Id, b.Make, b.ModelName, b.Type, b.Price, b.QuantityInStock, FrameSize
-
 GO;
 
 CREATE PROCEDURE [RemoveBike] (@BikeId INT) AS

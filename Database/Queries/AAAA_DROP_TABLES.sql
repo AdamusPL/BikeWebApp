@@ -17,3 +17,5 @@ DROP TABLE BikeShop.dbo.[ShopAssistant];
 DROP TABLE BikeShop.dbo.[UserContact];
 DROP TABLE BikeShop.dbo.[User];
 DROP TABLE BikeShop.dbo.[UserData];
+
+DROP PROCEDURE [DetailedInfoAboutBike];
