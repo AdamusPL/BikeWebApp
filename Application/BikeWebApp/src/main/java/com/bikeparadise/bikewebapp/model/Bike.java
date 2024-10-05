@@ -40,4 +40,11 @@ public class Bike {
     @JoinColumn(name = "ShopAssistantId")
     ShopAssistant shopAssistant;
 
+    public Bike(String make, String modelName, Double price, Integer quantityInStock, String description) {
+        this.make = make;
+        this.modelName = modelName;
+        this.price = price;
+        this.quantityInStock = quantityInStock;
+        this.description = description;
+    }
 }

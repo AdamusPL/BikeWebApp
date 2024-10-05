@@ -18,4 +18,8 @@ public class UserContact {
     @JoinColumn(name = "UserDataId")
     UserData userData;
 
+    public UserContact(String email, String phoneNumber) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 }

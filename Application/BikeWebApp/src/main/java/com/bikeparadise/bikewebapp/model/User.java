@@ -18,4 +18,9 @@ public class User {
     @OneToOne
     @JoinColumn(name = "UserDataId")
     UserData userData;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

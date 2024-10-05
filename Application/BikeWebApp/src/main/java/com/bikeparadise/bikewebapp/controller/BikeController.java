@@ -3,10 +3,9 @@ package com.bikeparadise.bikewebapp.controller;
 import com.bikeparadise.bikewebapp.dto.BikeDetailedInfo;
 import com.bikeparadise.bikewebapp.model.Bike;
 import com.bikeparadise.bikewebapp.service.BikeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ public class BikeController {
     @GetMapping("/bike-shop")
     @ResponseBody
     public List<Bike> bikeShop(){
-        List<Bike> bikes = bikeService.getBikes();
         return bikeService.getBikes();
     }
 
@@ -30,5 +28,35 @@ public class BikeController {
     public BikeDetailedInfo getDetailedBikeInfo(@RequestParam int id){
         BikeDetailedInfo bikeDetailedInfo = bikeService.getDetailedInfoAboutBike(id);
         return bikeService.getDetailedInfoAboutBike(id);
+    }
+
+    @GetMapping("/get-bike-by-frame-size")
+    public List<Bike> getBikeByFrameSize(@RequestParam String frameSize){
+        return bikeService.getBikeByFrameSize(frameSize);
+    }
+
+    @GetMapping("/get-bike-by-type")
+    public List<Bike> getBikeByType(@RequestParam String type){
+        return bikeService.getBikeByType(type);
+    }
+
+    @GetMapping("/get-bike-by-price-range")
+    public List<Bike> getBikeByPriceRange(@RequestParam Double lowerRange, @RequestParam Double upperRange){
+        return bikeService.getBikeByPrice(lowerRange, upperRange);
+    }
+
+    @GetMapping("/get-bike-by-make")
+    public List<Bike> getBikeByMake(@RequestParam String make){
+        return bikeService.getBikeByMake(make);
+    }
+
+    @GetMapping("/get-bike-by-make")
+    public List<Bike> getBikeByPartAttribute(@RequestParam String parameter){
+        return bikeService.getBikeByPartAttribute(parameter);
+    }
+
+    @PostMapping("/add-bike")
+    public ResponseEntity<String> addBike(@RequestBody Bike bike){
+        return bikeService.addBike(bike);
     }
 }

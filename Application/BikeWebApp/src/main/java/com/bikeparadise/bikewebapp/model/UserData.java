@@ -3,12 +3,14 @@ package com.bikeparadise.bikewebapp.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class UserData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +30,8 @@ public class UserData {
     @OneToOne(mappedBy = "userData")
     ShopAssistant shopAssistant;
 
+    public UserData(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }
