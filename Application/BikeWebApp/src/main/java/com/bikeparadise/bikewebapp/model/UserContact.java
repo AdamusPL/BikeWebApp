@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserContact {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String phoneNumber;
     String email;

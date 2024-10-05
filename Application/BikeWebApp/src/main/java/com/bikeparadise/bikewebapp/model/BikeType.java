@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BikeType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String type;
 

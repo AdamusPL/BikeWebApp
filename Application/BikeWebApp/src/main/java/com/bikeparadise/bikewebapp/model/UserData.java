@@ -1,9 +1,6 @@
 package com.bikeparadise.bikewebapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserData {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String firstName;
     String lastName;

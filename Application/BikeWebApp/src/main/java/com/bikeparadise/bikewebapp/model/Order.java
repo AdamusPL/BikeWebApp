@@ -13,6 +13,7 @@ import java.util.List;
 @Table(name = "\"Order\"")
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     Date orderDate;
 

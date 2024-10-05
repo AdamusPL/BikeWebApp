@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "\"User\"")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
     String username;
     String password;
 

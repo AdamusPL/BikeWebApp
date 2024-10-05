@@ -1,9 +1,6 @@
 package com.bikeparadise.bikewebapp.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PartAttribute {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String attribute;
 

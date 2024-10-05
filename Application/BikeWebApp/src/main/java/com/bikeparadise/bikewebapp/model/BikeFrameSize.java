@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BikeFrameSize {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String frameSize;
 

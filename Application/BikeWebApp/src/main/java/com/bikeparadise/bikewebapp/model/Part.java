@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Part {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String make;
     String modelName;
