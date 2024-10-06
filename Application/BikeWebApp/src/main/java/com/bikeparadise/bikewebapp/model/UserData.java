@@ -18,10 +18,10 @@ public class UserData {
     String firstName;
     String lastName;
 
-    @OneToOne(mappedBy = "userData")
+    @OneToOne(mappedBy = "userData", cascade=CascadeType.ALL)
     User user;
 
-    @OneToMany(mappedBy = "userData")
+    @OneToMany(mappedBy = "userData", cascade=CascadeType.ALL)
     List<UserContact> userContact;
 
     @OneToOne(mappedBy = "userData")

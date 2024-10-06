@@ -4,8 +4,12 @@ import com.bikeparadise.bikewebapp.model.User;
 import com.bikeparadise.bikewebapp.model.UserContact;
 import com.bikeparadise.bikewebapp.model.UserData;
 import com.bikeparadise.bikewebapp.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +17,12 @@ import java.util.List;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private final UserRepository userRepository;
 
@@ -29,15 +39,15 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
+        String encodedPassword = passwordEncoder.encode(password);
+
         UserData userData = new UserData(firstName, lastName);
-        User user = new User(username, password);
-        UserContact userContact = new UserContact(email, phoneNumber);
+        User user = new User(username, encodedPassword, userData);
+        UserContact userContact = new UserContact(email, phoneNumber, userData);
 
         userData.setUser(user);
-
         List<UserContact> userContactList = new ArrayList<>();
         userContactList.add(userContact);
-
         userData.setUserContact(userContactList);
 
         userRepository.save(user);
@@ -46,9 +56,11 @@ public class UserService {
     }
 
     public ResponseEntity<String> loginUser(String username, String password){
-        List<User> foundUsers = userRepository.findUserByUsernameAndPassword(username, password);
+        List<User> foundUsers = userRepository.findUserByUsername(username);
 
-        if(foundUsers.size() == 0){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if(!encoder.matches(password, foundUsers.get(0).getPassword()) || foundUsers.size() == 0){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 

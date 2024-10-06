@@ -50,11 +50,6 @@ public class BikeController {
         return bikeService.getBikeByMake(make);
     }
 
-    @GetMapping("/get-bike-by-make")
-    public List<Bike> getBikeByPartAttribute(@RequestParam String parameter){
-        return bikeService.getBikeByPartAttribute(parameter);
-    }
-
     @PostMapping("/add-bike")
     public ResponseEntity<String> addBike(@RequestBody Bike bike){
         return bikeService.addBike(bike);
