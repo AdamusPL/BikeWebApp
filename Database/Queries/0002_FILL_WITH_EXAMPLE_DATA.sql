@@ -13,14 +13,24 @@ INSERT INTO [User] VALUES('client', 'example', 2);
 
 INSERT INTO [Client] VALUES(2);
 
-INSERT INTO [BikeType] VALUES(
 INSERT INTO [Bike] (Make, ModelName, Price, QuantityInStock, Description, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 1999.00, 1, 'Lorem ipsum', 1);
 
-INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, BikeId, ShopAssistantId) VALUES('SwiftZPart', 'E-500 F', 79.99, 10, 1, 1);
-INSERT INTO [Derailleur] VALUES ('Front', 3, 1);
+INSERT INTO [PartType] VALUES('Tyres');
+INSERT INTO [PartType] VALUES('Front Derailleur');
+INSERT INTO [PartType] VALUES('Rear Derailleur');
+INSERT INTO [PartType] VALUES('Brakes');
+INSERT INTO [PartType] VALUES('Cassette');
+INSERT INTO [PartType] VALUES('Front Shifters');
+INSERT INTO [PartType] VALUES('Rear Shifters');
+INSERT INTO [PartType] VALUES('Crankset');
+INSERT INTO [PartType] VALUES('Chain');
 
-INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, BikeId, ShopAssistantId) VALUES('SwiftZPart', 'E-500 R', 169.99, 5, 1, 1);
-INSERT INTO [Derailleur] VALUES ('Rear', 9, 2);
+INSERT INTO [PartAttribute] VALUES('V-Brake', 4);
+INSERT INTO [PartAttribute] VALUES('Mechanical', 4);
+INSERT INTO [PartAttribute] VALUES('Hydraulic', 4);
+
+INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, BikeId, PartTypeId, ShopAssistantId) VALUES('SwiftZPart', 'E-500 F', 79.99, 10, 2, 2, 1);
+INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, BikeId, PartTypeId, ShopAssistantId) VALUES('SwiftZPart', 'E-500 R', 79.99, 10, 2, 3, 1);
 
 INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, BikeId, ShopAssistantId) VALUES('PFB', 'E-500', 139.99, 2, 1, 1);
 INSERT INTO [Brakes] VALUES ('Hydraulic', 3);
@@ -44,4 +54,3 @@ INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, BikeId, ShopAssista
 INSERT INTO [Shifter] VALUES ('Rear', 9, 9);
 
 INSERT INTO [Order] VALUES ('2024-08-22', 'Ordered');
-

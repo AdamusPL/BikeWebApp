@@ -1,6 +1,9 @@
 USE BikeShop;
 GO
 
+CREATE PROCEDURE [AddBike] (@Model VARCHAR(23), @ModelName VARCHAR(50), @Price DECIMAL(7,2), @QuantityInStock INT, @Description VARCHAR(500)) AS
+
+
 CREATE PROCEDURE [DetailedInfoAboutBike] (@BikeId INT) AS
 SELECT b.Make, b.ModelName, b.Type, b.Price, b.QuantityInStock, FrameSize,
 (SELECT * FROM Part 
