@@ -1,6 +1,7 @@
 package com.bikeparadise.bikewebapp.controller;
 
 import com.bikeparadise.bikewebapp.dto.BikeDetailedInfo;
+import com.bikeparadise.bikewebapp.dto.BikeDto;
 import com.bikeparadise.bikewebapp.model.Bike;
 import com.bikeparadise.bikewebapp.service.BikeService;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,12 @@ public class BikeController {
     }
 
     @PostMapping("/add-bike")
-    public ResponseEntity<String> addBike(@RequestBody Bike bike){
-        return bikeService.addBike(bike);
+    public ResponseEntity<String> addBike(@RequestBody BikeDto bikeDto){
+        return bikeService.addBike(bikeDto);
+    }
+
+    @DeleteMapping("/delete-bike")
+    public ResponseEntity<String> deleteBike(@RequestParam Integer bikeId){
+        return bikeService.deleteBike(bikeId);
     }
 }

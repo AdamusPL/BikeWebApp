@@ -2,11 +2,15 @@ package com.bikeparadise.bikewebapp.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Bike {
@@ -46,5 +50,16 @@ public class Bike {
         this.price = price;
         this.quantityInStock = quantityInStock;
         this.description = description;
+    }
+
+    public Bike(String make, String modelName, Double price, Integer quantityInStock, String description, BikeType bikeType, BikeFrameSize bikeFrameSize, ShopAssistant shopAssistant) {
+        this.make = make;
+        this.modelName = modelName;
+        this.price = price;
+        this.quantityInStock = quantityInStock;
+        this.description = description;
+        this.bikeType = bikeType;
+        this.bikeFrameSize = bikeFrameSize;
+        this.shopAssistant = shopAssistant;
     }
 }
