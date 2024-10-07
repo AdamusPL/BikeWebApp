@@ -72,7 +72,7 @@ public class BikeService {
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(bikeDto.getShopAssistantId());
 
         if (bikeType.isPresent() && bikeFrameSize.isPresent() && shopAssistant.isPresent()) {
-            Bike bike = new Bike(bikeDto.getMake(), bikeDto.getModelName(), bikeDto.getPrice(), bikeDto.getQuantityInStock(), bikeDto.getDescription(), bikeType.get(), bikeFrameSize.get(), shopAssistant.get());
+            Bike bike = new Bike(bikeDto.getMake(), bikeDto.getModelName(), bikeDto.getPrice(), bikeDto.getDescription(), bikeType.get(), bikeFrameSize.get(), shopAssistant.get());
             bikeRepository.save(bike);
             return ResponseEntity.ok().build();
         }

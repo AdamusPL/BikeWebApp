@@ -2,14 +2,16 @@ package com.bikeparadise.bikewebapp.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BikeIdentification {
+public class BikeIdentificationAvailable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -18,11 +20,4 @@ public class BikeIdentification {
     @ManyToOne
     @JoinColumn(name = "BikeId")
     Bike bike;
-
-    @ManyToMany
-    @JoinTable(
-            name = "BikeIdentification_Order",
-            joinColumns = @JoinColumn(name = "OrderIdBikeIdentificationId"),
-            inverseJoinColumns = @JoinColumn(name = "OrderId"))
-    List<Order> order;
 }

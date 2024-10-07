@@ -21,8 +21,8 @@ public class Order {
     @JoinColumn(name = "ClientId")
     Client client;
 
-    @OneToMany
-    List<OrderStatus> orderStatus;
+    @ManyToOne
+    OrderStatus orderStatus;
 
     @ManyToMany
     @JoinTable(
@@ -33,8 +33,16 @@ public class Order {
 
     @ManyToMany
     @JoinTable(
-            name = "BikeIdentification_Order",
+            name = "BikeIdentificationReserved_Order",
             joinColumns = @JoinColumn(name = "OrderId"),
-            inverseJoinColumns = @JoinColumn(name = "BikeIdentificationId"))
-    List<BikeIdentification> bikeIdentification;
+            inverseJoinColumns = @JoinColumn(name = "BikeIdentificationReservedId"))
+    List<BikeIdentificationReserved> bikeIdentificationReserved;
+
+    public Order(Date orderDate, Client client, OrderStatus orderStatus, List<Part> part, List<BikeIdentificationReserved> bikeIdentificationReserved){
+        this.orderDate = orderDate;
+        this.client = client;
+        this.orderStatus = orderStatus;
+        this.part = part;
+        this.bikeIdentificationReserved = bikeIdentificationReserved;
+    }
 }

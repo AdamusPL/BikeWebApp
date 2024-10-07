@@ -20,7 +20,6 @@ public class Bike {
     String make;
     String modelName;
     Double price;
-    Integer quantityInStock;
     String description;
 
     @ManyToMany
@@ -33,8 +32,11 @@ public class Bike {
     @OneToMany(mappedBy = "bike")
     private List<Review> review;
 
-    @OneToMany
-    List<BikeIdentification> bikeIdentification;
+    @OneToMany(mappedBy = "bike")
+    List<BikeIdentificationAvailable> bikeIdentificationAvailable;
+
+    @OneToMany(mappedBy = "bike")
+    List<BikeIdentificationReserved> bikeIdentificationReserved;
 
     @ManyToOne
     @JoinColumn(name = "BikeTypeId")
@@ -48,19 +50,17 @@ public class Bike {
     @JoinColumn(name = "ShopAssistantId")
     ShopAssistant shopAssistant;
 
-    public Bike(String make, String modelName, Double price, Integer quantityInStock, String description) {
+    public Bike(String make, String modelName, Double price, String description) {
         this.make = make;
         this.modelName = modelName;
         this.price = price;
-        this.quantityInStock = quantityInStock;
         this.description = description;
     }
 
-    public Bike(String make, String modelName, Double price, Integer quantityInStock, String description, BikeType bikeType, BikeFrameSize bikeFrameSize, ShopAssistant shopAssistant) {
+    public Bike(String make, String modelName, Double price, String description, BikeType bikeType, BikeFrameSize bikeFrameSize, ShopAssistant shopAssistant) {
         this.make = make;
         this.modelName = modelName;
         this.price = price;
-        this.quantityInStock = quantityInStock;
         this.description = description;
         this.bikeType = bikeType;
         this.bikeFrameSize = bikeFrameSize;

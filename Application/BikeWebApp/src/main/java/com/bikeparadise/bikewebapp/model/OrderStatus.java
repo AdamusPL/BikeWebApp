@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,8 +15,7 @@ public class OrderStatus {
     Integer id;
     String status;
 
-    @ManyToOne
-    @JoinColumn(name = "OrderId")
-    Order order;
+    @OneToMany
+    List<Order> order;
 
 }
