@@ -28,7 +28,7 @@ INSERT INTO [BikeFrameSize] VALUES('L');
 INSERT INTO [BikeFrameSize] VALUES('XL');
 INSERT INTO [BikeFrameSize] VALUES('XXL');
 
-INSERT INTO [Bike] (Make, ModelName, Price, QuantityInStock, Description, BikeFrameSizeId, BikeTypeId, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 1999.00, 1, 'Lorem ipsum', 4, 1, 1);
+INSERT INTO [Bike] (Make, ModelName, Price, Description, BikeFrameSizeId, BikeTypeId, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 1999.00, 'Lorem ipsum', 4, 1, 1);
 
 INSERT INTO [PartType] VALUES('Tyres');
 INSERT INTO [PartType] VALUES('Front Derailleur');
@@ -69,6 +69,6 @@ INSERT INTO [Bike_Part] VALUES(7,1);
 INSERT INTO [Bike_Part] VALUES(8,1);
 INSERT INTO [Bike_Part] VALUES(9,1);
 
-INSERT INTO [BikeIdentification] VALUES('1111111111', 1);
-INSERT INTO [BikeIdentification] VALUES('1111111112', 1);
-INSERT INTO [BikeIdentification] VALUES('1111111113', 1);
+INSERT INTO [BikeIdentificationAvailable] VALUES('1111111111', 1);
+INSERT INTO [BikeIdentificationAvailable] VALUES('1111111112', 1);
+INSERT INTO [BikeIdentificationAvailable] VALUES('1111111113', 1);
