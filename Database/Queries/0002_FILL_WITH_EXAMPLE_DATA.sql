@@ -59,4 +59,16 @@ INSERT INTO [OrderStatus] VALUES('In-Progress');
 INSERT INTO [OrderStatus] VALUES('Ready to collect');
 INSERT INTO [OrderStatus] VALUES('Completed');
 
-INSERT INTO [Order] VALUES ('2024-08-22', 'Ordered');
+INSERT INTO [Bike_Part] VALUES(1,1);
+INSERT INTO [Bike_Part] VALUES(2,1);
+INSERT INTO [Bike_Part] VALUES(3,1);
+INSERT INTO [Bike_Part] VALUES(4,1);
+INSERT INTO [Bike_Part] VALUES(5,1);
+INSERT INTO [Bike_Part] VALUES(6,1);
+INSERT INTO [Bike_Part] VALUES(7,1);
+INSERT INTO [Bike_Part] VALUES(8,1);
+INSERT INTO [Bike_Part] VALUES(9,1);
+
+INSERT INTO [BikeIdentification] VALUES('1111111111', 1);
+INSERT INTO [BikeIdentification] VALUES('1111111112', 1);
+INSERT INTO [BikeIdentification] VALUES('1111111113', 1);
