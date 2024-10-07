@@ -24,13 +24,6 @@ public class BikeController {
         return bikeService.getBikes();
     }
 
-    @GetMapping("/detailed-bike-info")
-    @ResponseBody
-    public BikeDetailedInfo getDetailedBikeInfo(@RequestParam int id){
-        BikeDetailedInfo bikeDetailedInfo = bikeService.getDetailedInfoAboutBike(id);
-        return bikeService.getDetailedInfoAboutBike(id);
-    }
-
     @GetMapping("/get-bike-by-frame-size")
     public List<Bike> getBikeByFrameSize(@RequestParam String frameSize){
         return bikeService.getBikeByFrameSize(frameSize);

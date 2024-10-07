@@ -23,8 +23,12 @@ public class Bike {
     Integer quantityInStock;
     String description;
 
-    @OneToMany(mappedBy = "bike")
-    private List<Part> part;
+    @ManyToMany
+    @JoinTable(
+            name = "Bike_Part",
+            joinColumns = @JoinColumn(name = "BikeId"),
+            inverseJoinColumns = @JoinColumn(name = "PartId"))
+    List<Part> part;
 
     @OneToMany(mappedBy = "bike")
     private List<Review> review;

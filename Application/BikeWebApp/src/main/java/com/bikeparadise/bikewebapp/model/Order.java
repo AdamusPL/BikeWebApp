@@ -21,10 +21,6 @@ public class Order {
     @JoinColumn(name = "ClientId")
     Client client;
 
-    @ManyToOne
-    @JoinColumn(name = "BikeIdentificationId")
-    BikeIdentification bikeIdentification;
-
     @OneToMany
     List<OrderStatus> orderStatus;
 
@@ -34,4 +30,11 @@ public class Order {
             joinColumns = @JoinColumn(name = "OrderId"),
             inverseJoinColumns = @JoinColumn(name = "PartId"))
     List<Part> part;
+
+    @ManyToMany
+    @JoinTable(
+            name = "BikeIdentification_Order",
+            joinColumns = @JoinColumn(name = "OrderId"),
+            inverseJoinColumns = @JoinColumn(name = "BikeIdentificationId"))
+    List<BikeIdentification> bikeIdentification;
 }

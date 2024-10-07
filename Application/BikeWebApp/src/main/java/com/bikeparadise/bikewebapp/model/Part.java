@@ -17,14 +17,18 @@ public class Part {
     String modelName;
     Double price;
     Integer quantityInStock;
+    String description;
 
     @ManyToOne
     @JoinColumn(name = "PartTypeId")
     PartType partType;
 
-    @ManyToOne
-    @JoinColumn(name = "BikeId")
-    Bike bike;
+    @ManyToMany
+    @JoinTable(
+            name = "Bike_Part",
+            joinColumns = @JoinColumn(name = "PartId"),
+            inverseJoinColumns = @JoinColumn(name = "BikeId"))
+    List<Bike> bike;
 
     @ManyToOne
     @JoinColumn(name = "ShopAssistantId")
@@ -39,5 +43,15 @@ public class Part {
             joinColumns = @JoinColumn(name = "PartId"),
             inverseJoinColumns = @JoinColumn(name = "OrderId"))
     private List<Order> order;
+
+    public Part(String make, String modelName, Double price, Integer quantityInStock, String description, PartType partType, ShopAssistant shopAssistant){
+        this.make = make;
+        this.modelName = modelName;
+        this.price = price;
+        this.quantityInStock = quantityInStock;
+        this.description = description;
+        this.partType = partType;
+        this.shopAssistant = shopAssistant;
+    }
 
 }

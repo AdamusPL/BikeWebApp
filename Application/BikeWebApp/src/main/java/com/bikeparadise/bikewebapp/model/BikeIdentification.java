@@ -15,10 +15,14 @@ public class BikeIdentification {
     Integer id;
     String serialNumber;
 
-    @OneToMany
-    List<Order> order;
-
     @ManyToOne
     @JoinColumn(name = "BikeId")
     Bike bike;
+
+    @ManyToMany
+    @JoinTable(
+            name = "BikeIdentification_Order",
+            joinColumns = @JoinColumn(name = "OrderIdBikeIdentificationId"),
+            inverseJoinColumns = @JoinColumn(name = "OrderId"))
+    List<Order> order;
 }
