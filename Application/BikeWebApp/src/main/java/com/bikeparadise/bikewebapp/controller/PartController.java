@@ -19,6 +19,7 @@ public class PartController {
     }
 
     @GetMapping("/part-shop")
+    @ResponseBody
     public List<Part> getParts(){
         return partService.getParts();
     }

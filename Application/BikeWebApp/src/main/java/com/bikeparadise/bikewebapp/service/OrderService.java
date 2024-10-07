@@ -1,11 +1,13 @@
 package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.dto.OrderDto;
+import com.bikeparadise.bikewebapp.dto.OrderListDto;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,5 +88,27 @@ public class OrderService {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    public List<OrderListDto> getOrderList(int clientId){
+        List<OrderListDto> score = new ArrayList<>();
+        List<Order> orderList = orderRepository.findByClientId(clientId);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        for(Order order : orderList){
+            List<String> orderedParts = new ArrayList<>();
+            Double finalPrice = 0D;
+            for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
+                orderedParts.add(bikeIdentificationReserved.getBike().getMake() + " " + bikeIdentificationReserved.getBike().getModelName());
+                finalPrice += bikeIdentificationReserved.getBike().getPrice();
+            }
+            for(Part part : order.getPart()){
+                orderedParts.add(part.getMake() + " " + part.getModelName());
+                finalPrice += part.getPrice();
+            }
+            OrderListDto orderListDto = new OrderListDto(formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedParts, finalPrice);
+            score.add(orderListDto);
+        }
+
+        return score;
     }
 }
