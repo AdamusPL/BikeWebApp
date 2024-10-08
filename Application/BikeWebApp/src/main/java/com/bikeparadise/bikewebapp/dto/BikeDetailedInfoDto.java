@@ -14,6 +14,7 @@ public class BikeDetailedInfoDto {
     String make;
     String modelName;
     String type;
+    Integer quantityInStock;
     Double price;
     String frameSize;
     String description;

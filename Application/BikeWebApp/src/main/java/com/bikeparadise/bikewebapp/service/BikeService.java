@@ -4,10 +4,7 @@ import com.bikeparadise.bikewebapp.dto.BikeDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.BikeDto;
 import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.*;
-import com.bikeparadise.bikewebapp.repository.BikeFrameSizeRepository;
-import com.bikeparadise.bikewebapp.repository.BikeRepository;
-import com.bikeparadise.bikewebapp.repository.BikeTypeRepository;
-import com.bikeparadise.bikewebapp.repository.ShopAssistantRepository;
+import com.bikeparadise.bikewebapp.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +22,8 @@ public class BikeService {
     private final BikeFrameSizeRepository bikeFrameSizeRepository;
     private final ShopAssistantRepository shopAssistantRepository;
 
-    public BikeService(BikeRepository bikeRepository, BikeTypeRepository bikeTypeRepository, BikeFrameSizeRepository bikeFrameSizeRepository, ShopAssistantRepository shopAssistantRepository) {
+    public BikeService(BikeRepository bikeRepository, BikeTypeRepository bikeTypeRepository,
+                       BikeFrameSizeRepository bikeFrameSizeRepository, ShopAssistantRepository shopAssistantRepository) {
         this.bikeRepository = bikeRepository;
         this.bikeTypeRepository = bikeTypeRepository;
         this.bikeFrameSizeRepository = bikeFrameSizeRepository;
@@ -54,7 +52,7 @@ public class BikeService {
                 reviewPrintDtos.add(reviewPrintDto);
             }
 
-            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), bike.getDescription(), parts, reviewPrintDtos);
+            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getBikeIdentificationAvailable().size(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), bike.getDescription(), parts, reviewPrintDtos);
             return bikeDetailedInfoDto;
         }
 

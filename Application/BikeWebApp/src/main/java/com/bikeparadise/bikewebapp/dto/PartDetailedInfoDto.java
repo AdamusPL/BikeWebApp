@@ -11,6 +11,7 @@ public class PartDetailedInfoDto {
     String make;
     String modelName;
     Double price;
+    Integer quantityInStock;
     String description;
     List<String> partAttributes;
     List<ReviewPrintDto> reviews;

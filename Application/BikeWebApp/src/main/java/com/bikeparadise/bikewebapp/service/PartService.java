@@ -48,7 +48,7 @@ public class PartService {
                 reviewPrintDtos.add(reviewPrintDto);
             }
 
-            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getMake(), part.getModelName(), part.getPrice(), part.getDescription(), partAttributes, reviewPrintDtos);
+            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getMake(), part.getModelName(), part.getPrice(), part.getQuantityInStock(), part.getDescription(), partAttributes, reviewPrintDtos);
             return partDetailedInfoDto;
         }
         return null;
