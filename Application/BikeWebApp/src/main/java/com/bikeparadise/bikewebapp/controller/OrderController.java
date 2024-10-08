@@ -30,4 +30,8 @@ public class OrderController {
         return orderService.getOrderList(clientId);
     }
 
+    @PutMapping("/update-order-status")
+    public ResponseEntity<String> updateOrderStatus(@RequestParam int orderId, @RequestParam int orderStatusId){
+        return orderService.updateOrderStatus(orderId, orderStatusId);
+    }
 }

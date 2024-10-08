@@ -111,4 +111,21 @@ public class OrderService {
 
         return score;
     }
+
+    public ResponseEntity<String> updateOrderStatus(int orderId, int orderStatusId){
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+
+        if(orderOptional.isPresent()){
+            Optional<OrderStatus> orderStatusOptional = orderStatusRepository.findById(orderStatusId);
+            if(orderStatusOptional.isPresent()){
+                Order order = orderOptional.get();
+                order.setOrderStatus(orderStatusOptional.get());
+                orderRepository.save(order);
+                return ResponseEntity.ok().build();
+            }
+        }
+
+        return ResponseEntity.notFound().build();
+
+    }
 }
