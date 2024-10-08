@@ -13,4 +13,5 @@ public class PartDetailedInfoDto {
     Double price;
     String description;
     List<String> partAttributes;
+    List<ReviewPrintDto> reviews;
 }

@@ -2,6 +2,7 @@ package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.dto.BikeDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.BikeDto;
+import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.BikeFrameSizeRepository;
 import com.bikeparadise.bikewebapp.repository.BikeRepository;
@@ -12,10 +13,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BikeService {
@@ -49,7 +47,14 @@ public class BikeService {
                 parts.put(part.getPartType().getType(), part.getMake() + " " + part.getModelName() + ", " + part.getPartAttribute().toString());
             }
 
-            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), bike.getDescription(), parts);
+            List<Review> reviews = bike.getReview();
+            List<ReviewPrintDto> reviewPrintDtos = new ArrayList<>();
+            for(Review review : reviews){
+                ReviewPrintDto reviewPrintDto = new ReviewPrintDto(review.getClient().getUserData().getFirstName(), review.getClient().getUserData().getLastName(), review.getNumberOfStars(), review.getDescription());
+                reviewPrintDtos.add(reviewPrintDto);
+            }
+
+            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), bike.getDescription(), parts, reviewPrintDtos);
             return bikeDetailedInfoDto;
         }
 

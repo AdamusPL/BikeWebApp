@@ -2,10 +2,8 @@ package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.PartDto;
-import com.bikeparadise.bikewebapp.model.Part;
-import com.bikeparadise.bikewebapp.model.PartAttribute;
-import com.bikeparadise.bikewebapp.model.PartType;
-import com.bikeparadise.bikewebapp.model.ShopAssistant;
+import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
+import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.PartRepository;
 import com.bikeparadise.bikewebapp.repository.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.ShopAssistantRepository;
@@ -43,7 +41,14 @@ public class PartService {
                 partAttributes.add(partAttribute.getAttribute());
             }
 
-            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getMake(), part.getModelName(), part.getPrice(), part.getDescription(), partAttributes);
+            List<Review> reviews = part.getReview();
+            List<ReviewPrintDto> reviewPrintDtos = new ArrayList<>();
+            for(Review review : reviews){
+                ReviewPrintDto reviewPrintDto = new ReviewPrintDto(review.getClient().getUserData().getFirstName(), review.getClient().getUserData().getLastName(), review.getNumberOfStars(), review.getDescription());
+                reviewPrintDtos.add(reviewPrintDto);
+            }
+
+            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getMake(), part.getModelName(), part.getPrice(), part.getDescription(), partAttributes, reviewPrintDtos);
             return partDetailedInfoDto;
         }
         return null;
