@@ -2,7 +2,6 @@ package com.bikeparadise.bikewebapp.controller;
 
 import com.bikeparadise.bikewebapp.dto.OrderDto;
 import com.bikeparadise.bikewebapp.dto.OrderListDto;
-import com.bikeparadise.bikewebapp.model.Order;
 import com.bikeparadise.bikewebapp.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -1,6 +1,6 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.dto.BikeDetailedInfo;
+import com.bikeparadise.bikewebapp.dto.BikeDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.BikeDto;
 import com.bikeparadise.bikewebapp.model.Bike;
 import com.bikeparadise.bikewebapp.service.BikeService;
@@ -22,6 +22,13 @@ public class BikeController {
     @ResponseBody
     public List<Bike> bikeShop(){
         return bikeService.getBikes();
+    }
+
+    @GetMapping("/get-detailed-info-about-bike")
+    @ResponseBody
+    public BikeDetailedInfoDto getDetailedInfoBike(@RequestParam int bikeId){
+        BikeDetailedInfoDto bikeDetailedInfoDto = bikeService.getDetailedInfoAboutBike(bikeId);
+        return bikeService.getDetailedInfoAboutBike(bikeId);
     }
 
     @GetMapping("/get-bike-by-frame-size")

@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class BikeFrameSize {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

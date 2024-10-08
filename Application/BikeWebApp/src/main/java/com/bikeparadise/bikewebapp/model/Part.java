@@ -29,6 +29,13 @@ public class Part {
 
     @ManyToMany
     @JoinTable(
+            name = "Part_PartAttribute",
+            joinColumns = @JoinColumn(name = "PartId"),
+            inverseJoinColumns = @JoinColumn(name = "PartAttributeId"))
+    private List<PartAttribute> partAttribute;
+
+    @ManyToMany
+    @JoinTable(
             name = "Bike_Part",
             joinColumns = @JoinColumn(name = "PartId"),
             inverseJoinColumns = @JoinColumn(name = "BikeId"))

@@ -1,11 +1,8 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.BikeDetailedInfo;
+import com.bikeparadise.bikewebapp.dto.BikeDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.BikeDto;
-import com.bikeparadise.bikewebapp.model.Bike;
-import com.bikeparadise.bikewebapp.model.BikeFrameSize;
-import com.bikeparadise.bikewebapp.model.BikeType;
-import com.bikeparadise.bikewebapp.model.ShopAssistant;
+import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.BikeFrameSizeRepository;
 import com.bikeparadise.bikewebapp.repository.BikeRepository;
 import com.bikeparadise.bikewebapp.repository.BikeTypeRepository;
@@ -15,7 +12,9 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -39,11 +38,22 @@ public class BikeService {
         return bikeRepository.findAll();
     }
 
-    public BikeDetailedInfo getDetailedInfoAboutBike(int id) {
-        return (BikeDetailedInfo) entityManager
-                .createNamedStoredProcedureQuery("DetailedInfoAboutBike")
-                .setParameter("BikeId", id)
-                .getSingleResult();
+    public BikeDetailedInfoDto getDetailedInfoAboutBike(int id) {
+        Optional<Bike> bikeOptional = bikeRepository.findById(id);
+        if(bikeOptional.isPresent()){
+            Bike bike = bikeOptional.get();
+            List<Part> bikeParts = bike.getPart();
+            Map<String, String> parts = new HashMap<>();
+
+            for(Part part : bikeParts){
+                parts.put(part.getPartType().getType(), part.getMake() + " " + part.getModelName() + ", " + part.getPartAttribute().toString());
+            }
+
+            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), parts);
+            return bikeDetailedInfoDto;
+        }
+
+        return null;
     }
 
     public List<Bike> getBikeByFrameSize(String frameSize) {
