@@ -1,18 +1,16 @@
 package com.bikeparadise.bikewebapp.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-import java.util.Map;
+import java.util.List;
 
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
-public class BikeDetailedInfoDto {
+public class PartDetailedInfoDto {
     String make;
     String modelName;
-    String type;
     Double price;
-    String frameSize;
     String description;
-    Map<String, String> parts;
+    List<String> partAttributes;
 }

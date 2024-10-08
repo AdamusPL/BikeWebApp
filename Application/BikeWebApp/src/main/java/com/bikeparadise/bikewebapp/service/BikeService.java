@@ -49,7 +49,7 @@ public class BikeService {
                 parts.put(part.getPartType().getType(), part.getMake() + " " + part.getModelName() + ", " + part.getPartAttribute().toString());
             }
 
-            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), parts);
+            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), bike.getDescription(), parts);
             return bikeDetailedInfoDto;
         }
 

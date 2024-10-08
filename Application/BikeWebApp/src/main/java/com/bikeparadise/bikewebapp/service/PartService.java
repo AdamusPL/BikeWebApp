@@ -1,7 +1,9 @@
 package com.bikeparadise.bikewebapp.service;
 
+import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.PartDto;
 import com.bikeparadise.bikewebapp.model.Part;
+import com.bikeparadise.bikewebapp.model.PartAttribute;
 import com.bikeparadise.bikewebapp.model.PartType;
 import com.bikeparadise.bikewebapp.model.ShopAssistant;
 import com.bikeparadise.bikewebapp.repository.PartRepository;
@@ -10,6 +12,7 @@ import com.bikeparadise.bikewebapp.repository.ShopAssistantRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,23 @@ public class PartService {
 
     public List<Part> getParts() {
         return partRepository.findAll();
+    }
+
+    public PartDetailedInfoDto getDetailedInfoAboutPart(int id){
+        Optional<Part> partOptional = partRepository.findById(id);
+
+        if(partOptional.isPresent()){
+            Part part = partOptional.get();
+
+            List<String> partAttributes = new ArrayList<>();
+            for(PartAttribute partAttribute : part.getPartAttribute()){
+                partAttributes.add(partAttribute.getAttribute());
+            }
+
+            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getMake(), part.getModelName(), part.getPrice(), part.getDescription(), partAttributes);
+            return partDetailedInfoDto;
+        }
+        return null;
     }
 
     public ResponseEntity<String> addPart(PartDto partDto) {

@@ -27,7 +27,6 @@ public class BikeController {
     @GetMapping("/get-detailed-info-about-bike")
     @ResponseBody
     public BikeDetailedInfoDto getDetailedInfoBike(@RequestParam int bikeId){
-        BikeDetailedInfoDto bikeDetailedInfoDto = bikeService.getDetailedInfoAboutBike(bikeId);
         return bikeService.getDetailedInfoAboutBike(bikeId);
     }
 

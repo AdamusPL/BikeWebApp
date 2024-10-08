@@ -28,4 +28,18 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "PartId")
     Part part;
+
+    public Review(Integer numberOfStars, String description, Client client, Bike bike){
+        this.numberOfStars = numberOfStars;
+        this.description = description;
+        this.client = client;
+        this.bike = bike;
+    }
+
+    public Review(Integer numberOfStars, String description, Client client, Part part){
+        this.numberOfStars = numberOfStars;
+        this.description = description;
+        this.client = client;
+        this.part = part;
+    }
 }

@@ -1,5 +1,6 @@
 package com.bikeparadise.bikewebapp.controller;
 
+import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.PartDto;
 import com.bikeparadise.bikewebapp.model.Part;
 import com.bikeparadise.bikewebapp.service.PartService;
@@ -22,6 +23,12 @@ public class PartController {
     @ResponseBody
     public List<Part> getParts(){
         return partService.getParts();
+    }
+
+    @GetMapping("/get-detailed-info-about-part")
+    @ResponseBody
+    public PartDetailedInfoDto getPartDetailedInfo(@RequestParam int partId){
+        return partService.getDetailedInfoAboutPart(partId);
     }
 
     @PostMapping("/add-part")
