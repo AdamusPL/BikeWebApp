@@ -9,20 +9,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-public class UserContact {
+public class UserEmail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    String phoneNumber;
     String email;
 
     @ManyToOne
     @JoinColumn(name = "UserDataId")
     UserData userData;
 
-    public UserContact(String email, String phoneNumber, UserData userData) {
+    public UserEmail(String email, UserData userData) {
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.userData = userData;
     }
 }

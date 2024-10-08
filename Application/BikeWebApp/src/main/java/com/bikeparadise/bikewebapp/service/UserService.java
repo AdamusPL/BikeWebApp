@@ -1,8 +1,9 @@
 package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.model.User;
-import com.bikeparadise.bikewebapp.model.UserContact;
 import com.bikeparadise.bikewebapp.model.UserData;
+import com.bikeparadise.bikewebapp.model.UserEmail;
+import com.bikeparadise.bikewebapp.model.UserPhoneNumber;
 import com.bikeparadise.bikewebapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,8 +34,8 @@ public class UserService {
     public ResponseEntity<String> registerUser(String firstName, String lastName, String username, String password,
                                                String email, String phoneNumber){
         if(userRepository.findUserByUsername(username).size() != 0 ||
-                userRepository.findUserByUserData_UserContact_Email(email).size() != 0 ||
-                userRepository.findUserByUserData_UserContact_PhoneNumber(phoneNumber).size() != 0
+                userRepository.findUserByUserData_UserEmail_Email(email).size() != 0 ||
+                userRepository.findUserByUserData_UserPhoneNumber_PhoneNumber(phoneNumber).size() != 0
         ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -43,12 +44,17 @@ public class UserService {
 
         UserData userData = new UserData(firstName, lastName);
         User user = new User(username, encodedPassword, userData);
-        UserContact userContact = new UserContact(email, phoneNumber, userData);
+        UserEmail userEmail = new UserEmail(email, userData);
+        UserPhoneNumber userPhoneNumber = new UserPhoneNumber(phoneNumber, userData);
 
         userData.setUser(user);
-        List<UserContact> userContactList = new ArrayList<>();
-        userContactList.add(userContact);
-        userData.setUserContact(userContactList);
+        List<UserEmail> userEmailList = new ArrayList<>();
+        userEmailList.add(userEmail);
+        userData.setUserEmail(userEmailList);
+
+        List<UserPhoneNumber> userPhoneNumberList = new ArrayList<>();
+        userPhoneNumberList.add(userPhoneNumber);
+        userData.setUserPhoneNumber(userPhoneNumberList);
 
         userRepository.save(user);
 

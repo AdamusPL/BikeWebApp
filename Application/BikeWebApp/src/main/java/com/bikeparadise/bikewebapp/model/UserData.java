@@ -22,7 +22,10 @@ public class UserData {
     User user;
 
     @OneToMany(mappedBy = "userData", cascade=CascadeType.ALL)
-    List<UserContact> userContact;
+    List<UserPhoneNumber> userPhoneNumber;
+
+    @OneToMany(mappedBy = "userData", cascade=CascadeType.ALL)
+    List<UserEmail> userEmail;
 
     @OneToOne(mappedBy = "userData")
     Client client;
