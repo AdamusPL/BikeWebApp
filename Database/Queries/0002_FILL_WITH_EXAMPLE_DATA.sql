@@ -19,26 +19,32 @@ INSERT INTO [BikeParameterType] VALUES('Type');
 INSERT INTO [BikeParameterType] VALUES('Frame size');
 INSERT INTO [BikeParameterType] VALUES('Make');
 
-INSERT INTO [BikeParameterAttribute] VALUES('MTB');
-INSERT INTO [BikeParameterAttribute] VALUES('BMX');
-INSERT INTO [BikeParameterAttribute] VALUES('Urban');
-INSERT INTO [BikeParameterAttribute] VALUES('Trekking');
-INSERT INTO [BikeParameterAttribute] VALUES('Road');
-INSERT INTO [BikeParameterAttribute] VALUES('Cross');
+INSERT INTO [BikeParameterAttribute] VALUES('MTB', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('BMX', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Urban', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Trekking', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Road', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Cross', 1);
 
-INSERT INTO [BikeParameterAttribute] VALUES('XXS');
-INSERT INTO [BikeParameterAttribute] VALUES('XS');
-INSERT INTO [BikeParameterAttribute] VALUES('S');
-INSERT INTO [BikeParameterAttribute] VALUES('M');
-INSERT INTO [BikeParameterAttribute] VALUES('L');
-INSERT INTO [BikeParameterAttribute] VALUES('XL');
-INSERT INTO [BikeParameterAttribute] VALUES('XXL');
+INSERT INTO [BikeParameterAttribute] VALUES('XXS', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('XS', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('S', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('M', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('L', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('XL', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('XXL', 2);
 
-INSERT INTO [BikeParameterAttribute] VALUES('AeroBike');
-INSERT INTO [BikeParameterAttribute] VALUES('Phumay');
-INSERT INTO [BikeParameterAttribute] VALUES('LizardCycle');
+INSERT INTO [BikeParameterAttribute] VALUES('AeroBike', 3);
+INSERT INTO [BikeParameterAttribute] VALUES('Phumay', 3);
+INSERT INTO [BikeParameterAttribute] VALUES('LizardCycle', 3);
 
-INSERT INTO [Bike] (Make, ModelName, Price, Description, BikeFrameSizeId, BikeTypeId, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 1999.00, 'Lorem ipsum', 4, 1, 1);
+INSERT INTO [Bike] (ModelName, Price, Description, ShopAssistantId) VALUES('Swift 4', 1999.00, 'Lorem ipsum', 1);
+INSERT INTO [Bike_BikeParameterType] VALUES(1, 1);
+INSERT INTO [Bike_BikeParameterType] VALUES(2, 1);
+INSERT INTO [Bike_BikeParameterType] VALUES(3, 1);
+INSERT INTO [Bike_BikeParameterAttribute] VALUES(1, 1);
+INSERT INTO [Bike_BikeParameterAttribute] VALUES(10, 1);
+INSERT INTO [Bike_BikeParameterAttribute] VALUES(14, 1);
 
 INSERT INTO [PartType] VALUES('Tyres');
 INSERT INTO [PartType] VALUES('Front Derailleur');
