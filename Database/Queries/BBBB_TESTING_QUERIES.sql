@@ -16,6 +16,8 @@ SELECT * FROM [BikeIdentificationAvailable];
 SELECT * FROM [BikeIdentificationReserved];
 SELECT * FROM [BikeParameterType];
 SELECT * FROM [BikeParameterAttribute];
+SELECT * FROM [Bike_BikeParameterType];
+SELECT * FROM [Bike_BikeParameterAttribute];
 SELECT * FROM [PartType];
 SELECT * FROM [PartAttribute];
 SELECT * FROM [OrderStatus];
