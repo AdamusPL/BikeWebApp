@@ -98,7 +98,7 @@ public class OrderService {
             List<String> orderedParts = new ArrayList<>();
             Double finalPrice = 0D;
             for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
-                orderedParts.add(bikeIdentificationReserved.getBike().getMake() + " " + bikeIdentificationReserved.getBike().getModelName());
+                orderedParts.add(bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName());
                 finalPrice += bikeIdentificationReserved.getBike().getPrice();
             }
             for(Part part : order.getPart()){

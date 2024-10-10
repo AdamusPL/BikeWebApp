@@ -45,7 +45,7 @@ public class Part {
     @JoinColumn(name = "ShopAssistantId")
     ShopAssistant shopAssistant;
 
-    @OneToMany
+    @OneToMany(mappedBy = "part")
     private List<Review> review;
 
     @ManyToMany

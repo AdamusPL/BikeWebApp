@@ -17,7 +17,7 @@ public class OrderStatus {
     Integer id;
     String status;
 
-    @OneToMany
+    @OneToMany(mappedBy = "orderStatus")
     List<Order> order;
 
 }

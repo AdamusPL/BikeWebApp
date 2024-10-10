@@ -18,15 +18,15 @@ public class BikeService {
     private EntityManager entityManager;
 
     private final BikeRepository bikeRepository;
-    private final BikeTypeRepository bikeTypeRepository;
-    private final BikeFrameSizeRepository bikeFrameSizeRepository;
+    private final BikeParameterTypeRepository bikeParameterTypeRepository;
+    private final BikeParameterAttributeRepository bikeParameterAttributeRepository;
     private final ShopAssistantRepository shopAssistantRepository;
 
-    public BikeService(BikeRepository bikeRepository, BikeTypeRepository bikeTypeRepository,
-                       BikeFrameSizeRepository bikeFrameSizeRepository, ShopAssistantRepository shopAssistantRepository) {
+    public BikeService(BikeRepository bikeRepository, BikeParameterTypeRepository bikeParameterTypeRepository,
+                       BikeParameterAttributeRepository bikeParameterAttributeRepository, ShopAssistantRepository shopAssistantRepository) {
         this.bikeRepository = bikeRepository;
-        this.bikeTypeRepository = bikeTypeRepository;
-        this.bikeFrameSizeRepository = bikeFrameSizeRepository;
+        this.bikeParameterTypeRepository = bikeParameterTypeRepository;
+        this.bikeParameterAttributeRepository = bikeParameterAttributeRepository;
         this.shopAssistantRepository = shopAssistantRepository;
     }
 
@@ -41,6 +41,14 @@ public class BikeService {
             List<Part> bikeParts = bike.getPart();
             Map<String, String> parts = new HashMap<>();
 
+            //bike attributes
+            for(BikeParameterType bikeParameterType : bike.getBikeParameterType()){
+                for(BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()){
+                    parts.put(bikeParameterType.getType(), bikeParameterAttribute.getAttribute());
+                }
+            }
+
+            //part attributes
             for(Part part : bikeParts){
                 parts.put(part.getPartType().getType(), part.getMake() + " " + part.getModelName() + ", " + part.getPartAttribute().toString());
             }
@@ -52,40 +60,40 @@ public class BikeService {
                 reviewPrintDtos.add(reviewPrintDto);
             }
 
-            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getMake(), bike.getModelName(), bike.getBikeType().getType(), bike.getBikeIdentificationAvailable().size(), bike.getPrice(), bike.getBikeFrameSize().getFrameSize(), bike.getDescription(), parts, reviewPrintDtos);
+
+
+            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getModelName(), bike.getBikeIdentificationAvailable().size(), bike.getPrice(), bike.getDescription(), parts, reviewPrintDtos);
             return bikeDetailedInfoDto;
         }
 
         return null;
     }
 
-    public List<Bike> getBikeByFrameSize(String frameSize) {
-        return bikeRepository.findBikeByBikeFrameSize_FrameSize(frameSize);
-    }
-
-    public List<Bike> getBikeByType(String type) {
-        return bikeRepository.findBikeByBikeType_Type(type);
-    }
+//    public List<Bike> getBikeByFrameSize(String frameSize) {
+//        return bikeRepository.findBikeByBikeFrameSize_FrameSize(frameSize);
+//    }
+//
+//    public List<Bike> getBikeByType(String type) {
+//        return bikeRepository.findBikeByBikeType_Type(type);
+//    }
 
     public List<Bike> getBikeByPrice(Double lowerRange, Double upperRange) {
         return bikeRepository.findBikeByPriceBetween(lowerRange, upperRange);
     }
 
-    public List<Bike> getBikeByMake(String make) {
-        return bikeRepository.findBikeByMake(make);
-    }
+//    public List<Bike> getBikeByMake(String make) {
+//        return bikeRepository.findBikeByMake(make);
+//    }
 
     public List<Bike> getBikeByPartAttribute(String parameter) {
         return bikeRepository.findBikeByPart_PartType_PartAttribute_Attribute(parameter);
     }
 
     public ResponseEntity<String> addBike(BikeDto bikeDto) {
-        Optional<BikeType> bikeType = bikeTypeRepository.findById(bikeDto.getBikeTypeId());
-        Optional<BikeFrameSize> bikeFrameSize = bikeFrameSizeRepository.findById(bikeDto.getBikeFrameSizeId());
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(bikeDto.getShopAssistantId());
 
-        if (bikeType.isPresent() && bikeFrameSize.isPresent() && shopAssistant.isPresent()) {
-            Bike bike = new Bike(bikeDto.getMake(), bikeDto.getModelName(), bikeDto.getPrice(), bikeDto.getDescription(), bikeType.get(), bikeFrameSize.get(), shopAssistant.get());
+        if (shopAssistant.isPresent()) {
+            Bike bike = new Bike(bikeDto.getModelName(), bikeDto.getPrice(), bikeDto.getDescription(), shopAssistant.get());
             bikeRepository.save(bike);
             return ResponseEntity.ok().build();
         }

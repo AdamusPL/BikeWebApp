@@ -17,9 +17,9 @@ public class PartType {
     Integer id;
     String type;
 
-    @OneToMany
+    @OneToMany(mappedBy = "partType")
     List<PartAttribute> partAttribute;
 
-    @OneToMany
+    @OneToMany(mappedBy = "partType")
     List<Part> part;
 }

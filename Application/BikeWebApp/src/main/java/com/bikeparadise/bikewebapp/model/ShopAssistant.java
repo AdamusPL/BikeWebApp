@@ -18,10 +18,10 @@ public class ShopAssistant {
     @JoinColumn(name = "UserDataId")
     UserData userData;
 
-    @OneToMany
+    @OneToMany(mappedBy = "shopAssistant")
     List<Part> part;
 
-    @OneToMany
+    @OneToMany(mappedBy = "shopAssistant")
     List<Bike> bike;
 
 }

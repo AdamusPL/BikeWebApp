@@ -2,14 +2,14 @@ package com.bikeparadise.bikewebapp.dto;
 
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
 public class BikeDto {
-    String make;
     String modelName;
     Double price;
     Integer quantityInStock;
     String description;
     Integer shopAssistantId;
-    Integer bikeTypeId;
-    Integer bikeFrameSizeId;
+    Map<Integer, Integer> parts;
 }

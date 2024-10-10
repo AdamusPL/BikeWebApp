@@ -20,9 +20,9 @@ public class Client {
     @JoinColumn(name = "UserDataId")
     UserData userData;
 
-    @OneToMany
+    @OneToMany(mappedBy = "client")
     private List<Review> review;
 
-    @OneToMany
+    @OneToMany(mappedBy = "client")
     private List<Order> order;
 }

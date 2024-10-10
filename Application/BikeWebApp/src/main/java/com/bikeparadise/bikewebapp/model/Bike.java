@@ -17,7 +17,6 @@ public class Bike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    String make;
     String modelName;
     Double price;
     String description;
@@ -39,31 +38,33 @@ public class Bike {
     List<BikeIdentificationReserved> bikeIdentificationReserved;
 
     @ManyToOne
-    @JoinColumn(name = "BikeTypeId")
-    BikeType bikeType;
-
-    @ManyToOne
-    @JoinColumn(name = "BikeFrameSizeId")
-    BikeFrameSize bikeFrameSize;
-
-    @ManyToOne
     @JoinColumn(name = "ShopAssistantId")
     ShopAssistant shopAssistant;
 
-    public Bike(String make, String modelName, Double price, String description) {
-        this.make = make;
+    public Bike(String modelName, Double price, String description) {
         this.modelName = modelName;
         this.price = price;
         this.description = description;
     }
 
-    public Bike(String make, String modelName, Double price, String description, BikeType bikeType, BikeFrameSize bikeFrameSize, ShopAssistant shopAssistant) {
-        this.make = make;
+    public Bike(String modelName, Double price, String description, ShopAssistant shopAssistant) {
         this.modelName = modelName;
         this.price = price;
         this.description = description;
-        this.bikeType = bikeType;
-        this.bikeFrameSize = bikeFrameSize;
         this.shopAssistant = shopAssistant;
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "Bike_BikeParameterAttribute",
+            joinColumns = @JoinColumn(name = "BikeId"),
+            inverseJoinColumns = @JoinColumn(name = "BikeParameterAttributeId"))
+    private List<BikeParameterAttribute> bikeParameterAttribute;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Bike_BikeParameterType",
+            joinColumns = @JoinColumn(name = "BikeId"),
+            inverseJoinColumns = @JoinColumn(name = "BikeParameterTypeId"))
+    private List<BikeParameterType> bikeParameterType;
 }
