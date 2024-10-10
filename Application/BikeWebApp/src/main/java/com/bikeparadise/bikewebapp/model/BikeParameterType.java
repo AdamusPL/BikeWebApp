@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 public class BikeParameterType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String type;
 

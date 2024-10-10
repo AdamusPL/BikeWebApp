@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 public class BikeParameterAttribute {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String attribute;
 
