@@ -15,20 +15,28 @@ INSERT INTO [User] VALUES('client', 'example', 2);
 
 INSERT INTO [Client] VALUES(2);
 
-INSERT INTO [BikeType] VALUES('MTB');
-INSERT INTO [BikeType] VALUES('BMX');
-INSERT INTO [BikeType] VALUES('Urban');
-INSERT INTO [BikeType] VALUES('Trekking');
-INSERT INTO [BikeType] VALUES('Road');
-INSERT INTO [BikeType] VALUES('Cross');
+INSERT INTO [BikeParameterType] VALUES('Type');
+INSERT INTO [BikeParameterType] VALUES('Frame size');
+INSERT INTO [BikeParameterType] VALUES('Make');
 
-INSERT INTO [BikeFrameSize] VALUES('XXS');
-INSERT INTO [BikeFrameSize] VALUES('XS');
-INSERT INTO [BikeFrameSize] VALUES('S');
-INSERT INTO [BikeFrameSize] VALUES('M');
-INSERT INTO [BikeFrameSize] VALUES('L');
-INSERT INTO [BikeFrameSize] VALUES('XL');
-INSERT INTO [BikeFrameSize] VALUES('XXL');
+INSERT INTO [BikeParameterAttribute] VALUES('MTB');
+INSERT INTO [BikeParameterAttribute] VALUES('BMX');
+INSERT INTO [BikeParameterAttribute] VALUES('Urban');
+INSERT INTO [BikeParameterAttribute] VALUES('Trekking');
+INSERT INTO [BikeParameterAttribute] VALUES('Road');
+INSERT INTO [BikeParameterAttribute] VALUES('Cross');
+
+INSERT INTO [BikeParameterAttribute] VALUES('XXS');
+INSERT INTO [BikeParameterAttribute] VALUES('XS');
+INSERT INTO [BikeParameterAttribute] VALUES('S');
+INSERT INTO [BikeParameterAttribute] VALUES('M');
+INSERT INTO [BikeParameterAttribute] VALUES('L');
+INSERT INTO [BikeParameterAttribute] VALUES('XL');
+INSERT INTO [BikeParameterAttribute] VALUES('XXL');
+
+INSERT INTO [BikeParameterAttribute] VALUES('AeroBike');
+INSERT INTO [BikeParameterAttribute] VALUES('Phumay');
+INSERT INTO [BikeParameterAttribute] VALUES('LizardCycle');
 
 INSERT INTO [Bike] (Make, ModelName, Price, Description, BikeFrameSizeId, BikeTypeId, ShopAssistantId) VALUES('AeroBike', 'Swift 4', 1999.00, 'Lorem ipsum', 4, 1, 1);
 
