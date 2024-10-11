@@ -1,7 +1,8 @@
 package com.bikeparadise.bikewebapp.controller;
 
 import com.bikeparadise.bikewebapp.dto.BikeDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.BikeDto;
+import com.bikeparadise.bikewebapp.dto.BikeAddDto;
+import com.bikeparadise.bikewebapp.dto.BikeShopDto;
 import com.bikeparadise.bikewebapp.model.Bike;
 import com.bikeparadise.bikewebapp.service.BikeService;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:3000")
 public class BikeController {
     private final BikeService bikeService;
 
@@ -20,7 +22,7 @@ public class BikeController {
 
     @GetMapping("/bike-shop")
     @ResponseBody
-    public List<Bike> bikeShop(){
+    public List<BikeShopDto> bikeShop(){
         return bikeService.getBikes();
     }
 
@@ -51,8 +53,8 @@ public class BikeController {
 //    }
 
     @PostMapping("/add-bike")
-    public ResponseEntity<String> addBike(@RequestBody BikeDto bikeDto){
-        return bikeService.addBike(bikeDto);
+    public ResponseEntity<String> addBike(@RequestBody BikeAddDto bikeAddDto){
+        return bikeService.addBike(bikeAddDto);
     }
 
     @DeleteMapping("/delete-bike")

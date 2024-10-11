@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.Map;
 
 @Getter
-public class BikeDto {
+public class BikeAddDto {
     String modelName;
     Double price;
     Integer quantityInStock;
