@@ -7,13 +7,11 @@ import {
     MDBNavbarNav,
     MDBNavbarItem,
     MDBNavbarLink,
-    MDBBtn,
-    MDBDropdown,
-    MDBDropdownToggle,
-    MDBDropdownMenu,
-    MDBDropdownItem,
     MDBCollapse,
 } from 'mdb-react-ui-kit';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse, faEnvelope, faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 import logo from '../assets/logo.png'
 import '../css/Layout.css'
 
@@ -22,9 +20,9 @@ export function Layout({ children }) {
 
     return (
         <>
-            <MDBNavbar expand='lg' light bgColor='light'>
+            <MDBNavbar expand='lg' light bgColor='success'>
                 <MDBContainer fluid>
-                    <img id='logo' src={logo} />
+                    <Link to="/"><img id='logo' src={logo} /></Link>
 
                     <MDBNavbarToggler
                         aria-controls='navbarSupportedContent'
@@ -35,41 +33,41 @@ export function Layout({ children }) {
                         <MDBIcon icon='bars' fas />
                     </MDBNavbarToggler>
 
-                    <MDBCollapse navbar open={openBasic}>
-                        <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
+                    <MDBCollapse navbar open={openBasic} className="w-100">
+                        <MDBNavbarNav className='mb-2 mb-lg-0'>
                             <MDBNavbarItem>
-                                <MDBNavbarLink active aria-current='page' href='#'>
-                                    Home
+                                <MDBNavbarLink href='/'>
+                                    <FontAwesomeIcon icon={faHouse} />
                                 </MDBNavbarLink>
                             </MDBNavbarItem>
+
                             <MDBNavbarItem>
-                                <MDBNavbarLink href='#'>Link</MDBNavbarLink>
+                                <MDBNavbarLink href='/bike-shop'>Bikes</MDBNavbarLink>
                             </MDBNavbarItem>
 
                             <MDBNavbarItem>
-                                <MDBDropdown>
-                                    <MDBDropdownToggle tag='a' className='nav-link' role='button'>
-                                        Dropdown
-                                    </MDBDropdownToggle>
-                                    <MDBDropdownMenu>
-                                        <MDBDropdownItem link>Action</MDBDropdownItem>
-                                        <MDBDropdownItem link>Another action</MDBDropdownItem>
-                                        <MDBDropdownItem link>Something else here</MDBDropdownItem>
-                                    </MDBDropdownMenu>
-                                </MDBDropdown>
+                                <MDBNavbarLink href='/part-shop'>Parts</MDBNavbarLink>
                             </MDBNavbarItem>
 
                             <MDBNavbarItem>
-                                <MDBNavbarLink disabled href='#' tabIndex={-1} aria-disabled='true'>
-                                    Disabled
+                                <MDBNavbarLink href='/order-list'>
+                                    <FontAwesomeIcon icon={faEnvelope} />
+                                </MDBNavbarLink>
+                            </MDBNavbarItem>
+
+                            <MDBNavbarItem>
+                                <MDBNavbarLink href='/cart'>
+                                    <FontAwesomeIcon icon={faCartShopping} />
+                                </MDBNavbarLink>
+                            </MDBNavbarItem>
+                            
+                            <MDBNavbarItem>
+                                <MDBNavbarLink href='/account'>
+                                    <MDBIcon fas icon="user-alt" />
                                 </MDBNavbarLink>
                             </MDBNavbarItem>
                         </MDBNavbarNav>
 
-                        <form className='d-flex input-group w-auto'>
-                            <input type='search' className='form-control' placeholder='Type query' aria-label='Search' />
-                            <MDBBtn color='primary'>Search</MDBBtn>
-                        </form>
                     </MDBCollapse>
                 </MDBContainer>
             </MDBNavbar>

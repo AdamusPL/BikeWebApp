@@ -4,6 +4,13 @@
   "description": "template for mdb-react-ui-kit",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "font-awesome": "^4.7.0",
     "mdb-react-ui-kit": "9.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
