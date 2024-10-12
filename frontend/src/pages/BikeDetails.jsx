@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBInput, MDBTextArea, MDBSpinner } from "mdb-react-ui-kit";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner } from "mdb-react-ui-kit";
 import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -29,7 +29,6 @@ export default function BikeDetails() {
     }
 
     async function addReview() {
-        debugger;
         const review = {
             numberOfStars: numberOfStars,
             description: opinion,
@@ -56,7 +55,7 @@ export default function BikeDetails() {
     return (<>
         <MDBContainer>
             <MDBRow className="mt-2">
-                <MDBCol>
+                <MDBCol md="8">
                     <figure className='bg-image' style={{ position: 'relative', display: 'inline-block' }}>
                         <img
                             src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
@@ -66,7 +65,7 @@ export default function BikeDetails() {
                     </figure>
                     <h1>{chosenProduct.fullModelName}</h1>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol md="4">
                     {
                         keysArray.map(element => (
                             <p key={element}>{element}: {chosenProduct.parts[element]}</p>

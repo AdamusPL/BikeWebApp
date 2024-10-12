@@ -6,7 +6,7 @@ export default function Home() {
         <MDBContainer>
             <figure className='bg-image mt-2' style={{ position: 'relative', display: 'inline-block' }}>
                 <img
-                    src='https://mdbootstrap.com/img/new/standard/city/041.webp'
+                    src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                     className='img-fluid rounded shadow-3'
                     alt='...'
                 />
