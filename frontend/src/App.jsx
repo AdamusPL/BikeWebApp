@@ -21,8 +21,8 @@ function App() {
           <Route path='/account' element={<Account />}></Route>
           <Route path='/bike-shop' element={<BikeShop />}></Route>
           <Route path='/part-shop' element={<PartShop />}></Route>
-          <Route path='/bike-details' element={<BikeDetails />}></Route>
-          <Route path='/part-details' element={<PartDetails />}></Route>
+          <Route path='/bike-shop/:id' element={<BikeDetails />}></Route>
+          <Route path='/part-shop/:id' element={<PartDetails />}></Route>
           <Route path='/cart' element={<Cart />}></Route>
           <Route path='/order-list' element={<OrderList />}></Route>
           <Route path='/register' element={<Registration />}></Route>

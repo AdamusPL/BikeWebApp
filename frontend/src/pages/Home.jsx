@@ -4,7 +4,7 @@ import React from 'react';
 export default function Home() {
     return (<>
         <MDBContainer>
-            <figure className='bg-image' style={{ position: 'relative', display: 'inline-block' }}>
+            <figure className='bg-image mt-2' style={{ position: 'relative', display: 'inline-block' }}>
                 <img
                     src='https://mdbootstrap.com/img/new/standard/city/041.webp'
                     className='img-fluid rounded shadow-3'
