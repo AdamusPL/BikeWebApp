@@ -17,9 +17,10 @@ public class PartType {
     Integer id;
     String type;
 
-    @OneToMany(mappedBy = "partType")
-    List<PartAttribute> partAttribute;
+    @ManyToOne
+    @JoinColumn(name = "PartAttributeId")
+    PartAttribute partAttribute;
 
-    @OneToMany(mappedBy = "partType")
-    List<Part> part;
+    @OneToMany
+    private List<Part> part;
 }

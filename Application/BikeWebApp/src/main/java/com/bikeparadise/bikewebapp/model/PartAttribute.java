@@ -22,9 +22,8 @@ public class PartAttribute {
         return attribute;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "PartTypeId")
-    PartType partType;
+    @OneToMany
+    List<PartAttribute> partAttribute;
 
     @ManyToMany
     @JoinTable(

@@ -101,10 +101,10 @@ public class OrderService {
                 orderedParts.add(bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName());
                 finalPrice += bikeIdentificationReserved.getBike().getPrice();
             }
-            for(Part part : order.getPart()){
-                orderedParts.add(part.getMake() + " " + part.getModelName());
-                finalPrice += part.getPrice();
-            }
+//            for(Part part : order.getPart()){
+//                orderedParts.add(part.getMake() + " " + part.getModelName());
+//                finalPrice += part.getPrice();
+//            }
             OrderListDto orderListDto = new OrderListDto(formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedParts, finalPrice);
             score.add(orderListDto);
         }

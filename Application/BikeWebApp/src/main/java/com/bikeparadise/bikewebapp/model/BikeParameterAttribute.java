@@ -17,9 +17,8 @@ public class BikeParameterAttribute {
     Integer id;
     String attribute;
 
-    @ManyToOne
-    @JoinColumn(name = "BikeParameterTypeId")
-    BikeParameterType bikeParameterType;
+    @OneToMany
+    List<BikeParameterType> bikeParameterType;
 
     @ManyToMany
     @JoinTable(

@@ -11,7 +11,8 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 public class BikeDetailedInfoDto {
-    String modelName;
+    Integer id;
+    String fullModelName;
     Integer quantityInStock;
     Double price;
     String description;

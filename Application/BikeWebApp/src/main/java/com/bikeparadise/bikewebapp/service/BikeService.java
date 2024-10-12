@@ -46,46 +46,34 @@ public class BikeService {
 
             String drive = "";
 
-            if(frontDerailleur.size() == 0 && rearDerailleur.size() == 0){
+            if (frontDerailleur.size() == 0 && rearDerailleur.size() == 0) {
                 drive = "1x1";
-            }
-            else if(frontDerailleur.size() == 0){
+            } else if (frontDerailleur.size() == 0) {
                 String rearNumberOfGears = "";
-                for (PartAttribute partAttribute:
-                        rearDerailleur.get(0).getPartType().getPartAttribute()) {
-                    if(partAttribute.getAttribute().contains("rows")){
-                        rearNumberOfGears = partAttribute.getAttribute().replaceAll("[^0-9]", "");
-                    }
+
+                if (rearDerailleur.get(0).getPartType().getPartAttribute().getAttribute().contains("rows")) {
+                    rearNumberOfGears = rearDerailleur.get(0).getPartType().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
                 }
 
                 drive = "1x" + rearNumberOfGears;
-            }
-            else if(rearDerailleur.size() == 0){
+            } else if (rearDerailleur.size() == 0) {
                 String frontNumberOfGears = "";
-                for (PartAttribute partAttribute:
-                        frontDerailleur.get(0).getPartType().getPartAttribute()) {
-                    if(partAttribute.getAttribute().contains("rows")){
-                        frontNumberOfGears = partAttribute.getAttribute().replaceAll("[^0-9]", "");
-                    }
+
+                if (frontDerailleur.get(0).getPartType().getPartAttribute().getAttribute().contains("rows")) {
+                    frontNumberOfGears = frontDerailleur.get(0).getPartType().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
                 }
 
                 drive = frontNumberOfGears + "x1";
-            }
-            else{
+            } else {
                 String rearNumberOfGears = "";
-                for (PartAttribute partAttribute:
-                        rearDerailleur.get(0).getPartType().getPartAttribute()) {
-                    if(partAttribute.getAttribute().contains("rows")){
-                        rearNumberOfGears = partAttribute.getAttribute().replaceAll("[^0-9]", "");
-                    }
+
+                if (rearDerailleur.get(0).getPartType().getPartAttribute().getAttribute().contains("rows")) {
+                    rearNumberOfGears = rearDerailleur.get(0).getPartType().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
                 }
 
                 String frontNumberOfGears = "";
-                for (PartAttribute partAttribute:
-                        frontDerailleur.get(0).getPartType().getPartAttribute()) {
-                    if(partAttribute.getAttribute().contains("rows")){
-                        frontNumberOfGears = partAttribute.getAttribute().replaceAll("[^0-9]", "");
-                    }
+                if (frontDerailleur.get(0).getPartType().getPartAttribute().getAttribute().contains("rows")) {
+                    frontNumberOfGears = frontDerailleur.get(0).getPartType().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
                 }
 
                 drive = frontNumberOfGears + "x" + rearNumberOfGears;
@@ -93,19 +81,15 @@ public class BikeService {
 
             //get bike type
             String type = "";
-            for (BikeParameterType bikeParameterType:
-                    bike.getBikeParameterType()) {
-                if(bikeParameterType.getType().equals("Type")){
-                    type = bikeParameterType.getBikeParameterAttribute().get(0).getAttribute();
-                }
-            }
-
             //get bike make
             String make = "";
-            for (BikeParameterType bikeParameterType:
+            for (BikeParameterType bikeParameterType :
                     bike.getBikeParameterType()) {
-                if(bikeParameterType.getType().equals("Make")){
-                    make = bikeParameterType.getBikeParameterAttribute().get(0).getAttribute();
+                if (bikeParameterType.getType().equals("Type")) {
+                    type = bikeParameterType.getBikeParameterAttribute().getAttribute();
+                }
+                if (bikeParameterType.getType().equals("Make")) {
+                    make = bikeParameterType.getBikeParameterAttribute().getAttribute();
                 }
             }
 
@@ -124,9 +108,7 @@ public class BikeService {
 
             //bike attributes
             for (BikeParameterType bikeParameterType : bike.getBikeParameterType()) {
-                for (BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()) {
-                    parts.put(bikeParameterType.getType(), bikeParameterAttribute.getAttribute());
-                }
+                parts.put(bikeParameterType.getType(), bikeParameterType.getBikeParameterAttribute().getAttribute());
             }
 
             //part attributes
@@ -142,7 +124,7 @@ public class BikeService {
             }
 
 
-            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getModelName(), bike.getBikeIdentificationAvailable().size(), bike.getPrice(), bike.getDescription(), parts, reviewPrintDtos);
+            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getId(), bike.getModelName(), bike.getBikeIdentificationAvailable().size(), bike.getPrice(), bike.getDescription(), parts, reviewPrintDtos);
             return bikeDetailedInfoDto;
         }
 

@@ -20,6 +20,6 @@ public class BikeParameterType {
             inverseJoinColumns = @JoinColumn(name = "BikeId"))
     private List<Bike> bike;
 
-    @OneToMany(mappedBy = "bikeParameterType")
-    List<BikeParameterAttribute> bikeParameterAttribute;
+    @ManyToOne
+    BikeParameterAttribute bikeParameterAttribute;
 }

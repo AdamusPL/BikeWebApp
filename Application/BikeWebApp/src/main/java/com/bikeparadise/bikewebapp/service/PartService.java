@@ -2,6 +2,7 @@ package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.PartDto;
+import com.bikeparadise.bikewebapp.dto.PartShopDto;
 import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.PartRepository;
@@ -10,9 +11,7 @@ import com.bikeparadise.bikewebapp.repository.ShopAssistantRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PartService {
@@ -26,8 +25,34 @@ public class PartService {
         this.shopAssistantRepository = shopAssistantRepository;
     }
 
-    public List<Part> getParts() {
-        return partRepository.findAll();
+    public List<PartShopDto> getParts() {
+        List<PartShopDto> partShopDtoList = new ArrayList<>();
+        List<Part> partList = partRepository.findAll();
+
+        for (Part part:
+             partList) {
+
+            Map<String, String> attributesList = new HashMap<>();
+            String type = "";
+            String make = "";
+
+//            for(PartType partType: part.getPartType()){
+//                if(partType.getType().equals("Type")){
+//                    type = partType.getPartAttribute().getAttribute();
+//                }
+//                else if(partType.getType().equals("Make")){
+//                    make = partType.getPartAttribute().getAttribute();
+//                }
+//                else{
+//
+//                }
+//            }
+
+            PartShopDto partShopDto = new PartShopDto(part.getId(), make + " " + part.getModelName(), type, attributesList, part.getPrice());
+            partShopDtoList.add(partShopDto);
+        }
+
+        return partShopDtoList;
     }
 
     public PartDetailedInfoDto getDetailedInfoAboutPart(int id){
@@ -55,14 +80,13 @@ public class PartService {
     }
 
     public ResponseEntity<String> addPart(PartDto partDto) {
-        Optional<PartType> partType = partTypeRepository.findById(partDto.getPartTypeId());
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(partDto.getShopAssistantId());
 
-        if(partType.isPresent() && shopAssistant.isPresent()){
-            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(), shopAssistant.get());
-            partRepository.save(part);
-            return ResponseEntity.ok().build();
-        }
+//        if(partType.isPresent() && shopAssistant.isPresent()){
+//            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(), shopAssistant.get());
+//            partRepository.save(part);
+//            return ResponseEntity.ok().build();
+//        }
 
         return ResponseEntity.notFound().build();
     }

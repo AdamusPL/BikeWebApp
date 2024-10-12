@@ -2,7 +2,7 @@ package com.bikeparadise.bikewebapp.controller;
 
 import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
 import com.bikeparadise.bikewebapp.dto.PartDto;
-import com.bikeparadise.bikewebapp.model.Part;
+import com.bikeparadise.bikewebapp.dto.PartShopDto;
 import com.bikeparadise.bikewebapp.service.PartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class PartController {
 
     @GetMapping("/part-shop")
     @ResponseBody
-    public List<Part> getParts(){
+    public List<PartShopDto> getParts(){
         return partService.getParts();
     }
 

@@ -5,10 +5,12 @@ import com.bikeparadise.bikewebapp.dto.PartReviewDto;
 import com.bikeparadise.bikewebapp.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
+@CrossOrigin(origins = "http://localhost:3000")
 public class ReviewController {
 
     private final ReviewService reviewService;
