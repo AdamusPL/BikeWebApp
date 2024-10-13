@@ -36,33 +36,33 @@ export function Layout({ children }) {
                     <MDBCollapse navbar open={openBasic} className="w-100">
                         <MDBNavbarNav className='mb-2 mb-lg-0'>
                             <MDBNavbarItem>
-                                <MDBNavbarLink href='/'>
+                                <MDBNavbarLink href='/' style={{ color: 'white' }}>
                                     <FontAwesomeIcon icon={faHouse} />
                                 </MDBNavbarLink>
                             </MDBNavbarItem>
 
                             <MDBNavbarItem>
-                                <MDBNavbarLink href='/bike-shop'>Bikes</MDBNavbarLink>
+                                <MDBNavbarLink href='/bike-shop' style={{ color: 'white' }}>Bikes</MDBNavbarLink>
                             </MDBNavbarItem>
 
                             <MDBNavbarItem>
-                                <MDBNavbarLink href='/part-shop'>Parts</MDBNavbarLink>
+                                <MDBNavbarLink href='/part-shop' style={{ color: 'white' }}>Parts</MDBNavbarLink>
                             </MDBNavbarItem>
 
                             <MDBNavbarItem>
-                                <MDBNavbarLink href='/order-list'>
+                                <MDBNavbarLink href='/order-list' style={{ color: 'white' }}>
                                     <FontAwesomeIcon icon={faEnvelope} />
                                 </MDBNavbarLink>
                             </MDBNavbarItem>
 
                             <MDBNavbarItem>
-                                <MDBNavbarLink href='/cart'>
+                                <MDBNavbarLink href='/cart' style={{ color: 'white' }}>
                                     <FontAwesomeIcon icon={faCartShopping} />
                                 </MDBNavbarLink>
                             </MDBNavbarItem>
                             
                             <MDBNavbarItem>
-                                <MDBNavbarLink href='/account'>
+                                <MDBNavbarLink href='/account' style={{ color: 'white' }}>
                                     <MDBIcon fas icon="user-alt" />
                                 </MDBNavbarLink>
                             </MDBNavbarItem>
