@@ -58,6 +58,31 @@ public class PartService {
         return null;
     }
 
+    public Map<String, List<String>> getFilters(){
+        Map<String, List<String>> filters = new HashMap<>();
+        List<PartType> partTypeList = partTypeRepository.findAll();
+
+        for (PartType partType : partTypeList) {
+            boolean isAdded = false;
+
+            for (String key : filters.keySet()) {
+                if(key.equals(partType.getType())){
+                    filters.get(key).add(partType.getPartAttribute().getAttribute());
+                    isAdded = true;
+                    break;
+                }
+            }
+
+            if(!isAdded){
+                List<String> list = new ArrayList<>();
+                list.add(partType.getPartAttribute().getAttribute());
+                filters.put(partType.getType(), list);
+            }
+        }
+
+        return filters;
+    }
+
     public ResponseEntity<String> addPart(PartDto partDto) {
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(partDto.getShopAssistantId());
 

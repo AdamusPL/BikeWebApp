@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -30,6 +31,12 @@ public class PartController {
     @ResponseBody
     public PartDetailedInfoDto getPartDetailedInfo(@RequestParam int partId){
         return partService.getDetailedInfoAboutPart(partId);
+    }
+
+    @GetMapping("/get-part-filters")
+    @ResponseBody
+    public Map<String, List<String>> getFilters(){
+        return partService.getFilters();
     }
 
     @PostMapping("/add-part")

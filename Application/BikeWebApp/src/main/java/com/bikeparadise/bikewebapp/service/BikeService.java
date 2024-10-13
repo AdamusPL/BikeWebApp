@@ -99,6 +99,32 @@ public class BikeService {
         return bikeShopDtoList;
     }
 
+    public Map<String, List<String>> getFilters(){
+        Map<String, List<String>> filters = new HashMap<>();
+        List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
+
+        for (BikeParameterType bikeParameterType:
+             bikeParameterTypeList) {
+            boolean isAdded = false;
+            for (String key : filters.keySet()) {
+                if(key.equals(bikeParameterType.getType())){
+                    filters.get(key).add(bikeParameterType.getBikeParameterAttribute().getAttribute());
+                    isAdded = true;
+                    break;
+                }
+            }
+
+            if(!isAdded){
+                List<String> list = new ArrayList<>();
+                list.add(bikeParameterType.getBikeParameterAttribute().getAttribute());
+                filters.put(bikeParameterType.getType(), list);
+            }
+        }
+
+        return filters;
+
+    }
+
     public BikeDetailedInfoDto getDetailedInfoAboutBike(int id) {
         Optional<Bike> bikeOptional = bikeRepository.findById(id);
         if (bikeOptional.isPresent()) {

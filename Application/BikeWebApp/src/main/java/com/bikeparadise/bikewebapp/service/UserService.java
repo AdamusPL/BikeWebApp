@@ -1,5 +1,7 @@
 package com.bikeparadise.bikewebapp.service;
 
+import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
+import com.bikeparadise.bikewebapp.dto.UserSignInDto;
 import com.bikeparadise.bikewebapp.model.User;
 import com.bikeparadise.bikewebapp.model.UserData;
 import com.bikeparadise.bikewebapp.model.UserEmail;
@@ -31,21 +33,20 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<String> registerUser(String firstName, String lastName, String username, String password,
-                                               String email, String phoneNumber){
-        if(userRepository.findUserByUsername(username).size() != 0 ||
-                userRepository.findUserByUserData_UserEmail_Email(email).size() != 0 ||
-                userRepository.findUserByUserData_UserPhoneNumber_PhoneNumber(phoneNumber).size() != 0
+    public ResponseEntity<String> registerUser(UserRegisterDto userRegisterDto){
+        if(userRepository.findUserByUsername(userRegisterDto.getUsername()).size() != 0 ||
+                userRepository.findUserByUserData_UserEmail_Email(userRegisterDto.getEmail()).size() != 0 ||
+                userRepository.findUserByUserData_UserPhoneNumber_PhoneNumber(userRegisterDto.getPhoneNumber()).size() != 0
         ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        String encodedPassword = passwordEncoder.encode(password);
+        String encodedPassword = passwordEncoder.encode(userRegisterDto.getPassword());
 
-        UserData userData = new UserData(firstName, lastName);
-        User user = new User(username, encodedPassword, userData);
-        UserEmail userEmail = new UserEmail(email, userData);
-        UserPhoneNumber userPhoneNumber = new UserPhoneNumber(phoneNumber, userData);
+        UserData userData = new UserData(userRegisterDto.getFirstName(), userRegisterDto.getLastName());
+        User user = new User(userRegisterDto.getUsername(), encodedPassword, userData);
+        UserEmail userEmail = new UserEmail(userRegisterDto.getEmail(), userData);
+        UserPhoneNumber userPhoneNumber = new UserPhoneNumber(userRegisterDto.getPhoneNumber(), userData);
 
         userData.setUser(user);
         List<UserEmail> userEmailList = new ArrayList<>();
@@ -61,12 +62,12 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<String> loginUser(String username, String password){
-        List<User> foundUsers = userRepository.findUserByUsername(username);
+    public ResponseEntity<String> loginUser(UserSignInDto userSignInDto){
+        List<User> foundUsers = userRepository.findUserByUsername(userSignInDto.getUsername());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        if(!encoder.matches(password, foundUsers.get(0).getPassword()) || foundUsers.size() == 0){
+        if(foundUsers.size() == 0 || !encoder.matches(userSignInDto.getPassword(), foundUsers.get(0).getPassword())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 

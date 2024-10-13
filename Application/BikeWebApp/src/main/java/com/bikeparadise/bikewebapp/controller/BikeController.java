@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -30,6 +31,12 @@ public class BikeController {
     @ResponseBody
     public BikeDetailedInfoDto getDetailedInfoBike(@RequestParam int bikeId){
         return bikeService.getDetailedInfoAboutBike(bikeId);
+    }
+
+    @GetMapping("/get-bike-filters")
+    @ResponseBody
+    public Map<String, List<String>> getFilters(){
+        return bikeService.getFilters();
     }
 
 //    @GetMapping("/get-bike-by-frame-size")
