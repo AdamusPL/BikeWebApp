@@ -32,23 +32,7 @@ public class PartService {
         for (Part part:
              partList) {
 
-            Map<String, String> attributesList = new HashMap<>();
-            String type = "";
-            String make = "";
-
-//            for(PartType partType: part.getPartType()){
-//                if(partType.getType().equals("Type")){
-//                    type = partType.getPartAttribute().getAttribute();
-//                }
-//                else if(partType.getType().equals("Make")){
-//                    make = partType.getPartAttribute().getAttribute();
-//                }
-//                else{
-//
-//                }
-//            }
-
-            PartShopDto partShopDto = new PartShopDto(part.getId(), make + " " + part.getModelName(), type, attributesList, part.getPrice());
+            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPartType().getType(), part.getPartType().getPartAttribute().getAttribute(), part.getPrice());
             partShopDtoList.add(partShopDto);
         }
 
@@ -61,11 +45,6 @@ public class PartService {
         if(partOptional.isPresent()){
             Part part = partOptional.get();
 
-            List<String> partAttributes = new ArrayList<>();
-            for(PartAttribute partAttribute : part.getPartAttribute()){
-                partAttributes.add(partAttribute.getAttribute());
-            }
-
             List<Review> reviews = part.getReview();
             List<ReviewPrintDto> reviewPrintDtos = new ArrayList<>();
             for(Review review : reviews){
@@ -73,7 +52,7 @@ public class PartService {
                 reviewPrintDtos.add(reviewPrintDto);
             }
 
-            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getMake(), part.getModelName(), part.getPrice(), part.getQuantityInStock(), part.getDescription(), partAttributes, reviewPrintDtos);
+            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), part.getQuantityInStock(), part.getDescription(), part.getPartType().getType(), part.getPartType().getPartAttribute().getAttribute(), reviewPrintDtos);
             return partDetailedInfoDto;
         }
         return null;

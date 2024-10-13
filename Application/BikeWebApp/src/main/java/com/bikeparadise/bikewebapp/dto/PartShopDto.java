@@ -11,6 +11,6 @@ public class PartShopDto {
     Integer id;
     String fullModelName;
     String type;
-    Map<String, String> attributes;
+    String attribute;
     Double price;
 }

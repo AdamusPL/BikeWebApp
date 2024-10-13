@@ -8,11 +8,12 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class PartDetailedInfoDto {
-    String make;
-    String modelName;
+    Integer id;
+    String fullModelName;
     Double price;
     Integer quantityInStock;
     String description;
-    List<String> partAttributes;
+    String type;
+    String attribute;
     List<ReviewPrintDto> reviews;
 }
