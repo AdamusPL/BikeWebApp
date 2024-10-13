@@ -80,8 +80,10 @@ export default function BikeDetails() {
 
             <p className="fw-light">Reviews</p>
             <p className="fw-lighter">Write a review</p>
-            <a><MDBInput label="1-5" min="1" max="5" maxlength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></MDBInput></a>
-            <a>/5</a>
+            <div class="d-flex align-items-center mb-2">
+                <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxlength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
+                <a>/5</a>
+            </div>
             <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
             <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
 
@@ -122,6 +124,6 @@ export default function BikeDetails() {
                     </p>
             }
 
-        </MDBContainer>
+        </MDBContainer >
     </>)
 }

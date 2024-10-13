@@ -30,7 +30,7 @@ export default function BikeShop() {
 
     async function getFilters() {
         debugger;
-        const response = await fetch('http://localhost:8080/get-filters');
+        const response = await fetch('http://localhost:8080/get-bike-filters');
         const data = await response.json();
 
         const keysArray = Object.keys(data);
@@ -47,9 +47,9 @@ export default function BikeShop() {
     }, [])
 
     return (<>
-        <MDBContainer>
-            <MDBRow style={{ color: 'white' }}>
-                <MDBCol md="3" style={{ backgroundColor: '#1B5E20' }}>
+        <MDBContainer fluid>
+            <MDBRow style={{ color: 'white' }} className="no-gutters h-100">
+                <MDBCol md="auto" style={{ backgroundColor: '#1B5E20' }}>
                     {!isLoading ?
                         keysArray.map(element => (
                             <div key={element} className='mt-4'>
@@ -63,9 +63,9 @@ export default function BikeShop() {
                     <p>No filters available</p>}
                 
                     <p className='mt-4'>Price</p>
-                    <a><MDBInput style={{ color: 'white' }}></MDBInput></a>
-                    -
-                    <a><MDBInput style={{ color: 'white' }}></MDBInput></a>
+                    <a><input className='form-control w-50'></input></a>
+                    <a>-</a>
+                    <a><input className='form-control w-50'></input></a>
                 </MDBCol>
 
                 <MDBCol md="9">
