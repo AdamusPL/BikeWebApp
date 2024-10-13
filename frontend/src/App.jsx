@@ -11,6 +11,8 @@ import OrderList from './pages/OrderList.jsx';
 import Registration from './pages/Registration.jsx';
 import SignIn from './pages/SignIn.jsx';
 import Account from './pages/Account.jsx';
+import AddBike from './pages/AddBike.jsx';
+import AddPart from './pages/AddPart.jsx';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
           <Route path='/order-list' element={<OrderList />}></Route>
           <Route path='/register' element={<Registration />}></Route>
           <Route path='/sign-in' element={<SignIn />}></Route>
+          <Route path='/add-bike' element={<AddBike />}></Route>
+          <Route path='/add-part' element={<AddPart />}></Route>
         </Routes>
       </Layout>
     </BrowserRouter>

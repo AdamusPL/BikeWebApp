@@ -1,6 +1,6 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner } from "mdb-react-ui-kit";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner, MDBIcon } from "mdb-react-ui-kit";
 import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +15,7 @@ export default function PartDetails() {
     const [opinion, setOpinion] = useState("");
 
     const [isReviewPosted, setIsReviewPosted] = useState(false);
+    const navigate = useNavigate();
 
     async function getDetailedInfo() {
         const response = await fetch(`http://localhost:8080/get-detailed-info-about-part?partId=${urlParameters.id}`);
@@ -46,12 +47,17 @@ export default function PartDetails() {
         })
     }
 
+    function backToShop(){
+        navigate('/part-shop');
+    }
+
     useEffect(() => {
         getDetailedInfo();
     }, []);
 
     return (<>
         <MDBContainer>
+        <MDBIcon fas icon="arrow-left" className="mt-2" onClick={backToShop} />
             <MDBRow className="mt-2">
                 <MDBCol md="8">
                     <figure className='bg-image' style={{ position: 'relative', display: 'inline-block' }}>

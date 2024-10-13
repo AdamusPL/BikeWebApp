@@ -29,15 +29,12 @@ export default function BikeShop() {
     }
 
     async function getFilters() {
-        debugger;
         const response = await fetch('http://localhost:8080/get-bike-filters');
         const data = await response.json();
 
         const keysArray = Object.keys(data);
         setKeysArray(keysArray);
         setFilters(data);
-        console.log(keysArray);
-        console.log(data);
     }
 
     useEffect(() => {
@@ -55,13 +52,13 @@ export default function BikeShop() {
                             <div key={element} className='mt-4'>
                                 <p>{element}</p>
                                 {filters[element].map(item => (
-                                    <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label={item} />
+                                    <MDBCheckbox key={item} name='flexCheck' value='' id='flexCheckDefault' label={item} />
                                 ))}
                             </div>
                         ))
-                    :
-                    <p>No filters available</p>}
-                
+                        :
+                        <p>No filters available</p>}
+
                     <p className='mt-4'>Price</p>
                     <a><input className='form-control w-50'></input></a>
                     <a>-</a>
@@ -69,6 +66,9 @@ export default function BikeShop() {
                 </MDBCol>
 
                 <MDBCol md="9">
+                    <div className="d-flex justify-content-center">
+                        <MDBBtn className="mt-4" color="success" href='/add-bike'>Add new bike</MDBBtn>
+                    </div>
                     <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
                         {!isLoading ?
                             products.length === 0 ?
