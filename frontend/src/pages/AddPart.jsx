@@ -12,6 +12,9 @@ export default function AddPart() {
     const [modelName, setModelName] = useState("");
     const [price, setPrice] = useState("");
     const [description, setDescription] = useState("");
+    const [quantityInStock, setQuantityInStock] = useState(0);
+
+    const [isPosted, setIsPosted] = useState(false);
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-part-filters');
@@ -29,6 +32,31 @@ export default function AddPart() {
         setDefaultValues(defaultValues);
         console.log(defaultValues[0].attribute);
         console.log(defaultValues[1].attribute);
+    }
+
+    async function addPartToDB() {
+        debugger;
+        const part = {
+            make: make,
+            modelName: modelName,
+            price: price,
+            quantityInStock: quantityInStock,
+            description: description,
+            type: defaultValues[0].attribute,
+            attribute: defaultValues[1].attribute,
+            shopAssistantId: 1
+        }
+
+        fetch(`http://localhost:8080/add-part`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(part)
+
+        }).then(response => {
+            if (response.ok) {
+                setIsPosted(true);
+            }
+        })
     }
 
     function changeParameter(parameter, attribute) {
@@ -54,7 +82,10 @@ export default function AddPart() {
 
             <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
 
-            <MDBTextArea label="Description" id="textAreaExample" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
+            <MDBTextArea label="Description" id="textAreaExample" className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
+
+            <MDBInput label="Quantity in stock" id="typeText" type="text" className="mt-5" onChange={(e) => { setQuantityInStock(e.target.value) }} />
+
 
             {!isLoading ?
                 <div class="d-flex align-items-center mt-2">
@@ -69,7 +100,7 @@ export default function AddPart() {
                         </MDBDropdownMenu>
                     </MDBDropdown>
                     {defaultValues.map((element, index) => {
-                        return(<a>{index === 0 ? element.attribute : null}</a>)
+                        return (<a>{index === 0 ? element.attribute : null}</a>)
                     })}
                 </div>
                 :
@@ -89,14 +120,19 @@ export default function AddPart() {
                         </MDBDropdownMenu>
                     </MDBDropdown>
                     {defaultValues.map((element, index) => {
-                        return(<a>{index === 1 ? element.attribute : null}</a>)
+                        return (<a>{index === 1 ? element.attribute : null}</a>)
                     })}
                 </div>
                 :
                 <p>No data found</p>
             }
 
-            <MDBBtn color="success" className="mt-4">Add part</MDBBtn>
+            <MDBBtn onClick={addPartToDB} color="success" className="mt-4">Add part</MDBBtn>
+
+            {isPosted ? <p>Part successfully added</p>
+            :
+            <p></p>}
+
         </MDBContainer>
     </>)
 }
