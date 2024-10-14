@@ -9,6 +9,7 @@ public class PartDto {
     Double price;
     Integer quantityInStock;
     String description;
+    String type;
+    String attribute;
     Integer shopAssistantId;
-    Integer partTypeId;
 }

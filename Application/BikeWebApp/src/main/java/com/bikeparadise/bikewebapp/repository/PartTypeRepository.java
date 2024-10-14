@@ -4,6 +4,9 @@ import com.bikeparadise.bikewebapp.model.PartType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PartTypeRepository extends JpaRepository<PartType, Integer> {
+    List<PartType> findByTypeAndPartAttribute_Attribute(String type, String attribute);
 }

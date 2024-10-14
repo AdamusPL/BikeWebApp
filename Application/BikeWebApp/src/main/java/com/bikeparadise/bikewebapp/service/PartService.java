@@ -5,6 +5,7 @@ import com.bikeparadise.bikewebapp.dto.PartDto;
 import com.bikeparadise.bikewebapp.dto.PartShopDto;
 import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.*;
+import com.bikeparadise.bikewebapp.repository.PartAttributeRepository;
 import com.bikeparadise.bikewebapp.repository.PartRepository;
 import com.bikeparadise.bikewebapp.repository.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.ShopAssistantRepository;
@@ -18,11 +19,14 @@ public class PartService {
     private final PartRepository partRepository;
     private final PartTypeRepository partTypeRepository;
     private final ShopAssistantRepository shopAssistantRepository;
+    private final PartAttributeRepository partAttributeRepository;
 
-    public PartService(PartRepository partRepository, PartTypeRepository partTypeRepository, ShopAssistantRepository shopAssistantRepository) {
+    public PartService(PartRepository partRepository, PartTypeRepository partTypeRepository, ShopAssistantRepository shopAssistantRepository,
+    PartAttributeRepository partAttributeRepository) {
         this.partRepository = partRepository;
         this.partTypeRepository = partTypeRepository;
         this.shopAssistantRepository = shopAssistantRepository;
+        this.partAttributeRepository = partAttributeRepository;
     }
 
     public List<PartShopDto> getParts() {
@@ -85,12 +89,15 @@ public class PartService {
 
     public ResponseEntity<String> addPart(PartDto partDto) {
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(partDto.getShopAssistantId());
+        List<PartType> partType = partTypeRepository.findByTypeAndPartAttribute_Attribute(partDto.getType(), partDto.getAttribute());
+        List<PartAttribute> partAttribute = partAttributeRepository.findByAttribute(partDto.getAttribute());
 
-//        if(partType.isPresent() && shopAssistant.isPresent()){
-//            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(), shopAssistant.get());
-//            partRepository.save(part);
-//            return ResponseEntity.ok().build();
-//        }
+        if(shopAssistant.isPresent()){
+            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(0), shopAssistant.get());
+            part.getPartType().setPartAttribute(partAttribute.get(0));
+            partRepository.save(part);
+            return ResponseEntity.ok().build();
+        }
 
         return ResponseEntity.notFound().build();
     }
