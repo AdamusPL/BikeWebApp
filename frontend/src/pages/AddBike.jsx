@@ -1,4 +1,4 @@
-import { MDBContainer, MDBInput, MDBDropdown, MDBDropdownToggle, MDBDropdownItem, MDBDropdownMenu, MDBTextArea } from "mdb-react-ui-kit";
+import { MDBContainer, MDBInput, MDBDropdown, MDBDropdownToggle, MDBDropdownItem, MDBDropdownMenu, MDBTextArea, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 
 export default function AddBike() {
@@ -42,6 +42,8 @@ export default function AddBike() {
 
     return (<>
         <MDBContainer>
+            <MDBTypography variant='h1 mt-2'>Add new bike</MDBTypography>
+
             <MDBInput label="Model Name" id="typeText" type="text" className="mt-5" onChange={(e) => { setFirstName(e.target.value) }} />
 
             <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
@@ -68,6 +70,7 @@ export default function AddBike() {
                 :
                 <p>Nothing found</p>
             }
+            <MDBBtn color="success" className="mt-4">Add bike</MDBBtn>
         </MDBContainer>
     </>)
 }

@@ -86,7 +86,7 @@ export default function BikeDetails() {
 
             <p className="fw-light">Reviews</p>
             <p className="fw-lighter">Write a review</p>
-            <div class="d-flex align-items-center mb-2">
+            <div className="d-flex align-items-center mb-2">
                 <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxlength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
                 <a>/5</a>
             </div>
