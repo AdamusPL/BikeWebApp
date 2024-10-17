@@ -37,6 +37,20 @@ export default function BikeShop() {
         setFilters(data);
     }
 
+    function addToCart(id){
+        if(localStorage.getItem('cart') === null){
+            localStorage.setItem('cart', JSON.stringify({bikes: [id], parts: []}));
+        }
+        else{
+            var cart = JSON.parse(localStorage.getItem('cart'));
+
+            cart.bikes.push(id);
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+        
+    }
+
     useEffect(() => {
         getProducts();
         getFilters();
@@ -94,7 +108,7 @@ export default function BikeShop() {
                                                     <MDBCardText>
                                                         Price: {element.price} ,-
                                                     </MDBCardText>
-                                                    <MDBBtn color='success' href='#'>Add to cart</MDBBtn>
+                                                    <MDBBtn color='success' onClick={() => addToCart(element.id)}>Add to cart</MDBBtn>
                                                 </MDBCardBody>
                                             </MDBCard>
                                         </Link>
