@@ -9,7 +9,7 @@ export default function AddBike() {
     const [isLoading, setIsLoading] = useState(true);
 
     async function getFilters() {
-        const response = await fetch('http://localhost:8080/get-bike-filters');
+        const response = await fetch('http://localhost:8080/get-add-bike-filters');
         const data = await response.json();
 
         var defaultValues = [];

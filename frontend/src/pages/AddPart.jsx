@@ -19,31 +19,26 @@ export default function AddPart() {
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-part-filters');
         const data = await response.json();
-
-        var defaultValues = [];
+        setFilters(data);
 
         const keysArray = Object.keys(data);
-        defaultValues.push({ parameter: 'Type', attribute: keysArray[0] });
-        defaultValues.push({ parameter: 'Attribute', attribute: data[keysArray[0]][0] });
 
         setKeysArray(keysArray);
         setAttributes(data[keysArray[0]]);
         setFilters(data);
-        setDefaultValues(defaultValues);
-        console.log(defaultValues[0].attribute);
-        console.log(defaultValues[1].attribute);
+        setDefaultValues({ type: keysArray[0], attribute: data[keysArray[0]][0]});
+        console.log(attributes);
     }
 
     async function addPartToDB() {
-        debugger;
         const part = {
             make: make,
             modelName: modelName,
             price: price,
             quantityInStock: quantityInStock,
             description: description,
-            type: defaultValues[0].attribute,
-            attribute: defaultValues[1].attribute,
+            type: defaultValues.type,
+            attribute: defaultValues.attribute,
             shopAssistantId: 1
         }
 
@@ -59,12 +54,20 @@ export default function AddPart() {
         })
     }
 
-    function changeParameter(parameter, attribute) {
-        setDefaultValues(prevData =>
-            prevData.map(item =>
-                item.parameter === parameter ? { ...item, attribute: attribute } : item
-            )
-        );
+    function changeType(type) {
+        debugger;
+        setDefaultValues(prevData => ({
+            type: type,
+            attribute: filters[type][0]
+        }));
+        setAttributes(filters[type]);
+    }
+
+    function changeAttribute(attribute) {
+        setDefaultValues(prevData => ({
+            ...prevData,
+            attribute: attribute
+        }));
     }
 
     useEffect(() => {
@@ -94,14 +97,12 @@ export default function AddPart() {
                         <MDBDropdownMenu>
                             {keysArray.map(item => (
                                 <div>
-                                    <a><MDBDropdownItem key={item} onClick={() => changeParameter('Type', item)}>{item}</MDBDropdownItem></a>
+                                    <a><MDBDropdownItem key={item} onClick={() => changeType(item)}>{item}</MDBDropdownItem></a>
                                 </div>
                             ))}
                         </MDBDropdownMenu>
                     </MDBDropdown>
-                    {defaultValues.map((element, index) => {
-                        return (<a>{index === 0 ? element.attribute : null}</a>)
-                    })}
+                    {defaultValues.type}
                 </div>
                 :
                 <p>No data found</p>
@@ -114,14 +115,12 @@ export default function AddPart() {
                         <MDBDropdownMenu>
                             {attributes.map(item => (
                                 <div>
-                                    <a><MDBDropdownItem key={item} onClick={() => changeParameter('Attribute', item)}>{item}</MDBDropdownItem></a>
+                                    <a><MDBDropdownItem key={item} onClick={() => changeAttribute(item)}>{item}</MDBDropdownItem></a>
                                 </div>
                             ))}
                         </MDBDropdownMenu>
                     </MDBDropdown>
-                    {defaultValues.map((element, index) => {
-                        return (<a>{index === 1 ? element.attribute : null}</a>)
-                    })}
+                    {defaultValues.attribute}
                 </div>
                 :
                 <p>No data found</p>
@@ -130,8 +129,8 @@ export default function AddPart() {
             <MDBBtn onClick={addPartToDB} color="success" className="mt-4">Add part</MDBBtn>
 
             {isPosted ? <p>Part successfully added</p>
-            :
-            <p></p>}
+                :
+                <p></p>}
 
         </MDBContainer>
     </>)

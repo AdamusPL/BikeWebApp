@@ -29,7 +29,7 @@ export default function BikeShop() {
     }
 
     async function getFilters() {
-        const response = await fetch('http://localhost:8080/get-bike-filters');
+        const response = await fetch('http://localhost:8080/get-bike-shop-filters');
         const data = await response.json();
 
         const keysArray = Object.keys(data);
@@ -39,12 +39,14 @@ export default function BikeShop() {
 
     function addToCart(id){
         if(localStorage.getItem('cart') === null){
-            localStorage.setItem('cart', JSON.stringify({bikes: [id], parts: []}));
+            localStorage.setItem('cart', JSON.stringify({bikes: [{id: id, quantity: 1}], parts: []}));
         }
         else{
+            debugger;
             var cart = JSON.parse(localStorage.getItem('cart'));
+            const index = cart.bikes.findIndex(b => b.id === id);
 
-            cart.bikes.push(id);
+            cart.bikes[index].quantity += 1;
 
             localStorage.setItem('cart', JSON.stringify(cart));
         }

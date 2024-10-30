@@ -11,12 +11,50 @@ export default function BikeDetails() {
     const [chosenProduct, setChosenProduct] = useState({});
     const [keysArray, setKeysArray] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isAvailable, setIsAvailable] = useState(true);
 
     const [numberOfStars, setNumberOfStars] = useState(0);
     const [opinion, setOpinion] = useState("");
+    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
 
     const [isReviewPosted, setIsReviewPosted] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        getDetailedInfo();
+    }, []);
+
+    useEffect(() => {
+        checkAvailability();
+    }, [chosenProduct, cart]);
+
+    function checkAvailability() {
+        if (cart) {
+            const bike = cart.bikes.find(b => b.id === chosenProduct.id);
+            if (bike) {
+                if (bike.quantity === chosenProduct.quantityInStock) {
+                    setIsAvailable(false);
+                }
+                
+            }
+        }
+    }
+
+    function addToCart() {
+        if (localStorage.getItem('cart') === null) {
+            localStorage.setItem('cart', JSON.stringify({ bikes: [{ id: chosenProduct.id, quantity: 1 }], parts: [] }));
+        }
+        else {
+            var cart = JSON.parse(localStorage.getItem('cart'));
+            const index = cart.bikes.findIndex(b => b.id === chosenProduct.id);
+
+            cart.bikes[index].quantity += 1;
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            setCart(cart);
+        }
+
+    }
 
     async function getDetailedInfo() {
         const response = await fetch(`http://localhost:8080/get-detailed-info-about-bike?bikeId=${urlParameters.id}`);
@@ -49,17 +87,13 @@ export default function BikeDetails() {
         })
     }
 
-    function backToShop(){
+    function backToShop() {
         navigate('/bike-shop');
     }
 
-    useEffect(() => {
-        getDetailedInfo();
-    }, []);
-
     return (<>
         <MDBContainer>
-        <MDBIcon fas icon="arrow-left" className="mt-2" onClick={backToShop} />
+            <MDBIcon fas icon="arrow-left" className="mt-2" onClick={backToShop} />
             <MDBRow className="mt-2">
                 <MDBCol md="8">
                     <figure className='bg-image' style={{ position: 'relative', display: 'inline-block' }}>
@@ -78,7 +112,16 @@ export default function BikeDetails() {
                         ))
                     }
                     <a>{chosenProduct.price} ,-</a>
-                    <MDBBtn className="ms-3" color="success">Add to cart</MDBBtn>
+                    {
+                        isAvailable ? <MDBBtn className="ms-3" color="success" onClick={addToCart}>Add to cart</MDBBtn>
+                            :
+                            <div>
+                                <MDBBtn className='me-1' color='secondary'>
+                                    Add to cart
+                                </MDBBtn>
+                                <p>It's not available anymore!</p>
+                            </div>
+                    }
                     <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
                 </MDBCol>
             </MDBRow>

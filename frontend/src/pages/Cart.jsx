@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export default function Cart() {
 
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [summaryPrice, setSummaryPrice] = useState(0.0);
 
@@ -29,21 +29,37 @@ export default function Cart() {
     }
 
     function calculateSum() {
-        debugger;
         var priceToPay = 0.0;
 
-        products.map(item => {
-            priceToPay += item.price
+        products.bikes.map(item => {
+            priceToPay += item.price * item.quantity;
+        })
+
+        products.parts.map(item => {
+            priceToPay += item.price * item.quantity;
         })
 
         setSummaryPrice(priceToPay);
     }
 
+    function removeItem() {
+        var cart = JSON.parse(localStorage.getItem('cart'));
+
+        cart.bikes.filter((item) => item.name !== i);
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
     useEffect(() => {
         fetchProducts();
-        calculateSum();
-        setIsLoading(false);
     }, []);
+
+    useEffect(() => {
+        if (products) {
+            calculateSum();
+            setIsLoading(false);
+        }
+    }, [products]);
 
     return (<>
         <MDBContainer>
@@ -51,9 +67,20 @@ export default function Cart() {
             <MDBCard>
                 <MDBListGroup flush>
                     {!isLoading ?
-                        products.map(element => (
+                        products.bikes.map(element => (
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
-                                <MDBBtn className="btn-close" color="none" aria-label="Close" />
+                                <MDBBtn onClick={removeItem} className="btn-close" color="none" aria-label="Close" />
+                                <MDBInput value={element.quantity}></MDBInput>
+                                {element.price}
+                            </MDBListGroupItem>
+                        ))
+                        :
+                        <p>Your cart is empty!</p>
+                    }
+                    {!isLoading ?
+                        products.parts.map(element => (
+                            <MDBListGroupItem key={element.id}>{element.fullModelName}
+                                <MDBBtn onClick={removeItem} className="btn-close" color="none" aria-label="Close" />
                                 <MDBInput value={element.quantity}></MDBInput>
                                 {element.price}
                             </MDBListGroupItem>
