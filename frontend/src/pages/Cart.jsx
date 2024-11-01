@@ -29,7 +29,7 @@ export default function Cart() {
     }
 
     function calculateSum() {
-        var priceToPay = 0.0;
+        let priceToPay = 0.0;
 
         products.bikes.map(item => {
             priceToPay += item.price * item.quantity;
@@ -43,7 +43,7 @@ export default function Cart() {
     }
 
     function removeItem() {
-        var cart = JSON.parse(localStorage.getItem('cart'));
+        let cart = JSON.parse(localStorage.getItem('cart'));
 
         cart.bikes.filter((item) => item.name !== i);
 

@@ -106,7 +106,7 @@ export default function PartDetails() {
                                     <p>{(() => {
                                         const options = [];
 
-                                        for (var i = 0; i < element.numberOfStars; i++) {
+                                        for (let i = 0; i < element.numberOfStars; i++) {
                                             options.push(<FontAwesomeIcon icon={faStar} />)
                                         }
 

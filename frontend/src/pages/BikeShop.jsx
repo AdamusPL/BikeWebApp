@@ -43,7 +43,7 @@ export default function BikeShop() {
         }
         else{
             debugger;
-            var cart = JSON.parse(localStorage.getItem('cart'));
+            let cart = JSON.parse(localStorage.getItem('cart'));
             const index = cart.bikes.findIndex(b => b.id === id);
 
             cart.bikes[index].quantity += 1;

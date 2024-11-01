@@ -45,7 +45,7 @@ export default function BikeDetails() {
             localStorage.setItem('cart', JSON.stringify({ bikes: [{ id: chosenProduct.id, quantity: 1 }], parts: [] }));
         }
         else {
-            var cart = JSON.parse(localStorage.getItem('cart'));
+            let cart = JSON.parse(localStorage.getItem('cart'));
             const index = cart.bikes.findIndex(b => b.id === chosenProduct.id);
 
             cart.bikes[index].quantity += 1;
@@ -155,7 +155,7 @@ export default function BikeDetails() {
                                     <p>{(() => {
                                         const options = [];
 
-                                        for (var i = 0; i < element.numberOfStars; i++) {
+                                        for (let i = 0; i < element.numberOfStars; i++) {
                                             options.push(<FontAwesomeIcon icon={faStar} />)
                                         }
 

@@ -44,7 +44,7 @@ export default function PartShop() {
             localStorage.setItem('cart', JSON.stringify({bikes: [], parts: [id]}));
         }
         else{
-            var cart = JSON.parse(localStorage.getItem('cart'));
+            let cart = JSON.parse(localStorage.getItem('cart'));
 
             cart.parts.push(id);
 

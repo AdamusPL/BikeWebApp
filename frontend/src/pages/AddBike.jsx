@@ -12,7 +12,7 @@ export default function AddBike() {
         const response = await fetch('http://localhost:8080/get-add-bike-filters');
         const data = await response.json();
 
-        var defaultValues = [];
+        let defaultValues = [];
 
         const keysArray = Object.keys(data);
         keysArray.map(element => {
