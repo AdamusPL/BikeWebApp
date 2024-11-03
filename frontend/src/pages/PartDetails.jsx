@@ -10,12 +10,34 @@ export default function PartDetails() {
     const urlParameters = useParams();
     const [chosenProduct, setChosenProduct] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
+    const [isAvailable, setIsAvailable] = useState(true);
 
     const [numberOfStars, setNumberOfStars] = useState(0);
     const [opinion, setOpinion] = useState("");
 
     const [isReviewPosted, setIsReviewPosted] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        getDetailedInfo();
+    }, []);
+
+    useEffect(() => {
+        checkAvailability();
+    }, [chosenProduct, cart]);
+
+    function checkAvailability() {
+        if (cart) {
+            const part = cart.parts.find(b => b.id === chosenProduct.id);
+            if (part) {
+                if (part.quantity === chosenProduct.quantityInStock) {
+                    setIsAvailable(false);
+                }
+
+            }
+        }
+    }
 
     async function getDetailedInfo() {
         const response = await fetch(`http://localhost:8080/get-detailed-info-about-part?partId=${urlParameters.id}`);
@@ -24,6 +46,31 @@ export default function PartDetails() {
         setChosenProduct(data);
         setIsLoading(false);
         console.log(data.reviews);
+    }
+
+    function addToCart() {
+        if (localStorage.getItem('cart') === null) {
+            localStorage.setItem('cart', JSON.stringify({ bikes: [], parts: [{ id: chosenProduct.id, quantity: 1 }] }));
+        }
+        else {
+            let cart = JSON.parse(localStorage.getItem('cart'));
+            const index = cart.parts.findIndex(b => b.id === chosenProduct.id);
+
+            if (index !== -1) {
+                cart.parts[index].quantity += 1;
+                setCart(cart);
+            }
+
+            else {
+                cart = {
+                    ...cart,
+                    parts: [...cart.parts, { id: chosenProduct.id, quantity: 1 }]
+                };
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
     }
 
     async function addReview() {
@@ -47,17 +94,13 @@ export default function PartDetails() {
         })
     }
 
-    function backToShop(){
+    function backToShop() {
         navigate('/part-shop');
     }
 
-    useEffect(() => {
-        getDetailedInfo();
-    }, []);
-
     return (<>
         <MDBContainer>
-        <MDBIcon fas icon="arrow-left" className="mt-2" onClick={backToShop} />
+            <MDBIcon fas icon="arrow-left" className="mt-2" onClick={backToShop} />
             <MDBRow className="mt-2">
                 <MDBCol md="8">
                     <figure className='bg-image' style={{ position: 'relative', display: 'inline-block' }}>
@@ -71,9 +114,24 @@ export default function PartDetails() {
                 </MDBCol>
                 <MDBCol md="4">
                     <p>{chosenProduct.type}: {chosenProduct.attribute}</p>
-                    <a>{chosenProduct.price} ,-</a>
-                    <MDBBtn className="ms-3" color="success">Add to cart</MDBBtn>
-                    <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
+                    <article id="buy-block">
+                        <p>{chosenProduct.price} ,-</p>
+                        {
+                            isAvailable ?
+                                <article>
+                                    <MDBBtn className="ms-3" color="success" onClick={addToCart}>Add to cart</MDBBtn>
+                                    <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
+                                </article>
+                                :
+                                <article>
+                                    <MDBBtn className='me-1' color='secondary'>
+                                        Add to cart
+                                    </MDBBtn>
+                                    <p>It's not available anymore!</p>
+                                    <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
+                                </article>
+                        }
+                    </article>
                 </MDBCol>
             </MDBRow>
             <p>{chosenProduct.description}</p>

@@ -1,5 +1,7 @@
-import { MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput } from "mdb-react-ui-kit";
+import { MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
+
+import '../css/Cart.css'
 
 export default function Cart() {
 
@@ -7,10 +9,22 @@ export default function Cart() {
     const [isLoading, setIsLoading] = useState(true);
     const [summaryPrice, setSummaryPrice] = useState(0.0);
 
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    useEffect(() => {
+        if (products) {
+            calculateSum();
+            setIsLoading(false);
+        }
+    }, [products]);
+
     async function fetchProducts() {
+        debugger;
         const products = {
-            bikeIds: JSON.parse(localStorage.getItem('cart')).bikes,
-            partIds: JSON.parse(localStorage.getItem('cart')).parts
+            bikes: JSON.parse(localStorage.getItem('cart')).bikes,
+            parts: JSON.parse(localStorage.getItem('cart')).parts
         }
 
         fetch(`http://localhost:8080/get-cart-products`, {
@@ -32,11 +46,11 @@ export default function Cart() {
         let priceToPay = 0.0;
 
         products.bikes.map(item => {
-            priceToPay += item.price * item.quantity;
+            priceToPay += item.price;
         })
 
         products.parts.map(item => {
-            priceToPay += item.price * item.quantity;
+            priceToPay += item.price;
         })
 
         setSummaryPrice(priceToPay);
@@ -50,16 +64,9 @@ export default function Cart() {
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    useEffect(() => {
-        if (products) {
-            calculateSum();
-            setIsLoading(false);
-        }
-    }, [products]);
+    function minusBike(element){
+        
+    }
 
     return (<>
         <MDBContainer>
@@ -70,8 +77,12 @@ export default function Cart() {
                         products.bikes.map(element => (
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={removeItem} className="btn-close" color="none" aria-label="Close" />
-                                <MDBInput value={element.quantity}></MDBInput>
-                                {element.price}
+                                <article className="number-of-items">
+                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)}/>
+                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
+                                    <MDBIcon fas icon="plus" />
+                                </article>
+                                {element.price} ,-
                             </MDBListGroupItem>
                         ))
                         :
@@ -81,7 +92,11 @@ export default function Cart() {
                         products.parts.map(element => (
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={removeItem} className="btn-close" color="none" aria-label="Close" />
-                                <MDBInput value={element.quantity}></MDBInput>
+                                <article className="number-of-items">
+                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)}/>
+                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
+                                    <MDBIcon fas icon="plus" />
+                                </article>
                                 {element.price}
                             </MDBListGroupItem>
                         ))
@@ -93,6 +108,7 @@ export default function Cart() {
                             summaryPrice : 0} ,-</MDBListGroupItem>
                 </MDBListGroup>
             </MDBCard>
+            <MDBBtn color="success mt-4">Buy now</MDBBtn>
         </MDBContainer>
     </>)
 }

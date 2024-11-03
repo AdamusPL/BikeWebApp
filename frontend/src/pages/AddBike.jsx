@@ -8,6 +8,11 @@ export default function AddBike() {
     const [defaultValues, setDefaultValues] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    useEffect(() => {
+        getFilters();
+        setIsLoading(false);
+    }, [])
+
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-add-bike-filters');
         const data = await response.json();
@@ -34,11 +39,6 @@ export default function AddBike() {
             )
         );
     }
-
-    useEffect(() => {
-        getFilters();
-        setIsLoading(false);
-    }, [])
 
     return (<>
         <MDBContainer>

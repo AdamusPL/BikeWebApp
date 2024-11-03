@@ -1,10 +1,12 @@
 import { MDBContainer } from 'mdb-react-ui-kit';
 import React from 'react';
 
+import '../css/Home.css'
+
 export default function Home() {
     return (<>
         <MDBContainer>
-            <figure className='bg-image mt-2' style={{ position: 'relative', display: 'inline-block' }}>
+            <figure id='image' className='bg-image'>
                 <img
                     src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                     className='img-fluid rounded shadow-3'

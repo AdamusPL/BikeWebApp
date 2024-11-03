@@ -1,0 +1,22 @@
+#price{
+    display: flex;
+}
+
+.input{
+    width: 75px;
+}
+
+#minus{
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+#button{
+    display: flex;
+    justify-content: center;
+}
+
+#sidebar{
+    color: white;
+    background-color: #1B5E20;
+}

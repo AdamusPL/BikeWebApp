@@ -1,3 +1,13 @@
 #stars{
-    width: 100px
+    width: 50px
+}
+
+#image-product{
+    position: 'relative';
+    display: 'inline-block';
+}
+
+#buy-block{
+    display: flex;
+    justify-content: space-between;
 }

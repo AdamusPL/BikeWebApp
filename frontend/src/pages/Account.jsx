@@ -5,15 +5,15 @@ export default function Account(){
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        checkLogin();
+    }, []);
+
     function checkLogin(){
         if(localStorage.getItem('user') === null){
             navigate('/sign-in');
         }
     }
-
-    useEffect(() => {
-        checkLogin();
-    }, []);
 
     return(<>
         

@@ -16,6 +16,11 @@ export default function AddPart() {
 
     const [isPosted, setIsPosted] = useState(false);
 
+    useEffect(() => {
+        getFilters();
+        setIsLoading(false);
+    }, [])
+
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-part-filters');
         const data = await response.json();
@@ -69,11 +74,6 @@ export default function AddPart() {
             attribute: attribute
         }));
     }
-
-    useEffect(() => {
-        getFilters();
-        setIsLoading(false);
-    }, [])
 
     return (<>
         <MDBContainer>

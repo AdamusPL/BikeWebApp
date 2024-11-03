@@ -10,7 +10,8 @@ import {
     MDBContainer,
     MDBSpinner,
     MDBBtn,
-    MDBCheckbox
+    MDBCheckbox,
+    MDBRipple
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
 
@@ -19,6 +20,13 @@ export default function PartShop() {
     const [isLoading, setIsLoading] = useState(true);
     const [keysArray, setKeysArray] = useState([]);
     const [filters, setFilters] = useState([]);
+    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
+
+    useEffect(() => {
+        getProducts();
+        getFilters();
+        setIsLoading(false);
+    }, []);
 
     async function getProducts() {
         const response = await fetch('http://localhost:8080/part-shop');
@@ -38,74 +46,87 @@ export default function PartShop() {
         console.log(data);
     }
 
-    function addToCart(id){
+    function addToCart(id) {
         debugger;
-        if(localStorage.getItem('cart') === null){
-            localStorage.setItem('cart', JSON.stringify({bikes: [], parts: [id]}));
+        if (localStorage.getItem('cart') === null) {
+            localStorage.setItem('cart', JSON.stringify({ bikes: [], parts: [{ id: id, quantity: 1 }] }));
         }
-        else{
+        else {
             let cart = JSON.parse(localStorage.getItem('cart'));
+            const index = cart.parts.findIndex(b => b.id === id);
 
-            cart.parts.push(id);
+            if (index !== -1) {
+                cart.parts[index].quantity += 1;
+                setCart(cart);
+            }
+
+            else {
+                cart = {
+                    ...cart,
+                    parts: [...cart.parts, { id: id, quantity: 1 }]
+                };
+            }
 
             localStorage.setItem('cart', JSON.stringify(cart));
         }
-        
-    }
 
-    useEffect(() => {
-        getProducts();
-        getFilters();
-        setIsLoading(false);
-    }, [])
+    }
 
     return (<>
         <MDBContainer fluid>
-            <MDBRow style={{ color: 'white' }} className='row-cols-1 row-cols-md-4 g-4 mt-2 no-gutters'>
-                <MDBCol md="auto" style={{ backgroundColor: '#1B5E20' }}>
+            <MDBRow className="h-100">
+                <MDBCol id='sidebar' md="auto">
                     {!isLoading ?
                         keysArray.map(element => (
-                            <div key={element} className='mt-4'>
+                            <article key={element} className='mt-4'>
                                 <p>{element}</p>
                                 {filters[element].map(item => (
-                                    <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label={item} />
+                                    <MDBCheckbox key={item} name='flexCheck' value='' id='flexCheckDefault' label={item} />
                                 ))}
-                            </div>
+                            </article>
                         ))
                         :
-                        <p>No filters available</p>}
+                        <p>No filters available</p>
+                    }
 
                     <p className='mt-4'>Price</p>
-                    <a><input className='form-control w-50'></input></a>
-                    <a>-</a>
-                    <a><input className='form-control w-50'></input></a>
+                    <article id='price'>
+                        <input className='form-control input'></input>
+                        <p id='minus'>-</p>
+                        <input className='form-control input'></input>
+                    </article>
                 </MDBCol>
 
-                <MDBCol md="9">
-                    <div className="d-flex justify-content-center">
+                <MDBCol>
+                    <article id="button">
                         <MDBBtn className="mt-4" color="success" href='/add-part'>Add new part</MDBBtn>
-                    </div>
-                    <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
-                        {!isLoading ?
-                            products.length === 0 ?
-                                <p>Currently, we are out of stock</p>
-                                :
-                                products.map(element => (
-                                    <MDBCol key={element.id}>
-                                        <Link to={`/part-shop/${element.id}`}>
+                    </article>
+
+                    <MDBCol md="9">
+                        <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
+                            {!isLoading ?
+                                products.length === 0 ?
+                                    <p>Currently, we are out of stock</p>
+                                    :
+                                    products.map(element => (
+                                        <MDBCol key={element.id}>
                                             <MDBCard>
-                                                <MDBCardImage
-                                                    src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
-                                                    alt='...'
-                                                    position='top'
-                                                />
+                                                <Link to={`/part-shop/${element.id}`}>
+                                                    <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
+                                                        <MDBCardImage
+                                                            src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
+                                                            alt='...'
+                                                            position='top'
+                                                        />
+                                                    </MDBRipple>
+                                                </Link>
                                                 <MDBCardBody>
                                                     <MDBCardTitle>{element.fullModelName}</MDBCardTitle>
                                                     <MDBCardText>
-                                                        Part kind: {element.type}
+                                                        Type: {element.type}
                                                     </MDBCardText>
                                                     <MDBCardText>
-                                                        Type: {element.attribute}
+                                                        Kind: {element.attribute}
                                                     </MDBCardText>
                                                     <MDBCardText>
                                                         Price: {element.price} ,-
@@ -113,19 +134,19 @@ export default function PartShop() {
                                                     <MDBBtn color='success' onClick={() => addToCart(element.id)}>Add to cart</MDBBtn>
                                                 </MDBCardBody>
                                             </MDBCard>
-                                        </Link>
-                                    </MDBCol>
-                                ))
-                            :
-                            <p>
-                                <MDBSpinner role='status'>
-                                    <span className='visually-hidden'>Loading...</span>
-                                </MDBSpinner>
-                            </p>
-                        }
-                    </MDBRow>
-                </MDBCol>
-            </MDBRow>
+                                        </MDBCol>
+                                    ))
+                                :
+                                <p>
+                                    <MDBSpinner role='status'>
+                                        <span className='visually-hidden'>Loading...</span>
+                                    </MDBSpinner>
+                                </p>
+                            }
+                        </MDBRow>
+                    </MDBCol>
+                </MDBCol >
+            </MDBRow >
         </MDBContainer>
-            </>);
+    </>);
 }
