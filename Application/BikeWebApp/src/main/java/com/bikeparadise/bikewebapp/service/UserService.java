@@ -31,14 +31,13 @@ import java.util.List;
 
 @Service
 public class UserService {
-    @Autowired
+
     private PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserDataRepository userDataRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    @Autowired
     public UserService(UserRepository userRepository, UserDataRepository userDataRepository,
                        JwtTokenGenerator jwtTokenGenerator, AuthenticationManager authenticationManager){
         this.userRepository = userRepository;
