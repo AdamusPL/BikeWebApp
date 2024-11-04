@@ -32,6 +32,7 @@ import java.util.List;
 @Service
 public class UserService {
 
+    @Autowired
     private PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserDataRepository userDataRepository;
