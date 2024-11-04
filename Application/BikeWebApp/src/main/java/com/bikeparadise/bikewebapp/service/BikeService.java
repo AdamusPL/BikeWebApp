@@ -22,16 +22,18 @@ public class BikeService {
     private final BikeParameterTypeRepository bikeParameterTypeRepository;
     private final BikeParameterAttributeRepository bikeParameterAttributeRepository;
     private final ShopAssistantRepository shopAssistantRepository;
+    private final PartTypeRepository partTypeRepository;
     private final PartRepository partRepository;
 
     public BikeService(BikeRepository bikeRepository, BikeParameterTypeRepository bikeParameterTypeRepository,
                        BikeParameterAttributeRepository bikeParameterAttributeRepository, ShopAssistantRepository shopAssistantRepository,
-                       PartRepository partRepository) {
+                       PartRepository partRepository, PartTypeRepository partTypeRepository) {
         this.bikeRepository = bikeRepository;
         this.bikeParameterTypeRepository = bikeParameterTypeRepository;
         this.bikeParameterAttributeRepository = bikeParameterAttributeRepository;
         this.shopAssistantRepository = shopAssistantRepository;
         this.partRepository = partRepository;
+        this.partTypeRepository = partTypeRepository;
     }
 
     public List<BikeShopDto> getBikes() {
@@ -93,13 +95,51 @@ public class BikeService {
                 }
             }
 
-            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make + " " + bike.getModelName(), type, drive, bike.getPrice());
+            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make + " " + bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
             bikeShopDtoList.add(bikeShopDto);
         }
         return bikeShopDtoList;
     }
 
-    public Map<String, List<String>> getFilters(){
+    public Map<String, List<String>> getAddBikeFilters(){
+        Map<String, List<String>> filters = new HashMap<>();
+        List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
+
+        //bike parameters
+        for (BikeParameterType bikeParameterType:
+                bikeParameterTypeList) {
+            boolean isAdded = false;
+            for (String key : filters.keySet()) {
+                if(key.equals(bikeParameterType.getType())){
+                    filters.get(key).add(bikeParameterType.getBikeParameterAttribute().getAttribute());
+                    isAdded = true;
+                    break;
+                }
+            }
+
+            if(!isAdded){
+                List<String> list = new ArrayList<>();
+                list.add(bikeParameterType.getBikeParameterAttribute().getAttribute());
+                filters.put(bikeParameterType.getType(), list);
+            }
+        }
+
+        //parts
+        List<PartType> partTypeList = partTypeRepository.findAll();
+        for(PartType partType : partTypeList){
+            List<String> models = new ArrayList<>();
+            models.add("None");
+            for(Part part : partType.getPart()){
+                models.add(part.getMake() + " " + part.getModelName());
+            }
+            filters.put(partType.getType(), models);
+        }
+
+        return filters;
+
+    }
+
+    public Map<String, List<String>> getShopFilters(){
         Map<String, List<String>> filters = new HashMap<>();
         List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
 
@@ -149,8 +189,16 @@ public class BikeService {
                 reviewPrintDtos.add(reviewPrintDto);
             }
 
+            //get make
+            String make = "";
+            for(BikeParameterType bikeParameterType : bike.getBikeParameterType()){
+                if(bikeParameterType.getType().equals("Make")){
+                    make = bikeParameterType.getBikeParameterAttribute().getAttribute();
+                }
+            }
 
-            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getId(), bike.getModelName(), bike.getBikeIdentificationAvailable().size(), bike.getPrice(), bike.getDescription(), parts, reviewPrintDtos);
+
+            BikeDetailedInfoDto bikeDetailedInfoDto = new BikeDetailedInfoDto(bike.getId(), make + " " + bike.getModelName(), bike.getBikeIdentificationAvailable().size(), bike.getPrice(), bike.getDescription(), parts, reviewPrintDtos);
             return bikeDetailedInfoDto;
         }
 

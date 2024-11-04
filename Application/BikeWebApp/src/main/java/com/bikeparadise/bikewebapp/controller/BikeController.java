@@ -33,10 +33,16 @@ public class BikeController {
         return bikeService.getDetailedInfoAboutBike(bikeId);
     }
 
-    @GetMapping("/get-bike-filters")
+    @GetMapping("/get-bike-shop-filters")
     @ResponseBody
-    public Map<String, List<String>> getFilters(){
-        return bikeService.getFilters();
+    public Map<String, List<String>> getShopFilters(){
+        return bikeService.getShopFilters();
+    }
+
+    @GetMapping("/get-add-bike-filters")
+    @ResponseBody
+    public Map<String, List<String>> getAddBikeFilters(){
+        return bikeService.getAddBikeFilters();
     }
 
 //    @GetMapping("/get-bike-by-frame-size")

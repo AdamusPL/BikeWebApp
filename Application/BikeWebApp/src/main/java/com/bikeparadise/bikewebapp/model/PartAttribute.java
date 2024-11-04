@@ -23,7 +23,7 @@ public class PartAttribute {
     }
 
     @OneToMany
-    List<PartAttribute> partAttribute;
+    List<PartType> partType;
 
     @ManyToMany
     @JoinTable(

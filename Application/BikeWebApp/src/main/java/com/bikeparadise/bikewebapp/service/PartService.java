@@ -36,7 +36,7 @@ public class PartService {
         for (Part part:
              partList) {
 
-            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPartType().getType(), part.getPartType().getPartAttribute().getAttribute(), part.getPrice());
+            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPartType().getType(), part.getPartType().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
             partShopDtoList.add(partShopDto);
         }
 
@@ -93,7 +93,7 @@ public class PartService {
         List<PartAttribute> partAttribute = partAttributeRepository.findByAttribute(partDto.getAttribute());
 
         if(shopAssistant.isPresent()){
-            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(0), shopAssistant.get());
+            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(0), new ArrayList<>(partAttribute), shopAssistant.get());
             part.getPartType().setPartAttribute(partAttribute.get(0));
             partRepository.save(part);
             return ResponseEntity.ok().build();

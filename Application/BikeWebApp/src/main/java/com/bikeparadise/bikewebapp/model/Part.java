@@ -55,13 +55,14 @@ public class Part {
             inverseJoinColumns = @JoinColumn(name = "OrderId"))
     private List<Order> order;
 
-    public Part(String make, String modelName, Double price, Integer quantityInStock, String description, PartType partType, ShopAssistant shopAssistant){
+    public Part(String make, String modelName, Double price, Integer quantityInStock, String description, PartType partType, List<PartAttribute> partAttribute, ShopAssistant shopAssistant){
         this.make = make;
         this.modelName = modelName;
         this.price = price;
         this.quantityInStock = quantityInStock;
         this.description = description;
         this.partType = partType;
+        this.partAttribute = partAttribute;
         this.shopAssistant = shopAssistant;
     }
 

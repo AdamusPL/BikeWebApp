@@ -1,14 +1,13 @@
 package com.bikeparadise.bikewebapp.controller;
 
+import com.bikeparadise.bikewebapp.config.JwtTokenGenerator;
+import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
 import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
 import com.bikeparadise.bikewebapp.dto.UserSignInDto;
 import com.bikeparadise.bikewebapp.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -25,7 +24,13 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<String> loginUser(@RequestBody UserSignInDto userSignInDto){
+    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto){
+        ResponseEntity<SecurityFilterDto> sth = userService.loginUser(userSignInDto);
         return userService.loginUser(userSignInDto);
     }
+
+//    @GetMapping("/get-user-data")
+//    public ResponseEntity<String> getUserData(@RequestParam Integer userId){
+//        return userService.getUserData(userId);
+//    }
 }

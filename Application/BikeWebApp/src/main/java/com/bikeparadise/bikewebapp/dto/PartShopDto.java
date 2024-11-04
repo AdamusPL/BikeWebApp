@@ -13,4 +13,5 @@ public class PartShopDto {
     String type;
     String attribute;
     Double price;
+    Integer quantityInStock;
 }
