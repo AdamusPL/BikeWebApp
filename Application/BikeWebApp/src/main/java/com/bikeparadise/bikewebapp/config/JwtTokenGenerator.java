@@ -2,6 +2,8 @@ package com.bikeparadise.bikewebapp.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -27,11 +29,13 @@ public class JwtTokenGenerator {
         Date currentDate = new Date();
         Date expirationDate = new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION_DATE);
 
+        SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(currentDate)
                 .expiration(expirationDate)
-                .signWith(getSignInKey())
+                .signWith(key)
                 .compact();
     }
 
