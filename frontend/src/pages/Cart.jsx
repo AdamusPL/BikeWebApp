@@ -56,10 +56,18 @@ export default function Cart() {
         setSummaryPrice(priceToPay);
     }
 
-    function removeItem() {
+    function removeBikeFromCart(id) {
         let cart = JSON.parse(localStorage.getItem('cart'));
 
-        cart.bikes.filter((item) => item.name !== i);
+        cart.bikes = cart.bikes.filter(bike => bike.id !== id);
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function removePartFromCart(id) {
+        let cart = JSON.parse(localStorage.getItem('cart'));
+
+        cart.parts = cart.parts.filter(part => part.id !== id);
 
         localStorage.setItem('cart', JSON.stringify(cart));
     }
@@ -76,7 +84,7 @@ export default function Cart() {
                     {!isLoading ?
                         products.bikes.map(element => (
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
-                                <MDBBtn onClick={removeItem} className="btn-close" color="none" aria-label="Close" />
+                                <MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
                                     <MDBIcon fas icon="minus" onClick={() => minusBike(element)}/>
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
@@ -91,7 +99,7 @@ export default function Cart() {
                     {!isLoading ?
                         products.parts.map(element => (
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
-                                <MDBBtn onClick={removeItem} className="btn-close" color="none" aria-label="Close" />
+                                <MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
                                     <MDBIcon fas icon="minus" onClick={() => minusBike(element)}/>
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>

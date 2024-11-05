@@ -2,6 +2,8 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import '../css/Account.css';
+
 export default function Account() {
     const [isLoading, setIsLoading] = useState(true);
     const [userData, setUserData] = useState([]);
@@ -62,10 +64,10 @@ export default function Account() {
                     <MDBCol tag='dt' sm='3'>
                         Phone Numbers:
                     </MDBCol>
-                    <MDBCol tag='dd' sm='9'>
+                    <MDBCol>
                         {userData.phoneNumbers}
                     </MDBCol>
-                    <input className="form-control" label="Phone Number" min="1" max="13" minlength="9"></input>
+                    <input className="form-control data-input" label="Phone Number" min="1" max="13" minlength="9"></input>
                     <MDBCol>
                         <MDBBtn color="success">Add new phone number</MDBBtn>
                     </MDBCol>
@@ -77,10 +79,10 @@ export default function Account() {
                     <MDBCol tag='dt' sm='3'>
                         E-Mail Addresses:
                     </MDBCol>
-                    <MDBCol tag='dd' sm='9'>
+                    <MDBCol>
                         {userData.emails}
                     </MDBCol>
-                    <input className="form-control" label="E-Mail Address" min="1" max="13" minlength="9"></input>
+                    <input className="form-control data-input" label="E-Mail Address" min="1" max="13" minlength="9"></input>
                     <MDBCol>
                         <MDBBtn color="success">Add new e-mail address</MDBBtn>
                     </MDBCol>
