@@ -11,7 +11,8 @@ export default function SignIn() {
 
     const navigate = useNavigate();
 
-    async function signIn(){
+    async function signIn() {
+        debugger;
         const userData = {
             username: username,
             password: password
@@ -19,17 +20,22 @@ export default function SignIn() {
 
         fetch(`http://localhost:8080/sign-in`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(userData)
 
-        }).then(response => {
-            if (response.ok) {
-                navigate('/');
-            }
-            else{
-                setLoginStatus("Error: Incorrect credentials");
-            }
-        })
+        }).then(response => response.json())
+            .then(data => {
+                if (data.accessToken !== null) {
+                    localStorage.setItem('token', data.accessToken);
+                    navigate('/');
+                }
+                else {
+                    setLoginStatus("Error: Incorrect credentials");
+                }
+            })
     }
 
     return (
