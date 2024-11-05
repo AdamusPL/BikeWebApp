@@ -2,6 +2,7 @@ package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.config.JwtTokenGenerator;
 import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
+import com.bikeparadise.bikewebapp.dto.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
 import com.bikeparadise.bikewebapp.dto.UserSignInDto;
 import com.bikeparadise.bikewebapp.model.User;
@@ -10,6 +11,7 @@ import com.bikeparadise.bikewebapp.model.UserEmail;
 import com.bikeparadise.bikewebapp.model.UserPhoneNumber;
 import com.bikeparadise.bikewebapp.repository.UserDataRepository;
 import com.bikeparadise.bikewebapp.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +79,7 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto){
+    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto) throws ParseException {
         List<User> foundUsers = userRepository.findUserByUsername(userSignInDto.getUsername());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -95,7 +98,8 @@ public class UserService {
         return new ResponseEntity<>(new SecurityFilterDto(token), HttpStatus.OK);
     }
 
-//    public ResponseEntity<String> getUserData(Integer userId){
-//        return userDataRepository.findById(userId);
-//    }
+    public ResponseEntity<String> getUserData(String token){
+        UserInfoDto userInfoDto = new UserInfoDto();
+        return null;
+    }
 }

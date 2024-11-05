@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
@@ -24,13 +26,12 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto){
-        ResponseEntity<SecurityFilterDto> sth = userService.loginUser(userSignInDto);
+    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto) throws ParseException {
         return userService.loginUser(userSignInDto);
     }
 
-//    @GetMapping("/get-user-data")
-//    public ResponseEntity<String> getUserData(@RequestParam Integer userId){
-//        return userService.getUserData(userId);
-//    }
+    @PostMapping("/get-user-data")
+    public ResponseEntity<String> getUserData(@RequestHeader("Authorization") String token){
+        return userService.getUserData(token);
+    }
 }

@@ -1,8 +1,6 @@
 package com.bikeparadise.bikewebapp.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -19,8 +17,10 @@ import java.util.Date;
 @Component
 public class JwtTokenGenerator {
     private SecretKey getSignInKey() {
-        byte[] bytes = Base64.getDecoder()
-                .decode(SecurityConstants.JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
+        byte[] bytes = key.getEncoded();
+
         return new SecretKeySpec(bytes, "HmacSHA256");
     }
 
@@ -40,11 +40,13 @@ public class JwtTokenGenerator {
     }
 
     public Claims extractAllClaims(String token){
-        return Jwts.parser()
+        var x = Jwts.parser()
                 .verifyWith(getSignInKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .build();
+        var y = x
+                .parseSignedClaims(token);
+        return y.getPayload();
+
     }
 
     public boolean verifyToken(String token){
