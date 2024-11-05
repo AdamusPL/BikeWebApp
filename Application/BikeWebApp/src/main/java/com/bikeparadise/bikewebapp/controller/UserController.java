@@ -1,7 +1,7 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.config.JwtTokenGenerator;
 import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
+import com.bikeparadise.bikewebapp.dto.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
 import com.bikeparadise.bikewebapp.dto.UserSignInDto;
 import com.bikeparadise.bikewebapp.service.UserService;
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("/get-user-data")
-    public ResponseEntity<String> getUserData(@RequestHeader("Authorization") String token){
-        return userService.getUserData(token);
+    public ResponseEntity<UserInfoDto> getUserData(@RequestHeader("Authorization") String token){
+        return userService.getUserData();
     }
 }

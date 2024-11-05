@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Date;
 
 
@@ -40,13 +39,19 @@ public class JwtTokenGenerator {
     }
 
     public Claims extractAllClaims(String token){
-        var x = Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(getSignInKey())
-                .build();
-        var y = x
-                .parseSignedClaims(token);
-        return y.getPayload();
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 
+    public Claims extractUsername(String token){
+        return Jwts.parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public boolean verifyToken(String token){

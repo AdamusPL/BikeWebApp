@@ -11,19 +11,13 @@ import com.bikeparadise.bikewebapp.model.UserEmail;
 import com.bikeparadise.bikewebapp.model.UserPhoneNumber;
 import com.bikeparadise.bikewebapp.repository.UserDataRepository;
 import com.bikeparadise.bikewebapp.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -98,8 +92,27 @@ public class UserService {
         return new ResponseEntity<>(new SecurityFilterDto(token), HttpStatus.OK);
     }
 
-    public ResponseEntity<String> getUserData(String token){
-        UserInfoDto userInfoDto = new UserInfoDto();
-        return null;
+    public ResponseEntity<UserInfoDto> getUserData() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
+        if(foundUsers.size() == 0){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = foundUsers.get(0);
+
+        String phoneNumbers = "";
+        String emails = "";
+
+        for(UserPhoneNumber userPhoneNumber : user.getUserData().getUserPhoneNumber()){
+            phoneNumbers += userPhoneNumber.getPhoneNumber() + " ";
+        }
+
+        for(UserEmail userEmail : user.getUserData().getUserEmail()){
+            emails += userEmail.getEmail() + " ";
+        }
+
+        UserInfoDto userInfoDto = new UserInfoDto(user.getUserData().getFirstName() + " " + user.getUserData().getLastName(), phoneNumbers, emails, user.getUsername());
+        return ResponseEntity.ok(userInfoDto);
     }
 }
