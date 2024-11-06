@@ -1,13 +1,19 @@
-import { MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon } from "mdb-react-ui-kit";
+import { MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon,
+    MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter
+ } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 
 import '../css/Cart.css'
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
 
     const [products, setProducts] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [summaryPrice, setSummaryPrice] = useState(0.0);
+    const [basicModal, setBasicModal] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchProducts();
@@ -72,8 +78,21 @@ export default function Cart() {
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
-    function minusBike(element){
-        
+    function handleClick() {
+        if (localStorage.getItem("token") === null) {
+            navigate('/sign-in');
+        }
+        else{
+            setBasicModal(!basicModal);
+        }   
+    }
+
+    function toggleOpen(){
+        setBasicModal(!basicModal);
+    }
+
+    function minusBike(element) {
+
     }
 
     return (<>
@@ -86,7 +105,7 @@ export default function Cart() {
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)}/>
+                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)} />
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
                                     <MDBIcon fas icon="plus" />
                                 </article>
@@ -101,7 +120,7 @@ export default function Cart() {
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)}/>
+                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)} />
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
                                     <MDBIcon fas icon="plus" />
                                 </article>
@@ -116,7 +135,25 @@ export default function Cart() {
                             summaryPrice : 0} ,-</MDBListGroupItem>
                 </MDBListGroup>
             </MDBCard>
-            <MDBBtn color="success mt-4">Buy now</MDBBtn>
-        </MDBContainer>
+            <MDBBtn className="mt-4" color="success" onClick={handleClick}>Buy now</MDBBtn>
+            <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
+                <MDBModalDialog>
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Are you sure you want to buy?</MDBModalTitle>
+                            <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
+                        </MDBModalHeader>
+                        <MDBModalBody>By clicking "Yes" button, you accept the store policy and order with obligation to pay on-site.</MDBModalBody>
+
+                        <MDBModalFooter>
+                            <MDBBtn color='secondary' onClick={toggleOpen}>
+                                Give me more time
+                            </MDBBtn>
+                            <MDBBtn color="success">Yes</MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+        </MDBContainer >
     </>)
 }

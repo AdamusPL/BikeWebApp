@@ -39,6 +39,11 @@ export default function Account() {
             })
     }
 
+    function logOut() {
+        localStorage.removeItem('token');
+        navigate('/sign-in');
+    }
+
     return (<>
         <MDBContainer className="mt-4">
             <MDBRow tag='dl'>
@@ -87,6 +92,12 @@ export default function Account() {
                         <MDBBtn color="success">Add new e-mail address</MDBBtn>
                     </MDBCol>
                 </article>
+            </MDBRow>
+
+            <MDBRow tag='dl'>
+                <MDBCol tag='dt' sm='3'>
+                    <MDBBtn color="success" onClick={logOut}>Log out</MDBBtn>
+                </MDBCol>
             </MDBRow>
         </MDBContainer>
     </>)

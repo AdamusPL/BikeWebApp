@@ -8,6 +8,10 @@ export default function AddBike() {
     const [defaultValues, setDefaultValues] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [modelName, setModelName] = useState("");
+    const [price, setPrice] = useState("");
+    const [description, setDescription] = useState("");
+
     useEffect(() => {
         getFilters();
         setIsLoading(false);
@@ -32,6 +36,29 @@ export default function AddBike() {
         setDefaultValues(defaultValues);
     }
 
+    async function addPartToDB() {
+        console.log(defaultValues);
+        debugger;
+        let bike = {
+            modelName: modelName,
+            price: price,
+            description: description,
+            parts: defaultValues,
+            shopAssistantId: 1
+        }
+
+        fetch(`http://localhost:8080/add-bike`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bike)
+
+        }).then(response => {
+            if (response.ok) {
+                setIsPosted(true);
+            }
+        })
+    }
+
     function changeParameter(parameter, attribute) {
         setDefaultValues(prevData =>
             prevData.map(item =>
@@ -44,11 +71,11 @@ export default function AddBike() {
         <MDBContainer>
             <MDBTypography variant='h1 mt-2'>Add new bike</MDBTypography>
 
-            <MDBInput label="Model Name" id="typeText" type="text" className="mt-5" onChange={(e) => { setFirstName(e.target.value) }} />
+            <MDBInput label="Model Name" id="typeText" type="text" className="mt-5" onChange={(e) => { setModelName(e.target.value) }} />
 
-            <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
+            <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
 
-            <MDBTextArea label="Description" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
+            <MDBTextArea label="Description" id="textAreaExample" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
 
             {!isLoading ?
                 keysArray.map((element, index) => {
@@ -70,7 +97,7 @@ export default function AddBike() {
                 :
                 <p>Nothing found</p>
             }
-            <MDBBtn color="success" className="mt-4">Add bike</MDBBtn>
+            <MDBBtn onClick={addPartToDB} color="success" className="mt-4">Add bike</MDBBtn>
         </MDBContainer>
     </>)
 }
