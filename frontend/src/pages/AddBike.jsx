@@ -11,6 +11,7 @@ export default function AddBike() {
     const [modelName, setModelName] = useState("");
     const [price, setPrice] = useState("");
     const [description, setDescription] = useState("");
+    const [serialNumbers, setSerialNumbers] = useState("");
 
     useEffect(() => {
         getFilters();
@@ -43,6 +44,7 @@ export default function AddBike() {
             modelName: modelName,
             price: price,
             description: description,
+            bikeIdentificationsAvailable: serialNumbers,
             parts: defaultValues,
             shopAssistantId: 1
         }
@@ -75,7 +77,9 @@ export default function AddBike() {
 
             <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
 
-            <MDBTextArea label="Description" id="textAreaExample" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
+            <MDBTextArea label="Description" id="textAreaExample"  className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
+
+            <MDBInput label="Serial numbers" id="typeText" type="text" className="mt-5 mb-5" onChange={(e) => { setSerialNumbers(e.target.value) }} />
 
             {!isLoading ?
                 keysArray.map((element, index) => {

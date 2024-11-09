@@ -33,8 +33,6 @@ export default function Account() {
             }
         }).then(response => response.json())
             .then(data => {
-                debugger;
-                console.log(data);
                 setUserData(data);
             })
     }
