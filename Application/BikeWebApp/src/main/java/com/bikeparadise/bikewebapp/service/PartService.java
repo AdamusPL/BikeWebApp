@@ -95,6 +95,9 @@ public class PartService {
         if(shopAssistant.isPresent()){
             Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(0), new ArrayList<>(partAttribute), shopAssistant.get());
             part.getPartType().setPartAttribute(partAttribute.get(0));
+            List<Part> list = part.getPartType().getPart();
+            list.add(part);
+            part.getPartType().setPart(list);
             partRepository.save(part);
             return ResponseEntity.ok().build();
         }

@@ -1,9 +1,6 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.BikeDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.BikeAddDto;
-import com.bikeparadise.bikewebapp.dto.BikeShopDto;
-import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
+import com.bikeparadise.bikewebapp.dto.*;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.*;
 import jakarta.persistence.EntityManager;
@@ -24,16 +21,18 @@ public class BikeService {
     private final ShopAssistantRepository shopAssistantRepository;
     private final PartTypeRepository partTypeRepository;
     private final PartRepository partRepository;
+    private final BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository;
 
     public BikeService(BikeRepository bikeRepository, BikeParameterTypeRepository bikeParameterTypeRepository,
                        BikeParameterAttributeRepository bikeParameterAttributeRepository, ShopAssistantRepository shopAssistantRepository,
-                       PartRepository partRepository, PartTypeRepository partTypeRepository) {
+                       PartRepository partRepository, PartTypeRepository partTypeRepository, BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository) {
         this.bikeRepository = bikeRepository;
         this.bikeParameterTypeRepository = bikeParameterTypeRepository;
         this.bikeParameterAttributeRepository = bikeParameterAttributeRepository;
         this.shopAssistantRepository = shopAssistantRepository;
         this.partRepository = partRepository;
         this.partTypeRepository = partTypeRepository;
+        this.bikeIdentificationAvailableRepository = bikeIdentificationAvailableRepository;
     }
 
     public List<BikeShopDto> getBikes() {
@@ -127,11 +126,33 @@ public class BikeService {
         //parts
         List<PartType> partTypeList = partTypeRepository.findAll();
         for(PartType partType : partTypeList){
+            boolean stop = false;
+
+            for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
+                String key = entry.getKey();
+                if(key.equals(partType.getType())){
+                    List<String> values = entry.getValue();
+
+                    for(Part part : partType.getPart()){
+                        values.add(part.getMake() + " " + part.getModelName());
+                    }
+
+                    stop = true;
+                    break;
+                }
+            }
+
+            if(stop){
+                continue;
+            }
+
             List<String> models = new ArrayList<>();
             models.add("None");
+
             for(Part part : partType.getPart()){
                 models.add(part.getMake() + " " + part.getModelName());
             }
+
             filters.put(partType.getType(), models);
         }
 
@@ -230,6 +251,59 @@ public class BikeService {
 
         if (shopAssistant.isPresent()) {
             Bike bike = new Bike(bikeAddDto.getModelName(), bikeAddDto.getPrice(), bikeAddDto.getDescription(), shopAssistant.get());
+            String[] words = bikeAddDto.getBikeIdentificationsAvailable().split(" ");
+            List<BikeIdentificationAvailable> bikeIdsAvailable = new ArrayList<>();
+            for(String word : words){
+                BikeIdentificationAvailable bikeIdentificationAvailable = new BikeIdentificationAvailable(word);
+                bikeIdentificationAvailableRepository.save(bikeIdentificationAvailable);
+                bikeIdentificationAvailable.setBike(bike);
+                bikeIdsAvailable.add(bikeIdentificationAvailable);
+            }
+            bike.setBikeIdentificationAvailable(bikeIdsAvailable);
+            List<Part> partsOfBike = new ArrayList<>();
+            List<PartAttribute> partAttributes = new ArrayList<>();
+
+            List<BikeParameterType> bikeParameterTypes = new ArrayList<>();
+            List<BikeParameterAttribute> bikeParameterAttributes = new ArrayList<>();
+
+            //retrieve make & model name
+            for(BikeAddFiltersDto bikeAddFiltersDto : bikeAddDto.getParts()){
+
+                //if part exist in bike
+                if(bikeAddFiltersDto.getAttribute().equals("None")){
+
+                }
+
+                else if(bikeAddFiltersDto.getParameter().equals("Type") || bikeAddFiltersDto.getParameter().equals("Frame size") || bikeAddFiltersDto.getParameter().equals("Make")){
+                    BikeParameterType bikeParameterType = bikeParameterTypeRepository.findBikeParameterTypeByTypeAndBikeParameterAttribute_Attribute(bikeAddFiltersDto.getParameter(), bikeAddFiltersDto.getAttribute());
+                    bikeParameterTypes.add(bikeParameterType);
+
+                    BikeParameterAttribute bikeParameterAttribute = bikeParameterAttributeRepository.findBikeParameterAttributeByAttribute(bikeAddFiltersDto.getAttribute());
+                    bikeParameterAttributes.add(bikeParameterAttribute);
+                }
+
+                else{
+                    int spaceIndex = bikeAddFiltersDto.getAttribute().indexOf(" ");
+
+                    if(spaceIndex != -1) {
+                        String firstPart = bikeAddFiltersDto.getAttribute().substring(0, spaceIndex);
+                        String secondPart = bikeAddFiltersDto.getAttribute().substring(spaceIndex + 1);
+
+                        String make = firstPart;
+                        String modelName = secondPart;
+
+                        Part part = partRepository.findPartByMakeAndModelName(make, modelName);
+                        List<Bike> list = part.getBike();
+                        list.add(bike);
+                        part.setBike(list);
+                        partsOfBike.add(part);
+                    }
+                }
+            }
+
+            bike.setPart(partsOfBike);
+            bike.setBikeParameterType(bikeParameterTypes);
+            bike.setBikeParameterAttribute(bikeParameterAttributes);
             bikeRepository.save(bike);
             return ResponseEntity.ok().build();
         }
