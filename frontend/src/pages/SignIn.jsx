@@ -12,7 +12,6 @@ export default function SignIn() {
     const navigate = useNavigate();
 
     async function signIn() {
-        debugger;
         const userData = {
             username: username,
             password: password

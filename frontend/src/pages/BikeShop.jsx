@@ -26,12 +26,18 @@ export default function BikeShop() {
     const [filters, setFilters] = useState([]);
     const [keysArray, setKeysArray] = useState([]);
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
+    const [isShopAssistant, setIsShopAssistant] = useState(false);
 
     useEffect(() => {
+        checkToken();
         getProducts();
         getFilters();
         setIsLoading(false);
     }, []);
+
+    function checkToken(){
+        localStorage.getItem("token");
+    }
 
     async function getProducts() {
         const response = await fetch('http://localhost:8080/bike-shop');

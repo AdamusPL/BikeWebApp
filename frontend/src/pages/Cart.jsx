@@ -27,7 +27,6 @@ export default function Cart() {
     }, [products]);
 
     async function fetchProducts() {
-        debugger;
         const products = {
             bikes: JSON.parse(localStorage.getItem('cart')).bikes,
             parts: JSON.parse(localStorage.getItem('cart')).parts
@@ -44,7 +43,6 @@ export default function Cart() {
             }
         }).then(data => {
             setProducts(data);
-            console.log(data);
         })
     }
 
@@ -93,6 +91,25 @@ export default function Cart() {
 
     function minusBike(element) {
 
+    }
+
+    function submitOrder(){
+        const order = {
+            clientId: 1,
+            bikes: JSON.parse(localStorage.getItem('cart')).bikes,
+            parts: JSON.parse(localStorage.getItem('cart')).parts
+        };
+
+        fetch(`http://localhost:8080/buy`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(order)
+
+        }).then(response => {
+            if (response.ok) {
+                localStorage.removeItem('cart');
+                navigate('/order-list')
+        }})
     }
 
     return (<>
@@ -149,7 +166,7 @@ export default function Cart() {
                             <MDBBtn color='secondary' onClick={toggleOpen}>
                                 Give me more time
                             </MDBBtn>
-                            <MDBBtn color="success">Yes</MDBBtn>
+                            <MDBBtn onClick={submitOrder} color="success">Yes</MDBBtn>
                         </MDBModalFooter>
                     </MDBModalContent>
                 </MDBModalDialog>

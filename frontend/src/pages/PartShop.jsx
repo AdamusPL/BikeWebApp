@@ -42,12 +42,9 @@ export default function PartShop() {
         const keysArray = Object.keys(data);
         setKeysArray(keysArray);
         setFilters(data);
-        console.log(keysArray);
-        console.log(data);
     }
 
     function addToCart(id) {
-        debugger;
         if (localStorage.getItem('cart') === null) {
             localStorage.setItem('cart', JSON.stringify({ bikes: [], parts: [{ id: id, quantity: 1 }] }));
         }

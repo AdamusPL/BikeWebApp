@@ -38,7 +38,7 @@ export default function BikeDetails() {
         if (cart) {
             const bike = cart.bikes.find(b => b.id === chosenProduct.id);
             if (bike) {
-                if (bike.quantity === chosenProduct.quantityInStock) {
+                if (bike.quantity === chosenProduct.quantityInStock || bike.quantity === 0) {
                     setIsAvailable(false);
                 }
 
@@ -81,7 +81,6 @@ export default function BikeDetails() {
         setKeysArray(keysArray);
         setChosenProduct(data);
         setIsLoading(false);
-        console.log(data.reviews);
     }
 
     async function addReview() {

@@ -45,7 +45,6 @@ export default function PartDetails() {
 
         setChosenProduct(data);
         setIsLoading(false);
-        console.log(data.reviews);
     }
 
     function addToCart() {
@@ -74,7 +73,6 @@ export default function PartDetails() {
     }
 
     async function addReview() {
-        debugger;
         const review = {
             numberOfStars: numberOfStars,
             description: opinion,

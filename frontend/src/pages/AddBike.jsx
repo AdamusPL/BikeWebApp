@@ -38,8 +38,6 @@ export default function AddBike() {
     }
 
     async function addPartToDB() {
-        console.log(defaultValues);
-        debugger;
         let bike = {
             modelName: modelName,
             price: price,

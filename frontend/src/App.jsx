@@ -13,27 +13,30 @@ import SignIn from './pages/SignIn.jsx';
 import Account from './pages/Account.jsx';
 import AddBike from './pages/AddBike.jsx';
 import AddPart from './pages/AddPart.jsx';
+import AuthProvider from './components/AuthProvider.jsx';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path='/' element={<Home />}></Route>
-          <Route path='/account' element={<Account />}></Route>
-          <Route path='/bike-shop' element={<BikeShop />}></Route>
-          <Route path='/part-shop' element={<PartShop />}></Route>
-          <Route path='/bike-shop/:id' element={<BikeDetails />}></Route>
-          <Route path='/part-shop/:id' element={<PartDetails />}></Route>
-          <Route path='/cart' element={<Cart />}></Route>
-          <Route path='/order-list' element={<OrderList />}></Route>
-          <Route path='/register' element={<Registration />}></Route>
-          <Route path='/sign-in' element={<SignIn />}></Route>
-          <Route path='/add-bike' element={<AddBike />}></Route>
-          <Route path='/add-part' element={<AddPart />}></Route>
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path='/' element={<Home />}></Route>
+            <Route path='/account' element={<Account />}></Route>
+            <Route path='/bike-shop' element={<BikeShop />}></Route>
+            <Route path='/part-shop' element={<PartShop />}></Route>
+            <Route path='/bike-shop/:id' element={<BikeDetails />}></Route>
+            <Route path='/part-shop/:id' element={<PartDetails />}></Route>
+            <Route path='/cart' element={<Cart />}></Route>
+            <Route path='/order-list' element={<OrderList />}></Route>
+            <Route path='/register' element={<Registration />}></Route>
+            <Route path='/sign-in' element={<SignIn />}></Route>
+            <Route path='/add-bike' element={<AddBike />}></Route>
+            <Route path='/add-part' element={<AddPart />}></Route>
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

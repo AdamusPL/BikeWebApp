@@ -32,7 +32,6 @@ export default function AddPart() {
         setAttributes(data[keysArray[0]]);
         setFilters(data);
         setDefaultValues({ type: keysArray[0], attribute: data[keysArray[0]][0]});
-        console.log(attributes);
     }
 
     async function addPartToDB() {
@@ -60,7 +59,6 @@ export default function AddPart() {
     }
 
     function changeType(type) {
-        debugger;
         setDefaultValues(prevData => ({
             type: type,
             attribute: filters[type][0]

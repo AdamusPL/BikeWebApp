@@ -15,7 +15,6 @@ export default function Account() {
     }, []);
 
     function checkLogin() {
-        debugger;
         if (localStorage.getItem('token') === null) {
             navigate('/sign-in');
         }

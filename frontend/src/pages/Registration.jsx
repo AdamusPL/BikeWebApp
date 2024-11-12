@@ -15,7 +15,6 @@ export default function Registration(){
     const [loginStatus, setLoginStatus] = useState("");
 
     function register(){
-        debugger;
         const userData = {
             firstName: firstName,
             lastName: lastName,
