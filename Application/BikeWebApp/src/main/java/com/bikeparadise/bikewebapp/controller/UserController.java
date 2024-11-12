@@ -5,6 +5,7 @@ import com.bikeparadise.bikewebapp.dto.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
 import com.bikeparadise.bikewebapp.dto.UserSignInDto;
 import com.bikeparadise.bikewebapp.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +27,17 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto) throws ParseException {
-        return userService.loginUser(userSignInDto);
+    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto, HttpServletResponse response) throws ParseException {
+        return userService.loginUser(userSignInDto, response);
     }
 
     @PostMapping("/get-user-data")
     public ResponseEntity<UserInfoDto> getUserData(@RequestHeader("Authorization") String token){
         return userService.getUserData();
+    }
+
+    @PostMapping("/check-role")
+    public void checkRole(@RequestHeader("Authorization") String token){
+
     }
 }

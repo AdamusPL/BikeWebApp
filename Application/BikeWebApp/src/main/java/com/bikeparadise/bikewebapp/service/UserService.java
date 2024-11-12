@@ -11,6 +11,9 @@ import com.bikeparadise.bikewebapp.model.UserEmail;
 import com.bikeparadise.bikewebapp.model.UserPhoneNumber;
 import com.bikeparadise.bikewebapp.repository.UserDataRepository;
 import com.bikeparadise.bikewebapp.repository.UserRepository;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,7 +76,7 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto) throws ParseException {
+    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto, HttpServletResponse response) {
         List<User> foundUsers = userRepository.findUserByUsername(userSignInDto.getUsername());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

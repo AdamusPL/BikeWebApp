@@ -34,7 +34,13 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers("/add-bike", "/add-part", "/get-all-orders-list", "/delete-bike",
+                                "/delete-part", "/get-add-bike-filters", "/update-order-status", "/get-order-statuses")
+                        .hasRole("ADMIN")
+                        .requestMatchers("/buy", "/get-order-list", "/post-bike-review", "/post-part-review")
+                        .hasRole("USER")
+                        .anyRequest()
+                        .permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)

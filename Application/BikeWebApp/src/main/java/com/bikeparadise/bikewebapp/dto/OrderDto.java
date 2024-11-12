@@ -7,6 +7,6 @@ import java.util.List;
 @Getter
 public class OrderDto {
     Integer clientId;
-    List<Integer> bikeIds;
-    List<Integer> partIds;
+    List<OrderItemDto> bikes;
+    List<OrderItemDto> parts;
 }

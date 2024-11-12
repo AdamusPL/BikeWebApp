@@ -1,7 +1,6 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.OrderDto;
-import com.bikeparadise.bikewebapp.dto.OrderListDto;
+import com.bikeparadise.bikewebapp.dto.*;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.*;
 import org.springframework.http.ResponseEntity;
@@ -43,32 +42,32 @@ public class OrderService {
 
         if (client.isPresent() && orderStatus.size() != 0) {
             List<Part> partList = new ArrayList<>();
-            if (orderDto.getPartIds() != null) {
-                for (Integer partId : orderDto.getPartIds()) {
-                    Optional<Part> partOptional = partRepository.findById(partId);
+            if (orderDto.getParts() != null) {
+                for (OrderItemDto part : orderDto.getParts()) {
+                    Optional<Part> partOptional = partRepository.findById(part.getId());
 
                     if (partOptional.isPresent()) {
                         partList.add(partOptional.get());
 
                         //reduce quantityInStock after buying by Client
                         Part get = partOptional.get();
-                        get.setQuantityInStock(get.getQuantityInStock() - 1);
+                        get.setQuantityInStock(get.getQuantityInStock() - part.getQuantity());
                         partRepository.save(get);
                     }
                 }
             }
 
             List<BikeIdentificationReserved> bikeIdentificationReservedList = new ArrayList<>();
-            if (orderDto.getBikeIds() != null) {
-                for (Integer bikeId : orderDto.getBikeIds()) {
-                    Optional<Bike> bikeOptional = bikeRepository.findById(bikeId);
+            if (orderDto.getBikes() != null) {
+                for (OrderItemDto bike : orderDto.getBikes()) {
+                    Optional<Bike> bikeOptional = bikeRepository.findById(bike.getId());
 
                     if (bikeOptional.isPresent()) {
                         //reduce quantityInStock after buying by Client
                         Bike actualBike = bikeOptional.get();
                         bikeRepository.save(actualBike);
 
-                        //assign bike with identification to Client
+                        //assign bike with identification to Client, first from up which is available
                         BikeIdentificationAvailable bikeIdentificationAvailable = actualBike.getBikeIdentificationAvailable().get(0);
                         BikeIdentificationReserved bikeIdentificationReserved = new BikeIdentificationReserved(bikeIdentificationAvailable.getSerialNumber(), bikeIdentificationAvailable.getBike());
 
@@ -105,18 +104,40 @@ public class OrderService {
 //                orderedParts.add(part.getMake() + " " + part.getModelName());
 //                finalPrice += part.getPrice();
 //            }
-            OrderListDto orderListDto = new OrderListDto(formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedParts, finalPrice);
+            OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedParts, finalPrice);
             score.add(orderListDto);
         }
 
         return score;
     }
 
-    public ResponseEntity<String> updateOrderStatus(int orderId, int orderStatusId){
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
+    public List<OrderListDto> getAllOrdersList(){
+        List<OrderListDto> score = new ArrayList<>();
+        List<Order> orderList = orderRepository.findAll();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        for(Order order : orderList){
+            List<String> orderedParts = new ArrayList<>();
+            Double finalPrice = 0D;
+            for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
+                orderedParts.add(bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName());
+                finalPrice += bikeIdentificationReserved.getBike().getPrice();
+            }
+            for(Part part : order.getPart()){
+                orderedParts.add(part.getMake() + " " + part.getModelName());
+                finalPrice += part.getPrice();
+            }
+            OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedParts, finalPrice);
+            score.add(orderListDto);
+        }
+
+        return score;
+    }
+
+    public ResponseEntity<String> updateOrderStatus(OrderStatusOrderDto orderStatusOrderDto){
+        Optional<Order> orderOptional = orderRepository.findById(orderStatusOrderDto.getOrderId());
 
         if(orderOptional.isPresent()){
-            Optional<OrderStatus> orderStatusOptional = orderStatusRepository.findById(orderStatusId);
+            Optional<OrderStatus> orderStatusOptional = orderStatusRepository.findById(orderStatusOrderDto.getId());
             if(orderStatusOptional.isPresent()){
                 Order order = orderOptional.get();
                 order.setOrderStatus(orderStatusOptional.get());
@@ -126,6 +147,19 @@ public class OrderService {
         }
 
         return ResponseEntity.notFound().build();
+
+    }
+
+    public List<OrderStatusDto> getOrderStatuses(){
+        List<OrderStatus> orderStatuses = orderStatusRepository.findAll();
+        List<OrderStatusDto> orderStatusDtos = new ArrayList<>();
+
+        for(OrderStatus orderStatus : orderStatuses){
+            OrderStatusDto orderStatusDto = new OrderStatusDto(orderStatus.getId(), orderStatus.getStatus());
+            orderStatusDtos.add(orderStatusDto);
+        }
+
+        return orderStatusDtos;
 
     }
 }
