@@ -44,6 +44,7 @@ export default function Cart() {
                 return response.json();
             }
         }).then(data => {
+            debugger;
             setProducts(data);
         })
     }
@@ -205,9 +206,9 @@ export default function Cart() {
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
-                                    <a onClick={() => minusBike(element.id)}><MDBIcon fas icon="minus" /></a>
+                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element.id)} />
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
-                                    <a onClick={() => plusBike(element.id)}><MDBIcon fas icon="plus" /></a>
+                                    <MDBIcon fas icon="plus" onClick={() => plusBike(element.id)} />
                                 </article>
                                 {element.price} ,-
                             </MDBListGroupItem>

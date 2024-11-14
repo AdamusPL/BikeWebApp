@@ -14,8 +14,10 @@ import {
     MDBRipple
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
+import Dialog from '../components/Dialog';
 
 export default function PartShop() {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [keysArray, setKeysArray] = useState([]);
@@ -31,6 +33,24 @@ export default function PartShop() {
     async function getProducts() {
         const response = await fetch('http://localhost:8080/part-shop');
         const data = await response.json();
+
+        const cart = JSON.parse(localStorage.getItem('cart'));
+        if (cart) {
+            data.map(item => {
+                if (item.quantityInStock === 0) {
+                    item.isAvailable = false;
+                }
+                else {
+                    const found = cart.parts.find(cartItem => cartItem.id === item.id);
+                    item.isAvailable = true;
+                    if (found) {
+                        if (found.quantity >= item.quantityInStock || found.quantity === 0) {
+                            item.isAvailable = false;
+                        }
+                    }
+                }
+            })
+        }
 
         setProducts(data);
     }
@@ -67,6 +87,25 @@ export default function PartShop() {
             localStorage.setItem('cart', JSON.stringify(cart));
         }
 
+        let cartAfterModifying = JSON.parse(localStorage.getItem('cart'));
+
+        let productsCopy = products;
+        const product = productsCopy.find(item => item.id === id);
+
+        const index = cartAfterModifying.parts.findIndex(b => b.id === id);
+
+        if (cartAfterModifying.parts[index].quantity >= product.quantityInStock) {
+            product.isAvailable = false;
+        }
+
+        setProducts(productsCopy);
+
+        setIsDialogOpen(!isDialogOpen);
+
+    }
+
+    function closeDialog() {
+        setIsDialogOpen(!isDialogOpen);
     }
 
     return (<>
@@ -99,7 +138,7 @@ export default function PartShop() {
                         <MDBBtn className="mt-4" color="success" href='/add-part'>Add new part</MDBBtn>
                     </article>
 
-                    <MDBCol md="9">
+                    <MDBCol md="11">
                         <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
                             {!isLoading ?
                                 products.length === 0 ?
@@ -128,7 +167,20 @@ export default function PartShop() {
                                                     <MDBCardText>
                                                         Price: {element.price} ,-
                                                     </MDBCardText>
-                                                    <MDBBtn color='success' onClick={() => addToCart(element.id)}>Add to cart</MDBBtn>
+                                                    <MDBCardText>
+                                                        Quantity in stock: {element.quantityInStock}
+                                                    </MDBCardText>
+                                                    {
+                                                        element.isAvailable ?
+                                                            <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
+                                                            :
+                                                            <article>
+                                                                <MDBBtn className='me-1' color='secondary'>
+                                                                    Add to cart
+                                                                </MDBBtn>
+                                                                <p className='mt-2'>It's not available anymore!</p>
+                                                            </article>
+                                                    }
                                                 </MDBCardBody>
                                             </MDBCard>
                                         </MDBCol>

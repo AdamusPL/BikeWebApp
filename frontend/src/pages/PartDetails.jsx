@@ -28,13 +28,18 @@ export default function PartDetails() {
     }, [chosenProduct, cart]);
 
     function checkAvailability() {
-        if (cart) {
-            const part = cart.parts.find(b => b.id === chosenProduct.id);
-            if (part) {
-                if (part.quantity === chosenProduct.quantityInStock) {
-                    setIsAvailable(false);
-                }
+        if (chosenProduct.quantityInStock === 0) {
+            setIsAvailable(false);
+        }
+        else {
+            if (cart) {
+                const part = cart.parts.find(b => b.id === chosenProduct.id);
+                if (part) {
+                    if (part.quantity >= chosenProduct.quantityInStock || part.quantity === 0) {
+                        setIsAvailable(false);
+                    }
 
+                }
             }
         }
     }

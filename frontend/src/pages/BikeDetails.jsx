@@ -30,18 +30,23 @@ export default function BikeDetails() {
         checkAvailability();
     }, [chosenProduct, cart]);
 
-    function closeDialog(){
+    function closeDialog() {
         setIsDialogOpen(!isDialogOpen);
     }
 
     function checkAvailability() {
-        if (cart) {
-            const bike = cart.bikes.find(b => b.id === chosenProduct.id);
-            if (bike) {
-                if (bike.quantity === chosenProduct.quantityInStock || bike.quantity === 0) {
-                    setIsAvailable(false);
-                }
+        if (chosenProduct.quantityInStock === 0) {
+            setIsAvailable(false);
+        }
+        else {
+            if (cart) {
+                const bike = cart.bikes.find(b => b.id === chosenProduct.id);
+                if (bike) {
+                    if (bike.quantity >= chosenProduct.quantityInStock || bike.quantity === 0) {
+                        setIsAvailable(false);
+                    }
 
+                }
             }
         }
     }
@@ -140,7 +145,7 @@ export default function BikeDetails() {
                                     <MDBBtn className='me-1' color='secondary'>
                                         Add to cart
                                     </MDBBtn>
-                                    <p>It's not available anymore!</p>
+                                    <p className="mt-2">It's not available anymore!</p>
                                     <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
                                 </article>
                         }

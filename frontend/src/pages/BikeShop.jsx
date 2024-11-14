@@ -35,17 +35,32 @@ export default function BikeShop() {
         setIsLoading(false);
     }, []);
 
-    function checkToken(){
+    function checkToken() {
         localStorage.getItem("token");
     }
 
     async function getProducts() {
         const response = await fetch('http://localhost:8080/bike-shop');
         const data = await response.json();
-        // const updatedData = data.map(item => (
-        //     return {...item,
-        //     isAvailable: };
-        // ));
+
+        const cart = JSON.parse(localStorage.getItem('cart'));
+        if (cart) {
+            data.map(item => {
+                if (item.quantityInStock === 0) {
+                    item.isAvailable = false;
+                }
+                else {
+                    const found = cart.bikes.find(cartItem => cartItem.id === item.id);
+                    item.isAvailable = true;
+                    if (found) {
+                        if (found.quantity >= item.quantityInStock || found.quantity === 0) {
+                            item.isAvailable = false;
+                        }
+                    }
+                }
+            })
+        }
+
         setProducts(data);
     }
 
@@ -63,6 +78,7 @@ export default function BikeShop() {
             localStorage.setItem('cart', JSON.stringify({ bikes: [{ id: id, quantity: 1 }], parts: [] }));
         }
         else {
+            debugger;
             let cart = JSON.parse(localStorage.getItem('cart'));
             const index = cart.bikes.findIndex(b => b.id === id);
 
@@ -80,10 +96,24 @@ export default function BikeShop() {
 
             localStorage.setItem('cart', JSON.stringify(cart));
         }
+
+        let cartAfterModifying = JSON.parse(localStorage.getItem('cart'));
+
+        let productsCopy = products;
+        const product = productsCopy.find(item => item.id === id);
+
+        const index = cartAfterModifying.bikes.findIndex(b => b.id === id);
+
+        if (cartAfterModifying.bikes[index].quantity >= product.quantityInStock) {
+            product.isAvailable = false;
+        }
+
+        setProducts(productsCopy);
+
         setIsDialogOpen(!isDialogOpen);
     }
 
-    function closeDialog(){
+    function closeDialog() {
         setIsDialogOpen(!isDialogOpen);
     }
 
@@ -117,7 +147,7 @@ export default function BikeShop() {
                         <MDBBtn className="mt-4" color="success" href='/add-bike'>Add new bike</MDBBtn>
                     </article>
 
-                    <MDBCol md="9">
+                    <MDBCol md="11">
                         <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
                             {!isLoading ?
                                 products.length === 0 ?
@@ -146,7 +176,20 @@ export default function BikeShop() {
                                                     <MDBCardText>
                                                         Price: {element.price} ,-
                                                     </MDBCardText>
-                                                    <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
+                                                    <MDBCardText>
+                                                        Quantity in stock: {element.quantityInStock}
+                                                    </MDBCardText>
+                                                    {
+                                                        element.isAvailable ?
+                                                            <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
+                                                            :
+                                                            <article>
+                                                                <MDBBtn className='me-1' color='secondary'>
+                                                                    Add to cart
+                                                                </MDBBtn>
+                                                                <p className='mt-2'>It's not available anymore!</p>
+                                                            </article>
+                                                    }
                                                 </MDBCardBody>
                                             </MDBCard>
                                         </MDBCol>
