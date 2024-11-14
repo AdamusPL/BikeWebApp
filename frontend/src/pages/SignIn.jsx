@@ -2,12 +2,13 @@ import { MDBBtn, MDBContainer, MDBInput } from "mdb-react-ui-kit";
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 
 export default function SignIn() {
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loginStatus, setLoginStatus] = useState("");
+    const [cookies, setCookie] = useCookies(['token']);
 
     const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ export default function SignIn() {
         }).then(response => response.json())
             .then(data => {
                 if (data.accessToken !== null) {
-                    localStorage.setItem('token', data.accessToken);
+                    setCookie('token', data.accessToken, {path: '/'});
                     navigate('/');
                 }
                 else {

@@ -1,12 +1,15 @@
 import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 import '../css/Account.css';
 
 export default function Account() {
     const [isLoading, setIsLoading] = useState(true);
     const [userData, setUserData] = useState([]);
+    const [cookies, setCookie] = useCookies(['token']);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,7 +18,8 @@ export default function Account() {
     }, []);
 
     function checkLogin() {
-        if (localStorage.getItem('token') === null) {
+        debugger;
+        if (cookies.token === undefined) {
             navigate('/sign-in');
         }
         else {
@@ -27,7 +31,7 @@ export default function Account() {
         fetch(`http://localhost:8080/get-user-data`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${cookies.token}`,
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())

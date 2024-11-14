@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import '../css/Cart.css'
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 export default function Cart() {
 
@@ -12,6 +13,7 @@ export default function Cart() {
     const [isLoading, setIsLoading] = useState(true);
     const [summaryPrice, setSummaryPrice] = useState(0.0);
     const [basicModal, setBasicModal] = useState(false);
+    const [cookies, setCookie] = useCookies(['token']);
 
     const navigate = useNavigate();
 
@@ -77,7 +79,7 @@ export default function Cart() {
     }
 
     function handleClick() {
-        if (localStorage.getItem("token") === null) {
+        if (cookies.token === undefined) {
             navigate('/sign-in');
         }
         else{
@@ -89,8 +91,89 @@ export default function Cart() {
         setBasicModal(!basicModal);
     }
 
-    function minusBike(element) {
+    function minusBike(id) {
+        let cart = JSON.parse(localStorage.getItem('cart'));
 
+        const bike = cart.bikes.find(b => b.id === id);
+
+        if(bike.quantity > 1){
+            bike.quantity -= 1;
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        let productsCopy = products;
+        
+        const bikeProduct = productsCopy.bikes.find(b => b.id === id);
+
+        if(bikeProduct.quantity > 1){
+            bikeProduct.quantity -= 1;
+        }
+
+        setProducts(productsCopy);
+    }
+
+    function plusBike(id){
+        let cart = JSON.parse(localStorage.getItem('cart'));
+
+        const bike = cart.bikes.find(b => b.id === id);
+
+        let productsCopy = products;
+        const bikeProduct = productsCopy.bikes.find(b => b.id === id);
+
+        if(bike.quantity < bikeProduct.quantityInStock){
+            bike.quantity += 1;
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        if(bikeProduct.quantity < bike.quantityInStock){
+            bikeProduct.quantity += 1;
+        }
+
+        setProducts(productsCopy);
+    }
+
+    function minusPart(id) {
+        let cart = JSON.parse(localStorage.getItem('cart'));
+
+        const part = cart.parts.find(b => b.id === id);
+
+        let productsCopy = products;
+        const partProduct = productsCopy.parts.find(b => b.id === id);
+
+        if(part.quantity > 1){
+            part.quantity -= 1;
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        if(partProduct.quantity > 1){
+            partProduct.quantity -= 1;
+        }
+
+        setProducts(productsCopy);
+    }
+
+    function plusPart(id){
+        let cart = JSON.parse(localStorage.getItem('cart'));
+
+        const part = cart.parts.find(b => b.id === id);
+
+        let productsCopy = products;
+        const partProduct = productsCopy.parts.find(b => b.id === id);
+
+        if(part.quantity < partProduct.quantityInStock){
+            part.quantity += 1;
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        if(partProduct.quantity < part.quantityInStock){
+            partProduct.quantity += 1;
+        }
+
+        setProducts(productsCopy);
     }
 
     function submitOrder(){
@@ -122,9 +205,9 @@ export default function Cart() {
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)} />
+                                    <a onClick={() => minusBike(element.id)}><MDBIcon fas icon="minus" /></a>
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
-                                    <MDBIcon fas icon="plus" />
+                                    <a onClick={() => plusBike(element.id)}><MDBIcon fas icon="plus" /></a>
                                 </article>
                                 {element.price} ,-
                             </MDBListGroupItem>
@@ -137,9 +220,9 @@ export default function Cart() {
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element)} />
+                                    <MDBIcon fas icon="minus" onClick={() => minusPart(element.id)} />
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
-                                    <MDBIcon fas icon="plus" />
+                                    <MDBIcon fas icon="plus" onClick={() => plusPart(element.id)} />
                                 </article>
                                 {element.price}
                             </MDBListGroupItem>
