@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/check-role")
-    public void checkRole(@RequestHeader("Authorization") String token){
-
+    public ResponseEntity<String> checkRole(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok().build();
     }
 }

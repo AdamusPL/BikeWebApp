@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,7 @@ public class Part {
     Integer id;
     String make;
     String modelName;
-    Double price;
+    BigDecimal price;
     Integer quantityInStock;
     String description;
 
@@ -55,7 +56,7 @@ public class Part {
             inverseJoinColumns = @JoinColumn(name = "OrderId"))
     private List<Order> order;
 
-    public Part(String make, String modelName, Double price, Integer quantityInStock, String description, PartType partType, List<PartAttribute> partAttribute, ShopAssistant shopAssistant){
+    public Part(String make, String modelName, BigDecimal price, Integer quantityInStock, String description, PartType partType, List<PartAttribute> partAttribute, ShopAssistant shopAssistant){
         this.make = make;
         this.modelName = modelName;
         this.price = price;

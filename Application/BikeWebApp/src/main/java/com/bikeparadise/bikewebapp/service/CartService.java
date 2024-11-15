@@ -8,6 +8,7 @@ import com.bikeparadise.bikewebapp.repository.BikeRepository;
 import com.bikeparadise.bikewebapp.repository.PartRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -28,7 +29,7 @@ public class CartService {
             Optional<Part> partOptional = partRepository.findById(partCartDto.getId());
             if (partOptional.isPresent()) {
                 Part part = partOptional.get();
-                PartCartInfo productDto = new PartCartInfo(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice() * partCartDto.getQuantity(), partCartDto.getQuantity());
+                PartCartInfo productDto = new PartCartInfo(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice().multiply(BigDecimal.valueOf(partCartDto.getQuantity())), partCartDto.getQuantity(), part.getQuantityInStock());
                 cartParts.add(productDto);
             }
         }
@@ -45,7 +46,7 @@ public class CartService {
                         make = bikeParameterType.getBikeParameterAttribute().getAttribute();
                     }
                 }
-                BikeCartInfo productDto = new BikeCartInfo(bike.getId(), make + " " + bike.getModelName(), bike.getPrice() * bikeCartDto.getQuantity(), bikeCartDto.getQuantity());
+                BikeCartInfo productDto = new BikeCartInfo(bike.getId(), make + " " + bike.getModelName(), bike.getPrice().multiply(BigDecimal.valueOf(bikeCartDto.getQuantity())), bikeCartDto.getQuantity(), bike.getBikeIdentificationAvailable().size());
                 cartBikes.add(productDto);
             }
         }

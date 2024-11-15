@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class BikeDetailedInfoDto {
     Integer id;
     String fullModelName;
     Integer quantityInStock;
-    Double price;
+    BigDecimal price;
     String description;
     Map<String, String> parts;
     List<ReviewPrintDto> reviews;

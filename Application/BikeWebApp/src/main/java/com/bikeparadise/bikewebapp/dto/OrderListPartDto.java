@@ -5,10 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ReviewPrintDto {
+public class OrderListPartDto {
     Integer id;
-    String firstName;
-    String lastName;
-    int numberOfStars;
-    String description;
+    String fullname;
 }

@@ -206,7 +206,7 @@ public class BikeService {
             List<Review> reviews = bike.getReview();
             List<ReviewPrintDto> reviewPrintDtos = new ArrayList<>();
             for (Review review : reviews) {
-                ReviewPrintDto reviewPrintDto = new ReviewPrintDto(review.getClient().getUserData().getFirstName(), review.getClient().getUserData().getLastName(), review.getNumberOfStars(), review.getDescription());
+                ReviewPrintDto reviewPrintDto = new ReviewPrintDto(review.getId(), review.getClient().getUserData().getFirstName(), review.getClient().getUserData().getLastName(), review.getNumberOfStars(), review.getDescription());
                 reviewPrintDtos.add(reviewPrintDto);
             }
 

@@ -3,6 +3,7 @@ package com.bikeparadise.bikewebapp.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Getter
@@ -12,6 +13,6 @@ public class PartShopDto {
     String fullModelName;
     String type;
     String attribute;
-    Double price;
+    BigDecimal price;
     Integer quantityInStock;
 }

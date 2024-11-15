@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class Bike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String modelName;
-    Double price;
+    BigDecimal price;
     String description;
 
     @ManyToMany
@@ -41,13 +42,13 @@ public class Bike {
     @JoinColumn(name = "ShopAssistantId")
     ShopAssistant shopAssistant;
 
-    public Bike(String modelName, Double price, String description) {
+    public Bike(String modelName, BigDecimal price, String description) {
         this.modelName = modelName;
         this.price = price;
         this.description = description;
     }
 
-    public Bike(String modelName, Double price, String description, ShopAssistant shopAssistant) {
+    public Bike(String modelName, BigDecimal price, String description, ShopAssistant shopAssistant) {
         this.modelName = modelName;
         this.price = price;
         this.description = description;

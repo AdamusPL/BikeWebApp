@@ -3,6 +3,7 @@ package com.bikeparadise.bikewebapp.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -11,6 +12,7 @@ public class OrderListDto {
     Integer id;
     String date;
     String status;
-    List<String> products;
-    Double price;
+    List<OrderListBikeDto> orderedBikes;
+    List<OrderListPartDto> orderedParts;
+    BigDecimal price;
 }

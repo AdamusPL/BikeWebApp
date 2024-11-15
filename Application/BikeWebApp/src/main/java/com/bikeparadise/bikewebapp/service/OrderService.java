@@ -6,6 +6,7 @@ import com.bikeparadise.bikewebapp.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,17 +95,18 @@ public class OrderService {
         List<Order> orderList = orderRepository.findByClientId(clientId);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         for(Order order : orderList){
-            List<String> orderedParts = new ArrayList<>();
-            Double finalPrice = 0D;
+            List<OrderListBikeDto> orderedBikes = new ArrayList<>();
+            List<OrderListPartDto> orderedParts = new ArrayList<>();
+            BigDecimal finalPrice = new BigDecimal(0);
             for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
-                orderedParts.add(bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName());
-                finalPrice += bikeIdentificationReserved.getBike().getPrice();
+                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName()));
+                finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
             }
-//            for(Part part : order.getPart()){
-//                orderedParts.add(part.getMake() + " " + part.getModelName());
-//                finalPrice += part.getPrice();
-//            }
-            OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedParts, finalPrice);
+            for(Part part : order.getPart()){
+                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName()));
+                finalPrice = finalPrice.add(part.getPrice());
+            }
+            OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);
             score.add(orderListDto);
         }
 
@@ -116,17 +118,18 @@ public class OrderService {
         List<Order> orderList = orderRepository.findAll();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         for(Order order : orderList){
-            List<String> orderedParts = new ArrayList<>();
-            Double finalPrice = 0D;
+            List<OrderListBikeDto> orderedBikes = new ArrayList<>();
+            List<OrderListPartDto> orderedParts = new ArrayList<>();
+            BigDecimal finalPrice = new BigDecimal(0);
             for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
-                orderedParts.add(bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName());
-                finalPrice += bikeIdentificationReserved.getBike().getPrice();
+                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName()));
+                finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
             }
             for(Part part : order.getPart()){
-                orderedParts.add(part.getMake() + " " + part.getModelName());
-                finalPrice += part.getPrice();
+                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName()));
+                finalPrice = finalPrice.add(part.getPrice());
             }
-            OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedParts, finalPrice);
+            OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);
             score.add(orderListDto);
         }
 
