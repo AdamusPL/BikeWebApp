@@ -141,8 +141,8 @@ export default function PartDetails() {
 
             <p className="fw-light">Reviews</p>
             <p className="fw-lighter">Write a review</p>
-            <div class="d-flex align-items-center mb-2">
-                <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxlength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
+            <div className="d-flex align-items-center mb-2">
+                <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
                 <a>/5</a>
             </div>
             <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
@@ -162,9 +162,9 @@ export default function PartDetails() {
                         :
                         chosenProduct.reviews.map(element => {
                             return (
-                                <div className="mt-5">
+                                <div key={element.id} className="mt-5">
                                     <p>{element.firstName} {element.lastName}</p>
-                                    <p>{(() => {
+                                    <article>{(() => {
                                         const options = [];
 
                                         for (let i = 0; i < element.numberOfStars; i++) {
@@ -172,17 +172,17 @@ export default function PartDetails() {
                                         }
 
                                         return options;
-                                    })()}</p>
+                                    })()}</article>
                                     <p>{element.description}</p>
                                 </div>
                             )
                         })
                     :
-                    <p>
+                    <article>
                         <MDBSpinner role='status'>
                             <span className='visually-hidden'>Loading...</span>
                         </MDBSpinner>
-                    </p>
+                    </article>
             }
 
         </MDBContainer>

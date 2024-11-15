@@ -75,21 +75,19 @@ export default function AddBike() {
 
             <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
 
-            <MDBTextArea label="Description" id="textAreaExample"  className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
+            <MDBTextArea label="Description" id="textAreaExample" className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
 
             <MDBInput label="Serial numbers" id="typeText" type="text" className="mt-5 mb-5" onChange={(e) => { setSerialNumbers(e.target.value) }} />
 
             {!isLoading ?
                 keysArray.map((element, index) => {
                     return (
-                        <div class="d-flex align-items-center mt-2">
-                            <MDBDropdown key={element}>
+                        <div key={element} className="d-flex align-items-center mt-2">
+                            <MDBDropdown>
                                 <MDBDropdownToggle color='success'>{element}</MDBDropdownToggle>
                                 <MDBDropdownMenu>
                                     {filters[element].map(item => (
-                                        <div>
-                                            <a><MDBDropdownItem key={item} onClick={() => changeParameter(element, item)}>{item}</MDBDropdownItem></a>
-                                        </div>
+                                        <MDBDropdownItem key={item} onClick={() => changeParameter(element, item)}>{item}</MDBDropdownItem>
                                     ))}
                                 </MDBDropdownMenu>
                             </MDBDropdown>

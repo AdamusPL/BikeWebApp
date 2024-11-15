@@ -14,6 +14,7 @@ import { faHouse, faEnvelope, faCartShopping } from "@fortawesome/free-solid-svg
 import { Link } from "react-router-dom";
 import logo from '../assets/logo.png'
 import '../css/Layout.css'
+import CookieModal from "./CookieModal";
 
 export function Layout({ children }) {
     const [openBasic, setOpenBasic] = useState(false);
@@ -74,6 +75,7 @@ export function Layout({ children }) {
             <main>
                 {children}
             </main>
+            <CookieModal />
         </>
     );
 }

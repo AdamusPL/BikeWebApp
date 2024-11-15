@@ -82,6 +82,7 @@ export default function BikeDetails() {
         const response = await fetch(`http://localhost:8080/get-detailed-info-about-bike?bikeId=${urlParameters.id}`);
         const data = await response.json();
 
+        debugger;
         const keysArray = Object.keys(data.parts);
         setKeysArray(keysArray);
         setChosenProduct(data);
@@ -157,7 +158,7 @@ export default function BikeDetails() {
             <p className="fw-light">Reviews</p>
             <p className="fw-lighter">Write a review</p>
             <article className="d-flex align-items-center mb-2">
-                <input id="stars" className="form-control" label="1-5" min="1" max="5" maxlength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
+                <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
                 /5
             </article>
             <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
@@ -177,7 +178,7 @@ export default function BikeDetails() {
                         :
                         chosenProduct.reviews.map(element => {
                             return (
-                                <div className="mt-5">
+                                <div key={element.id} className="mt-5">
                                     <p>{element.firstName} {element.lastName}</p>
                                     <p>{(() => {
                                         const options = [];
@@ -193,11 +194,11 @@ export default function BikeDetails() {
                             )
                         })
                     :
-                    <p>
+                    <article>
                         <MDBSpinner role='status'>
                             <span className='visually-hidden'>Loading...</span>
                         </MDBSpinner>
-                    </p>
+                    </article>
             }
 
         </MDBContainer >

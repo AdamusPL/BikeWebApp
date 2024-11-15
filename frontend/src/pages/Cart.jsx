@@ -1,6 +1,7 @@
-import { MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon,
+import {
+    MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon,
     MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter
- } from "mdb-react-ui-kit";
+} from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 
 import '../css/Cart.css'
@@ -83,38 +84,40 @@ export default function Cart() {
         if (cookies.token === undefined) {
             navigate('/sign-in');
         }
-        else{
+        else {
             setBasicModal(!basicModal);
-        }   
+        }
     }
 
-    function toggleOpen(){
+    function toggleOpen() {
         setBasicModal(!basicModal);
     }
 
     function minusBike(id) {
+        debugger;
         let cart = JSON.parse(localStorage.getItem('cart'));
 
         const bike = cart.bikes.find(b => b.id === id);
 
-        if(bike.quantity > 1){
+        if (bike.quantity > 1) {
             bike.quantity -= 1;
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
 
         let productsCopy = products;
-        
+
         const bikeProduct = productsCopy.bikes.find(b => b.id === id);
 
-        if(bikeProduct.quantity > 1){
+        if (bikeProduct.quantity > 1) {
             bikeProduct.quantity -= 1;
         }
 
         setProducts(productsCopy);
     }
 
-    function plusBike(id){
+    function plusBike(id) {
+        debugger;
         let cart = JSON.parse(localStorage.getItem('cart'));
 
         const bike = cart.bikes.find(b => b.id === id);
@@ -122,13 +125,13 @@ export default function Cart() {
         let productsCopy = products;
         const bikeProduct = productsCopy.bikes.find(b => b.id === id);
 
-        if(bike.quantity < bikeProduct.quantityInStock){
+        if (bike.quantity < bikeProduct.quantityInStock) {
             bike.quantity += 1;
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        if(bikeProduct.quantity < bike.quantityInStock){
+        if (bikeProduct.quantity < bike.quantityInStock) {
             bikeProduct.quantity += 1;
         }
 
@@ -136,6 +139,7 @@ export default function Cart() {
     }
 
     function minusPart(id) {
+        debugger;
         let cart = JSON.parse(localStorage.getItem('cart'));
 
         const part = cart.parts.find(b => b.id === id);
@@ -143,20 +147,21 @@ export default function Cart() {
         let productsCopy = products;
         const partProduct = productsCopy.parts.find(b => b.id === id);
 
-        if(part.quantity > 1){
+        if (part.quantity > 1) {
             part.quantity -= 1;
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        if(partProduct.quantity > 1){
+        if (partProduct.quantity > 1) {
             partProduct.quantity -= 1;
         }
 
         setProducts(productsCopy);
     }
 
-    function plusPart(id){
+    function plusPart(id) {
+        debugger;
         let cart = JSON.parse(localStorage.getItem('cart'));
 
         const part = cart.parts.find(b => b.id === id);
@@ -164,20 +169,20 @@ export default function Cart() {
         let productsCopy = products;
         const partProduct = productsCopy.parts.find(b => b.id === id);
 
-        if(part.quantity < partProduct.quantityInStock){
+        if (part.quantity < partProduct.quantityInStock) {
             part.quantity += 1;
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        if(partProduct.quantity < part.quantityInStock){
+        if (partProduct.quantity < part.quantityInStock) {
             partProduct.quantity += 1;
         }
 
         setProducts(productsCopy);
     }
 
-    function submitOrder(){
+    function submitOrder() {
         const order = {
             clientId: 1,
             bikes: JSON.parse(localStorage.getItem('cart')).bikes,
@@ -193,21 +198,25 @@ export default function Cart() {
             if (response.ok) {
                 localStorage.removeItem('cart');
                 navigate('/order-list')
-        }})
+            }
+        })
     }
 
     return (<>
         <MDBContainer>
             <MDBTypography variant='h1 mt-2'>Cart</MDBTypography>
             <MDBCard>
-                <MDBListGroup flush>
+                <MDBListGroup>
+                    <MDBListGroupItem>
+                        <MDBTypography tag='h4'>Bikes</MDBTypography>
+                    </MDBListGroupItem>
                     {!isLoading ?
                         products.bikes.map(element => (
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
                                     <MDBIcon fas icon="minus" onClick={() => minusBike(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
+                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} defaultValue={element.quantity} />
                                     <MDBIcon fas icon="plus" onClick={() => plusBike(element.id)} />
                                 </article>
                                 {element.price} ,-
@@ -216,24 +225,31 @@ export default function Cart() {
                         :
                         <p>Your cart is empty!</p>
                     }
+                    <MDBListGroupItem>
+                        <MDBTypography tag='h4'>Parts</MDBTypography>
+                    </MDBListGroupItem>
                     {!isLoading ?
                         products.parts.map(element => (
                             <MDBListGroupItem key={element.id}>{element.fullModelName}
                                 <MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
                                 <article className="number-of-items">
                                     <MDBIcon fas icon="minus" onClick={() => minusPart(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity}></input>
+                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} defaultValue={element.quantity} />
                                     <MDBIcon fas icon="plus" onClick={() => plusPart(element.id)} />
                                 </article>
-                                {element.price}
+                                {element.price} ,-
                             </MDBListGroupItem>
                         ))
                         :
                         <p>Your cart is empty!</p>
                     }
                     <MDBListGroupItem>
-                        {!isLoading ?
-                            summaryPrice : 0} ,-</MDBListGroupItem>
+                        <MDBTypography tag='h4'>Summary</MDBTypography>
+                    </MDBListGroupItem>
+                    <MDBListGroupItem>
+                        <MDBTypography tag='dt' sm='3' color="success">{!isLoading ?
+                            summaryPrice : 0} ,-</MDBTypography>
+                    </MDBListGroupItem>
                 </MDBListGroup>
             </MDBCard>
             <MDBBtn className="mt-4" color="success" onClick={handleClick}>Buy now</MDBBtn>

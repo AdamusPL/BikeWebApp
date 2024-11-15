@@ -25,20 +25,26 @@ export default function OrderList() {
         setOrderStatuses(data);
     }
 
-    function changeStatus(orderId, orderStatusId, orderStatus){
-        const order = {
-            id: orderStatusId,
-            orderId: orderId
+    function changeStatus(order, status) {
+        const orderDto = {
+            id: status.id,
+            orderId: order.id
         };
 
         fetch(`http://localhost:8080/update-order-status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(order)
+            body: JSON.stringify(orderDto)
 
         }).then(response => {
-            if(response.ok){
+            if (response.ok) {
+                debugger;
                 
+                let orderCopy = orders;
+                let foundOrder = orderCopy.find(item => item.id === order.id);
+                foundOrder.status = status.status;
+
+                setOrders(orderCopy);
             }
         })
     }
@@ -46,37 +52,46 @@ export default function OrderList() {
     return (<>
         <MDBContainer>
             <MDBTypography variant='h1 mt-2'>Your orders</MDBTypography>
-        </MDBContainer>
-        <MDBCard>
-            <MDBListGroup flush>
+            <MDBCard>
                 {!isLoading ?
-                    orders.map(element => {
-                        return (
-                            <div key={element.id}>
+                    orders.map(order => {
+                        return(
+                        <MDBListGroup key={order.id}>
+                            <MDBListGroupItem>
+                                <MDBTypography tag='h4'>Order from: {order.date}</MDBTypography> <MDBDropdown>
+                                    <MDBDropdownToggle color='success'> {order.status}</MDBDropdownToggle>
+                                    <MDBDropdownMenu>
+                                        {orderStatuses.map(status => {
+                                            return (<MDBDropdownItem key={status.id} link onClick={(e) => changeStatus(order, status)}>{status.status}</MDBDropdownItem>)
+                                        })}
+                                    </MDBDropdownMenu>
+                                </MDBDropdown>
+                            </MDBListGroupItem>
+
+                            {order.orderedBikes.map(bike => {
+                                return (<MDBListGroupItem className="mb-4" key={bike.id}>
+                                    {bike.fullname}
+                                </MDBListGroupItem>)
+                            })}
+
+                            {order.orderedParts.map(part => {
+                                return (<MDBListGroupItem className="mb-4" key={part.id}>
+                                    {part.fullname}
+                                </MDBListGroupItem>)
+                            })}
+
+                            {!isLoading ?
                                 <MDBListGroupItem>
-                                    Order from: {element.date} - <MDBDropdown>
-                                        <MDBDropdownToggle color='success'>{element.status}</MDBDropdownToggle>
-                                        <MDBDropdownMenu>
-                                            {orderStatuses.map(item => {
-                                                return(<MDBDropdownItem key={item.id} link onClick={(e) => changeStatus(element.id, item.id, item.status)}>{item.status}</MDBDropdownItem>)
-                                            })}
-                                        </MDBDropdownMenu>
-                                    </MDBDropdown>
+                                    {order.price} ,-
                                 </MDBListGroupItem>
-                                {element.products.map(item => {
-                                    return(<MDBListGroupItem>
-                                        {item}
-                                    </MDBListGroupItem>)
-                                })}
-                                <MDBListGroupItem>
-                                    {!isLoading ?
-                                        element.price : 0} ,-</MDBListGroupItem>
-                            </div>)
+                                : <p>0, -</p>}
+
+                        </MDBListGroup>)
                     })
                     :
                     <p>There are no orders yet.</p>
                 }
-            </MDBListGroup>
-        </MDBCard>
+            </MDBCard>
+        </MDBContainer >
     </>)
 }

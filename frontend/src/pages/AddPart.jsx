@@ -31,7 +31,7 @@ export default function AddPart() {
         setKeysArray(keysArray);
         setAttributes(data[keysArray[0]]);
         setFilters(data);
-        setDefaultValues({ type: keysArray[0], attribute: data[keysArray[0]][0]});
+        setDefaultValues({ type: keysArray[0], attribute: data[keysArray[0]][0] });
     }
 
     async function addPartToDB() {
@@ -89,14 +89,12 @@ export default function AddPart() {
 
 
             {!isLoading ?
-                <div class="d-flex align-items-center mt-2">
+                <div className="d-flex align-items-center mt-2">
                     <MDBDropdown>
                         <MDBDropdownToggle color='success'>Type</MDBDropdownToggle>
                         <MDBDropdownMenu>
                             {keysArray.map(item => (
-                                <div>
-                                    <a><MDBDropdownItem key={item} onClick={() => changeType(item)}>{item}</MDBDropdownItem></a>
-                                </div>
+                                <MDBDropdownItem key={item} onClick={() => changeType(item)}>{item}</MDBDropdownItem>
                             ))}
                         </MDBDropdownMenu>
                     </MDBDropdown>
@@ -107,14 +105,12 @@ export default function AddPart() {
             }
 
             {!isLoading ?
-                <div class="d-flex align-items-center mt-2">
+                <div className="d-flex align-items-center mt-2">
                     <MDBDropdown>
                         <MDBDropdownToggle color='success'>Attribute</MDBDropdownToggle>
                         <MDBDropdownMenu>
                             {attributes.map(item => (
-                                <div>
-                                    <a><MDBDropdownItem key={item} onClick={() => changeAttribute(item)}>{item}</MDBDropdownItem></a>
-                                </div>
+                                <MDBDropdownItem key={item} onClick={() => changeAttribute(item)}>{item}</MDBDropdownItem>
                             ))}
                         </MDBDropdownMenu>
                     </MDBDropdown>

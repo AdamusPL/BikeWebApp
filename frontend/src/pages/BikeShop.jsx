@@ -11,7 +11,8 @@ import {
     MDBSpinner,
     MDBBtn,
     MDBCheckbox,
-    MDBRipple
+    MDBRipple,
+    MDBTypography
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
 
@@ -166,7 +167,7 @@ export default function BikeShop() {
                                                     </MDBRipple>
                                                 </Link>
                                                 <MDBCardBody>
-                                                    <MDBCardTitle>{element.fullModelName}</MDBCardTitle>
+                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.fullModelName}</MDBCardTitle>
                                                     <MDBCardText>
                                                         Type: {element.type}
                                                     </MDBCardText>
@@ -176,7 +177,7 @@ export default function BikeShop() {
                                                     <MDBCardText>
                                                         Price: {element.price} ,-
                                                     </MDBCardText>
-                                                    <MDBCardText>
+                                                    <MDBCardText className='mb-4'>
                                                         Quantity in stock: {element.quantityInStock}
                                                     </MDBCardText>
                                                     {
@@ -187,7 +188,7 @@ export default function BikeShop() {
                                                                 <MDBBtn className='me-1' color='secondary'>
                                                                     Add to cart
                                                                 </MDBBtn>
-                                                                <p className='mt-2'>It's not available anymore!</p>
+                                                                <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
                                                             </article>
                                                     }
                                                 </MDBCardBody>
@@ -195,11 +196,11 @@ export default function BikeShop() {
                                         </MDBCol>
                                     ))
                                 :
-                                <p>
+                                <article>
                                     <MDBSpinner role='status'>
                                         <span className='visually-hidden'>Loading...</span>
                                     </MDBSpinner>
-                                </p>
+                                </article>
                             }
                         </MDBRow>
                     </MDBCol>
