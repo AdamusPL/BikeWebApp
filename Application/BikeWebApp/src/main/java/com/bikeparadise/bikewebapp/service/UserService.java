@@ -5,10 +5,7 @@ import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
 import com.bikeparadise.bikewebapp.dto.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
 import com.bikeparadise.bikewebapp.dto.UserSignInDto;
-import com.bikeparadise.bikewebapp.model.User;
-import com.bikeparadise.bikewebapp.model.UserData;
-import com.bikeparadise.bikewebapp.model.UserEmail;
-import com.bikeparadise.bikewebapp.model.UserPhoneNumber;
+import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.UserDataRepository;
 import com.bikeparadise.bikewebapp.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -20,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,12 +70,21 @@ public class UserService {
         userPhoneNumberList.add(userPhoneNumber);
         userData.setUserPhoneNumber(userPhoneNumberList);
 
+        if(userRegisterDto.isSelectedRole()){
+            ShopAssistant shopAssistant = new ShopAssistant(userData);
+            userData.setShopAssistant(shopAssistant);
+        }
+        else{
+            Client client = new Client(userData);
+            userData.setClient(client);
+        }
+
         userRepository.save(user);
 
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto, HttpServletResponse response) {
+    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto) {
         List<User> foundUsers = userRepository.findUserByUsername(userSignInDto.getUsername());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -85,9 +93,20 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userSignInDto.getUsername(), userSignInDto.getPassword())
-        );
+        Authentication authentication;
+
+        if(foundUsers.get(0).getUserData().getShopAssistant() != null){
+            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userSignInDto.getUsername(), userSignInDto.getPassword(), authorities)
+            );
+        }
+        else{
+            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userSignInDto.getUsername(), userSignInDto.getPassword(), authorities)
+            );
+        }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtTokenGenerator.generateToken(authentication);

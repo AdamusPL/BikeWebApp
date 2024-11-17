@@ -27,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto, HttpServletResponse response) throws ParseException {
-        return userService.loginUser(userSignInDto, response);
+    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto) {
+        return userService.loginUser(userSignInDto);
     }
 
     @PostMapping("/get-user-data")

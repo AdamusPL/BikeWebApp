@@ -20,19 +20,19 @@ public class UserData {
     String firstName;
     String lastName;
 
-    @OneToOne(mappedBy = "userData", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
     User user;
 
-    @OneToMany(mappedBy = "userData", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "userData", cascade = CascadeType.ALL)
     List<UserPhoneNumber> userPhoneNumber;
 
-    @OneToMany(mappedBy = "userData", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "userData", cascade = CascadeType.ALL)
     List<UserEmail> userEmail;
 
     @OneToOne(mappedBy = "userData")
     Client client;
 
-    @OneToOne(mappedBy = "userData")
+    @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
     ShopAssistant shopAssistant;
 
     public UserData(String firstName, String lastName) {

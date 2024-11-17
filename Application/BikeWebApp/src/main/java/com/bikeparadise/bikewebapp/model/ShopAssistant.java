@@ -24,4 +24,8 @@ public class ShopAssistant {
     @OneToMany(mappedBy = "shopAssistant")
     List<Bike> bike;
 
+    public ShopAssistant(UserData userData){
+        this.userData = userData;
+    }
+
 }

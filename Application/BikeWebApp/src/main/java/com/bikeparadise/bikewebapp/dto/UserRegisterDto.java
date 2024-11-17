@@ -11,4 +11,5 @@ public class UserRegisterDto {
     String email;
     String phoneNumber;
     String confirmedPassword;
+    boolean selectedRole;
 }

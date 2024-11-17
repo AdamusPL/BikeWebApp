@@ -1,8 +1,11 @@
 package com.bikeparadise.bikewebapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,10 +16,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomUserDetailsService customUserDetailsService;
@@ -34,8 +41,16 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest()
+                        .requestMatchers("/sign-in", "/register", "/bike-shop", "/part-shop",
+                                "/get-detailed-info-about-bike",
+                                "/get-bike-shop-filters", "/get-detailed-info-about-part", "/get-part-filters",
+                                "/get-cart-products")
                         .permitAll()
+                        .requestMatchers("/add-bike", "/add-part", "/get-all-orders-list", "/delete-bike",
+                                "/delete-part", "/get-add-bike-filters", "/update-order-status", "/get-order-statuses")
+                        .hasRole("ADMIN")
+                        .requestMatchers("/buy", "/get-order-list", "/post-bike-review", "/post-part-review")
+                        .hasRole("USER")
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
@@ -61,29 +76,24 @@ public class WebSecurityConfig {
     }
 
 
-//    @Bean
-//    public FilterRegistrationBean corsFilter(){
-//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.setAllowCredentials(true);
-//        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-//        corsConfiguration.setAllowedHeaders(Arrays.asList(
-//                HttpHeaders.AUTHORIZATION,
-//                HttpHeaders.CONTENT_TYPE,
-//                HttpHeaders.ACCEPT
-//        ));
-//
-//        corsConfiguration.setAllowedMethods(Arrays.asList(
-//                HttpMethod.GET,
-//                HttpMethod.POST,
-//                HttpMethod.PUT,
-//                HttpMethod.DELETE
-//        ));
-//
-//        corsConfiguration.setMaxAge(3600L);
-//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-//        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new CorsFilter(urlBasedCorsConfigurationSource));
-//        filterRegistrationBean.setOrder(-100);
-//        return filterRegistrationBean;
-//    }
+    @Bean
+    public CorsFilter corsFilter(){
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.setAllowedHeaders(Arrays.asList(
+                HttpHeaders.AUTHORIZATION,
+                HttpHeaders.CONTENT_TYPE,
+                HttpHeaders.ACCEPT
+        ));
+
+        corsConfiguration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE"
+        ));
+
+        corsConfiguration.setMaxAge(3600L);
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsFilter(urlBasedCorsConfigurationSource);
+    }
 }
