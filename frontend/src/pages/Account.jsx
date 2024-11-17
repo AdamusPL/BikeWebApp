@@ -8,7 +8,7 @@ import '../css/Account.css';
 export default function Account() {
     const [isLoading, setIsLoading] = useState(true);
     const [userData, setUserData] = useState([]);
-    const [cookies, setCookie] = useCookies(['token']);
+    const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
     const navigate = useNavigate();
 
@@ -41,7 +41,7 @@ export default function Account() {
     }
 
     function logOut() {
-        localStorage.removeItem('token');
+        removeCookie("token");
         navigate('/sign-in');
     }
 

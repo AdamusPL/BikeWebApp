@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 
 import '../css/BikeShop.css'
 import Dialog from '../components/Dialog';
+import { useRole } from '../components/RoleProvider';
 
 export default function BikeShop() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -27,18 +28,13 @@ export default function BikeShop() {
     const [filters, setFilters] = useState([]);
     const [keysArray, setKeysArray] = useState([]);
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
-    const [isShopAssistant, setIsShopAssistant] = useState(false);
+    const { isShopAssistant } = useRole();
 
     useEffect(() => {
-        checkToken();
         getProducts();
         getFilters();
         setIsLoading(false);
     }, []);
-
-    function checkToken() {
-        localStorage.getItem("token");
-    }
 
     async function getProducts() {
         const response = await fetch('http://localhost:8080/bike-shop');
@@ -144,9 +140,10 @@ export default function BikeShop() {
                 </MDBCol>
 
                 <MDBCol>
-                    <article id="button">
-                        <MDBBtn className="mt-4" color="success" href='/add-bike'>Add new bike</MDBBtn>
-                    </article>
+                    {isShopAssistant ?
+                        <article id="button">
+                            <MDBBtn className="mt-4" color="success" href='/add-bike'>Add new bike</MDBBtn>
+                        </article> : <p></p>}
 
                     <MDBCol md="11">
                         <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>

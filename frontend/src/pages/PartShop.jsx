@@ -16,6 +16,7 @@ import {
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
 import Dialog from '../components/Dialog';
+import { useRole } from '../components/RoleProvider';
 
 export default function PartShop() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -24,6 +25,7 @@ export default function PartShop() {
     const [keysArray, setKeysArray] = useState([]);
     const [filters, setFilters] = useState([]);
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
+    const { isShopAssistant } = useRole();
 
     useEffect(() => {
         getProducts();
@@ -135,9 +137,12 @@ export default function PartShop() {
                 </MDBCol>
 
                 <MDBCol>
-                    <article id="button">
-                        <MDBBtn className="mt-4" color="success" href='/add-part'>Add new part</MDBBtn>
-                    </article>
+                    {isShopAssistant ?
+                        <article id="button">
+                            <MDBBtn className="mt-4" color="success" href='/add-part'>Add new part</MDBBtn>
+                        </article>
+                        : <p></p>
+                    }
 
                     <MDBCol md="11">
                         <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>

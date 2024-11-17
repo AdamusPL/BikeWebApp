@@ -1,9 +1,9 @@
-import { MDBBtn, MDBContainer, MDBInput } from "mdb-react-ui-kit";
+import { MDBBtn, MDBContainer, MDBInput, MDBRadio } from "mdb-react-ui-kit";
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function Registration(){
+export default function Registration() {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -13,8 +13,10 @@ export default function Registration(){
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [loginStatus, setLoginStatus] = useState("");
+    const [selectedRole, setSelectedRole] = useState(false);
 
-    function register(){
+    function register() {
+        debugger;
         const userData = {
             firstName: firstName,
             lastName: lastName,
@@ -22,7 +24,8 @@ export default function Registration(){
             email: email,
             phoneNumber: phoneNumber,
             password: password,
-            confirmedPassword: confirmedPassword
+            confirmedPassword: confirmedPassword,
+            selectedRole: selectedRole
         };
 
         fetch(`http://localhost:8080/register`, {
@@ -32,15 +35,21 @@ export default function Registration(){
 
         }).then(response => {
             if (response.ok) {
-                return <Redirect to='/' />
+                setLoginStatus("User successfully registered! Now return to sign-in page to use your account.");
             }
-            else{
+            else {
                 setLoginStatus("Error: Incorrect credentials");
             }
         })
     }
 
-    return(<>
+    const handleRadioButtonChange = (event) => {
+        setSelectedRole(event.target.value);
+        console.log(event.target.value);
+    };
+
+
+    return (<>
         <MDBContainer className="w-25">
             <figure className='figure'>
                 <img
@@ -59,6 +68,12 @@ export default function Registration(){
 
             <MDBInput label="Password" id="typePassword" type="password" className="mt-5" onChange={(e) => { setPassword(e.target.value) }} />
             <MDBInput label="Confirm Password" id="typePassword" type="password" className="mt-3" onChange={(e) => { setConfirmedPassword(e.target.value) }} />
+
+            <MDBContainer className="mt-3">
+                <MDBRadio name='flexRadioDefault' id='client' label='Client' value={false} onChange={handleRadioButtonChange} defaultChecked />
+                <MDBRadio name='flexRadioDefault' id='shop-assistant' label='Shop Assistant' value={true} onChange={handleRadioButtonChange} />
+            </MDBContainer>
+
             <div className="d-flex justify-content-center">
                 <MDBBtn className="mt-4" color="success" onClick={register}>Create an account</MDBBtn>
             </div>
