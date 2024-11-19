@@ -14,3 +14,7 @@
 .navbar-elem{
     color: white;
 }
+
+.active-elem{
+    color: black;
+}

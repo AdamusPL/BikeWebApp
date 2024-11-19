@@ -17,6 +17,7 @@ export default function Registration() {
 
     function register() {
         debugger;
+        
         const userData = {
             firstName: firstName,
             lastName: lastName,

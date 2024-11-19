@@ -3,9 +3,12 @@ import logo from '../assets/logo.png'
 import '../css/Layout.css'
 import CookieModal from "./CookieModal";
 import { MDBIcon } from "mdb-react-ui-kit";
+import { useLocation } from "react-router-dom";
 
 export function Layout({ children }) {
-    const [openBasic, setOpenBasic] = useState(false);
+    const location = useLocation();
+
+    const isActive = (path) => location.pathname === path ? "active" : ""
 
     return (
         <>
@@ -21,27 +24,27 @@ export function Layout({ children }) {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <a className="nav-link" href="/"><MDBIcon fas icon="home" className="navbar-elem" /></a>
+                                <a className="nav-link" href="/"><MDBIcon fas icon="home" className={`${isActive('/') ? "active-elem" : "navbar-elem"}`} /></a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link navbar-elem" href="/bike-shop">Bikes</a>
+                                <a className={`nav-link ${isActive('/bike-shop') ? "active-elem" : "navbar-elem"}`} href="/bike-shop">Bikes</a>
                             </li>
 
                             <li className="nav-item">
-                                <a className="nav-link navbar-elem" href="/part-shop">Parts</a>
+                                <a className={`nav-link ${isActive('/part-shop') ? "active-elem" : "navbar-elem"}`} href="/part-shop">Parts</a>
                             </li>
 
                         </ul>
 
                         <ul className="navbar-nav d-flex flex-row me-1">
                             <li className="nav-item me-3 me-lg-0">
-                                <a className="nav-link" href="/order-list"><MDBIcon fas icon="envelope" className="navbar-elem" /></a>
+                                <a className="nav-link" href="/order-list"><MDBIcon fas icon="envelope" className={`${isActive('/order-list') ? "active-elem" : "navbar-elem"}`} /></a>
                             </li>
                             <li className="nav-item me-3 me-lg-0">
-                                <a className="nav-link" href="/cart"><MDBIcon fas icon="shopping-cart" className="navbar-elem" /></a>
+                                <a className="nav-link" href="/cart"><MDBIcon fas icon="shopping-cart" className={`${isActive('/cart') ? "active-elem" : "navbar-elem"}`} /></a>
                             </li>
                             <li className="nav-item me-3 me-lg-0">
-                                <a className="nav-link" href="/account"><MDBIcon fas icon="user-alt" className="navbar-elem" /></a>
+                                <a className="nav-link" href="/account"><MDBIcon fas icon="user-alt" className={`${isActive('/account') || isActive('/sign-in') || isActive('/register') ? "active-elem" : "navbar-elem"}`} /></a>
                             </li>
                         </ul>
 
