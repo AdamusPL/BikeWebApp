@@ -27,17 +27,13 @@ export default function Account() {
         }
     }
 
-    function getUserData() {
-        fetch(`http://localhost:8080/get-user-data`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${cookies.token}`,
-                'Content-Type': 'application/json'
-            }
-        }).then(response => response.json())
-            .then(data => {
-                setUserData(data);
-            })
+    async function getUserData() {
+        const response = await fetch(`http://localhost:8080/get-user-data?token=${cookies.token}`);
+        
+        debugger;
+        
+        const data = await response.json();
+        setUserData(data);
     }
 
     function logOut() {

@@ -10,3 +10,7 @@
 .nav-container{
     display: flex;
 }
+
+.navbar-elem{
+    color: white;
+}
