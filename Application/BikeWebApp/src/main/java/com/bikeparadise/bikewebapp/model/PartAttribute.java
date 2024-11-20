@@ -22,14 +22,11 @@ public class PartAttribute {
         return attribute;
     }
 
-    @OneToMany
-    List<PartType> partType;
+    @ManyToOne
+    private PartType partType;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Part_PartAttribute",
-            joinColumns = @JoinColumn(name = "PartAttributeId"),
-            inverseJoinColumns = @JoinColumn(name = "PartId"))
-    private List<Part> part;
+    @OneToMany
+    @JoinColumn(name = "PartAttributeId")
+    private List<PartParameterAttribute> partParameterAttribute;
 
 }

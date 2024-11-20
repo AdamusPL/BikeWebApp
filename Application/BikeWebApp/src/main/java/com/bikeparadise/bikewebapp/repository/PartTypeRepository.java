@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PartTypeRepository extends JpaRepository<PartType, Integer> {
-    List<PartType> findByTypeAndPartAttribute_Attribute(String type, String attribute);
+    PartType findFirstByType(String type);
 }

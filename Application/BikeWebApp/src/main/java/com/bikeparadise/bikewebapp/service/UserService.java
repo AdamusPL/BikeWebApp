@@ -148,6 +148,7 @@ public class UserService {
 
     public ResponseEntity<List<String>> checkRole(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

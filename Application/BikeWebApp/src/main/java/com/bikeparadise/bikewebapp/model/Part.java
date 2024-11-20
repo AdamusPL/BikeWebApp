@@ -24,16 +24,8 @@ public class Part {
     Integer quantityInStock;
     String description;
 
-    @ManyToOne
-    @JoinColumn(name = "PartTypeId")
-    private PartType partType;
-
-    @ManyToMany
-    @JoinTable(
-            name = "Part_PartAttribute",
-            joinColumns = @JoinColumn(name = "PartId"),
-            inverseJoinColumns = @JoinColumn(name = "PartAttributeId"))
-    private List<PartAttribute> partAttribute;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private PartParameterAttribute partParameterAttribute;
 
     @ManyToMany
     @JoinTable(
@@ -56,14 +48,13 @@ public class Part {
             inverseJoinColumns = @JoinColumn(name = "OrderId"))
     private List<Order> order;
 
-    public Part(String make, String modelName, BigDecimal price, Integer quantityInStock, String description, PartType partType, List<PartAttribute> partAttribute, ShopAssistant shopAssistant){
+    public Part(String make, String modelName, BigDecimal price, Integer quantityInStock, String description, PartParameterAttribute partParameterAttribute, ShopAssistant shopAssistant){
         this.make = make;
         this.modelName = modelName;
         this.price = price;
         this.quantityInStock = quantityInStock;
         this.description = description;
-        this.partType = partType;
-        this.partAttribute = partAttribute;
+        this.partParameterAttribute = partParameterAttribute;
         this.shopAssistant = shopAssistant;
     }
 

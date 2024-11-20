@@ -19,10 +19,9 @@ public class PartType {
     Integer id;
     String type;
 
-    @ManyToOne
-    @JoinColumn(name = "PartAttributeId")
-    PartAttribute partAttribute;
+    @OneToMany(mappedBy = "partType")
+    private List<PartAttribute> partAttribute;
 
-    @OneToMany
-    private List<Part> part;
+    @OneToMany(mappedBy = "partType")
+    private List<PartParameterAttribute> partParameterAttribute;
 }

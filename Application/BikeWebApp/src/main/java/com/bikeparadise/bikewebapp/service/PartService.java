@@ -5,10 +5,7 @@ import com.bikeparadise.bikewebapp.dto.PartDto;
 import com.bikeparadise.bikewebapp.dto.PartShopDto;
 import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.*;
-import com.bikeparadise.bikewebapp.repository.PartAttributeRepository;
-import com.bikeparadise.bikewebapp.repository.PartRepository;
-import com.bikeparadise.bikewebapp.repository.PartTypeRepository;
-import com.bikeparadise.bikewebapp.repository.ShopAssistantRepository;
+import com.bikeparadise.bikewebapp.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,68 +17,61 @@ public class PartService {
     private final PartTypeRepository partTypeRepository;
     private final ShopAssistantRepository shopAssistantRepository;
     private final PartAttributeRepository partAttributeRepository;
+    private final PartParameterAttributeRepository partParameterAttributeRepository;
 
     public PartService(PartRepository partRepository, PartTypeRepository partTypeRepository, ShopAssistantRepository shopAssistantRepository,
-    PartAttributeRepository partAttributeRepository) {
+                       PartAttributeRepository partAttributeRepository, PartParameterAttributeRepository partParameterAttributeRepository) {
         this.partRepository = partRepository;
         this.partTypeRepository = partTypeRepository;
         this.shopAssistantRepository = shopAssistantRepository;
         this.partAttributeRepository = partAttributeRepository;
+        this.partParameterAttributeRepository = partParameterAttributeRepository;
     }
 
     public List<PartShopDto> getParts() {
         List<PartShopDto> partShopDtoList = new ArrayList<>();
         List<Part> partList = partRepository.findAll();
 
-        for (Part part:
-             partList) {
+        for (Part part :
+                partList) {
 
-            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPartType().getType(), part.getPartType().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
+            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
             partShopDtoList.add(partShopDto);
         }
 
         return partShopDtoList;
     }
 
-    public PartDetailedInfoDto getDetailedInfoAboutPart(int id){
+    public PartDetailedInfoDto getDetailedInfoAboutPart(int id) {
         Optional<Part> partOptional = partRepository.findById(id);
 
-        if(partOptional.isPresent()){
+        if (partOptional.isPresent()) {
             Part part = partOptional.get();
 
             List<Review> reviews = part.getReview();
             List<ReviewPrintDto> reviewPrintDtos = new ArrayList<>();
-            for(Review review : reviews){
+            for (Review review : reviews) {
                 ReviewPrintDto reviewPrintDto = new ReviewPrintDto(review.getId(), review.getClient().getUserData().getFirstName(), review.getClient().getUserData().getLastName(), review.getNumberOfStars(), review.getDescription());
                 reviewPrintDtos.add(reviewPrintDto);
             }
 
-            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), part.getQuantityInStock(), part.getDescription(), part.getPartType().getType(), part.getPartType().getPartAttribute().getAttribute(), reviewPrintDtos);
+            PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), part.getQuantityInStock(), part.getDescription(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), reviewPrintDtos);
             return partDetailedInfoDto;
         }
         return null;
     }
 
-    public Map<String, List<String>> getFilters(){
+    public Map<String, List<String>> getFilters() {
         Map<String, List<String>> filters = new HashMap<>();
         List<PartType> partTypeList = partTypeRepository.findAll();
 
         for (PartType partType : partTypeList) {
-            boolean isAdded = false;
-
-            for (String key : filters.keySet()) {
-                if(key.equals(partType.getType())){
-                    filters.get(key).add(partType.getPartAttribute().getAttribute());
-                    isAdded = true;
-                    break;
-                }
+            String type = partType.getType();
+            List<String> attributes = new ArrayList<>();
+            for(PartAttribute partAttribute : partType.getPartAttribute()){
+                attributes.add(partAttribute.getAttribute());
             }
-
-            if(!isAdded){
-                List<String> list = new ArrayList<>();
-                list.add(partType.getPartAttribute().getAttribute());
-                filters.put(partType.getType(), list);
-            }
+            filters.put(type, attributes);
         }
 
         return filters;
@@ -89,15 +79,14 @@ public class PartService {
 
     public ResponseEntity<String> addPart(PartDto partDto) {
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(partDto.getShopAssistantId());
-        List<PartType> partType = partTypeRepository.findByTypeAndPartAttribute_Attribute(partDto.getType(), partDto.getAttribute());
-        List<PartAttribute> partAttribute = partAttributeRepository.findByAttribute(partDto.getAttribute());
+        PartType partType = partTypeRepository.findFirstByType(partDto.getType());
+        PartAttribute partAttribute = partAttributeRepository.findFirstByAttribute(partDto.getAttribute());
 
-        if(shopAssistant.isPresent()){
-            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partType.get(0), new ArrayList<>(partAttribute), shopAssistant.get());
-            part.getPartType().setPartAttribute(partAttribute.get(0));
-            List<Part> list = part.getPartType().getPart();
-            list.add(part);
-            part.getPartType().setPart(list);
+        if (shopAssistant.isPresent()) {
+            PartParameterAttribute partParameterAttribute = new PartParameterAttribute(partType, partAttribute);
+            Part part = new Part(partDto.getMake(), partDto.getModelName(), partDto.getPrice(), partDto.getQuantityInStock(), partDto.getDescription(), partParameterAttribute, shopAssistant.get());
+            partParameterAttribute.setPart(new ArrayList<>(List.of(part)));
+            part.setPartParameterAttribute(partParameterAttribute);
             partRepository.save(part);
             return ResponseEntity.ok().build();
         }
@@ -105,9 +94,9 @@ public class PartService {
         return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<String> deletePart(Integer id){
+    public ResponseEntity<String> deletePart(Integer id) {
         Optional<Part> part = partRepository.findById(id);
-        if(part.isPresent()){
+        if (part.isPresent()) {
             partRepository.delete(part.get());
             return ResponseEntity.ok().build();
         }
