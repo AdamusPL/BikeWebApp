@@ -47,6 +47,7 @@ export default function AddPart() {
         }
 
         fetch(`http://localhost:8080/add-part`, {
+            credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(part)

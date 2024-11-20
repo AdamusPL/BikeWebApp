@@ -3,12 +3,11 @@ import logo from '../assets/logo.png'
 import '../css/Layout.css'
 import CookieModal from "./CookieModal";
 import { MDBIcon } from "mdb-react-ui-kit";
-import { useLocation } from "react-router-dom";
 
 export function Layout({ children }) {
-    const location = useLocation();
+    const [openBasic, setOpenBasic] = useState(false);
 
-    const isActive = (path) => location.pathname === path ? "active" : ""
+    const isActive = (path) => location.pathname === path ? "active" : "";
 
     return (
         <>

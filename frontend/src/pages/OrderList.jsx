@@ -14,13 +14,18 @@ export default function OrderList() {
     }, []);
 
     async function getOrders() {
-        const response = await fetch(`http://localhost:8080/get-all-orders-list`);
+        debugger;
+        const response = await fetch(`http://localhost:8080/get-all-orders-list`,
+            { credentials: 'include' }
+        );
         const data = await response.json();
         setOrders(data);
     }
 
     async function getOrderStatuses() {
-        const response = await fetch(`http://localhost:8080/get-order-statuses`);
+        const response = await fetch(`http://localhost:8080/get-order-statuses`,
+            { credentials: 'include' }
+        );
         const data = await response.json();
         setOrderStatuses(data);
     }

@@ -11,6 +11,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "font-awesome": "^4.7.0",
+    "http-server": "^14.1.1",
     "mdb-react-ui-kit": "9.0.0",
     "react": "^18.1.0",
     "react-cookie": "^7.2.2",

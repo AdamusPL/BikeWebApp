@@ -5,7 +5,6 @@ import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Dialog from "../components/Dialog";
-import { useRole } from "../components/RoleProvider";
 
 export default function BikeDetails() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -21,7 +20,6 @@ export default function BikeDetails() {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
 
     const [isReviewPosted, setIsReviewPosted] = useState(false);
-    const { isShopAssistant, isLoggedIn } = useRole();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -158,19 +156,13 @@ export default function BikeDetails() {
             <p>{chosenProduct.description}</p>
 
             <p className="fw-light">Reviews</p>
-            {isLoggedIn && !isShopAssistant ?
-                <article>
-                    <p className="fw-lighter">Write a review</p>
-                    <article className="d-flex align-items-center mb-2">
-                        <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
-                        /5
-                    </article>
-                    <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-                    <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
-                </article>
-                
-                : <p>You have to be logged in to write a review</p>
-            }
+            <p className="fw-lighter">Write a review</p>
+            <article className="d-flex align-items-center mb-2">
+                <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
+                /5
+            </article>
+            <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
+            <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
 
             {
                 isReviewPosted ?

@@ -13,8 +13,6 @@ export default function SignIn() {
     const navigate = useNavigate();
 
     async function signIn() {
-        debugger;
-
         const userData = {
             username: username,
             password: password
@@ -28,21 +26,14 @@ export default function SignIn() {
             },
             body: JSON.stringify(userData)
 
-        }).then(response => {
-            if(response.ok){
-                response.json();
-            }
-            else{
-                setLoginStatus("Error: Incorrect credentials");
-            }
-        })
+        }).then(response => response.json())
             .then(data => {
-                if (data.accessToken) {
+                if (data.accessToken !== null) {
                     setCookie('token', data.accessToken, {path: '/'});
                     navigate('/');
                 }
                 else {
-                    
+                    setLoginStatus("Error: Incorrect credentials");
                 }
             })
     }

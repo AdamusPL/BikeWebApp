@@ -13,15 +13,13 @@ export default function AddBike() {
     const [description, setDescription] = useState("");
     const [serialNumbers, setSerialNumbers] = useState("");
 
-    const [isPosted, setIsPosted] = useState(false);
-
     useEffect(() => {
         getFilters();
         setIsLoading(false);
     }, [])
 
     async function getFilters() {
-        const response = await fetch('http://localhost:8080/get-add-bike-filters');
+        const response = await fetch('http://localhost:8080/get-add-bike-filters', {credentials: 'include'});
         const data = await response.json();
 
         let defaultValues = [];
@@ -50,6 +48,7 @@ export default function AddBike() {
         }
 
         fetch(`http://localhost:8080/add-bike`, {
+            credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bike)
@@ -100,11 +99,6 @@ export default function AddBike() {
                 <p>Nothing found</p>
             }
             <MDBBtn onClick={addPartToDB} color="success" className="mt-4">Add bike</MDBBtn>
-
-            {isPosted ? <p>Bike successfully added</p>
-                :
-                <p></p>}
-
         </MDBContainer>
     </>)
 }

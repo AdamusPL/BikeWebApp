@@ -17,6 +17,7 @@ import {
 import { Link } from 'react-router-dom';
 import Dialog from '../components/Dialog';
 import { useRole } from '../components/RoleProvider';
+import '../css/PartShop.css'
 
 export default function PartShop() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -152,6 +153,7 @@ export default function PartShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
+                                            {isShopAssistant ? <article className='close-button'><MDBBtn className="btn-close" color="none" aria-label="Close" /></article> : null}
                                             <MDBCard>
                                                 <Link to={`/part-shop/${element.id}`}>
                                                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>

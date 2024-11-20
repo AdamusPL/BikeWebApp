@@ -18,7 +18,6 @@ export default function Account() {
     }, []);
 
     function checkLogin() {
-        debugger;
         if (cookies.token === undefined) {
             navigate('/sign-in');
         }
@@ -28,11 +27,11 @@ export default function Account() {
     }
 
     async function getUserData() {
-        const response = await fetch(`http://localhost:8080/get-user-data?token=${cookies.token}`);
-        
-        debugger;
-        
+        const response = await fetch(`http://localhost:8080/get-user-data`, {
+            credentials: 'include'
+        });
         const data = await response.json();
+
         setUserData(data);
     }
 
