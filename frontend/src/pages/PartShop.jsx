@@ -112,6 +112,13 @@ export default function PartShop() {
         setIsDialogOpen(!isDialogOpen);
     }
 
+    function removeFromDb(id){
+        fetch(`http://localhost:8080/delete-part?partId=${id}`, {
+            credentials: 'include',
+            method: 'DELETE'
+        });
+    }
+
     return (<>
         <MDBContainer fluid>
             <MDBRow className="h-100">
@@ -153,7 +160,7 @@ export default function PartShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
-                                            {isShopAssistant ? <article className='close-button'><MDBBtn className="btn-close" color="none" aria-label="Close" /></article> : null}
+                                            {isShopAssistant ? <article className='close-button'><MDBBtn onClick={() => removeFromDb(element.id)} className="btn-close" color="none" aria-label="Close" /></article> : null}
                                             <MDBCard>
                                                 <Link to={`/part-shop/${element.id}`}>
                                                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
