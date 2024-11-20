@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -31,13 +32,13 @@ public class UserController {
         return userService.loginUser(userSignInDto);
     }
 
-    @PostMapping("/get-user-data")
-    public ResponseEntity<UserInfoDto> getUserData(@RequestHeader("Authorization") String token){
+    @GetMapping("/get-user-data")
+    public ResponseEntity<UserInfoDto> getUserData(){
         return userService.getUserData();
     }
 
-    @PostMapping("/check-role")
-    public ResponseEntity<String> checkRole(@RequestHeader("Authorization") String token){
-        return ResponseEntity.ok().build();
+    @GetMapping("/check-role")
+    public ResponseEntity<List<String>> checkRole(){
+        return userService.checkRole();
     }
 }

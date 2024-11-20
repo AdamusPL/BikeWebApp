@@ -8,6 +8,7 @@ import com.bikeparadise.bikewebapp.dto.UserSignInDto;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.UserDataRepository;
 import com.bikeparadise.bikewebapp.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +28,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -116,6 +120,10 @@ public class UserService {
 
     public ResponseEntity<UserInfoDto> getUserData() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
         if(foundUsers.size() == 0){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -136,5 +144,23 @@ public class UserService {
 
         UserInfoDto userInfoDto = new UserInfoDto(user.getUserData().getFirstName() + " " + user.getUserData().getLastName(), phoneNumbers, emails, user.getUsername());
         return ResponseEntity.ok(userInfoDto);
+    }
+
+    public ResponseEntity<List<String>> checkRole(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (authorities.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(roles);
     }
 }

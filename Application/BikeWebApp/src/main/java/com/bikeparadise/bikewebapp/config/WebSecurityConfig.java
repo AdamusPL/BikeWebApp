@@ -1,7 +1,6 @@
 package com.bikeparadise.bikewebapp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +22,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class WebSecurityConfig {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CustomUserDetailsService customUserDetailsService;
@@ -41,16 +40,29 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/sign-in", "/register", "/bike-shop", "/part-shop",
-                                "/get-detailed-info-about-bike",
-                                "/get-bike-shop-filters", "/get-detailed-info-about-part", "/get-part-filters",
-                                "/get-cart-products")
-                        .permitAll()
-                        .requestMatchers("/add-bike", "/add-part", "/get-all-orders-list", "/delete-bike",
-                                "/delete-part", "/get-add-bike-filters", "/update-order-status", "/get-order-statuses")
+
+                        .requestMatchers(HttpMethod.GET, "/get-all-orders-list",  "/get-add-bike-filters", "/get-order-statuses",
+                                "/get-user-data")
                         .hasRole("ADMIN")
-                        .requestMatchers("/buy", "/get-order-list", "/post-bike-review", "/post-part-review")
+                        .requestMatchers(HttpMethod.POST, "/add-bike", "/add-part")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/delete-bike", "/delete-part")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/update-order-status")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/get-order-list", "/get-user-data")
                         .hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/buy", "/post-bike-review", "/post-part-review")
+                        .hasRole("USER")
+
+
+                        .requestMatchers(HttpMethod.GET,  "/bike-shop", "/part-shop",
+                                "/get-detailed-info-about-bike", "/get-bike-shop-filters", "/get-detailed-info-about-part", "/get-part-filters",
+                                "/get-cart-products", "/check-role")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register")
+                        .permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)

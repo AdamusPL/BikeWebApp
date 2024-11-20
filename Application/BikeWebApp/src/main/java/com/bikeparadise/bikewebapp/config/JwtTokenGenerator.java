@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,6 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 
 
 @Component
@@ -40,6 +42,11 @@ public class JwtTokenGenerator {
                 .compact();
     }
 
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSignInKey())
@@ -48,46 +55,29 @@ public class JwtTokenGenerator {
                 .getPayload();
     }
 
-    public List<String> extractRoles(Claims claims){
+    public List<String> extractRoles(Claims claims) {
         return claims.get("roles", List.class);
     }
 
-    public void verifyToken(String token, HttpServletResponse response) throws IOException {
-        try {
-            Claims claims = extractAllClaims(token);
-            List<String> roles = extractRoles(claims);
-            response.setStatus(HttpServletResponse.SC_OK);
+    public String extractUsername(String token) {
+        return Jwts.parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
 
-            for (Object roleEntry : roles) {
-                if (roleEntry instanceof Map) {
-                    Map<String, Object> roleMap = (Map<String, Object>) roleEntry;
-                    for (Map.Entry<String, Object> entry : roleMap.entrySet()) {
-                        if(entry.getKey().equals("authority")){
-                            if(entry.getValue().equals("ROLE_ADMIN")){
-                                response.setContentType("text/plain");
-                                response.getWriter().write("ROLE_ADMIN");
-                                response.getWriter().flush();
-                                response.getWriter().close();
-                                return;
-                            }
-                            else{
-                                response.setContentType("text/plain");
-                                response.getWriter().write("ROLE_USER");
-                                response.getWriter().flush();
-                                response.getWriter().close();
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
+    public boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
 
-        } catch (ExpiredJwtException ex) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token expired");
-        } catch (AuthenticationCredentialsNotFoundException ex) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("Token is not valid");
-        }
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public boolean verifyToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }
