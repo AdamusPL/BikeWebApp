@@ -244,7 +244,7 @@ export default function Cart() {
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
                                     <MDBIcon fas icon="plus" onClick={() => plusBike(element.id)} />
                                 </article>
-                                {element.quantity} x {element.price} ,-
+                                {element.quantity} x {element.price} zł
                             </MDBListGroupItem>
                         ))
                         :
@@ -263,7 +263,7 @@ export default function Cart() {
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
                                     <MDBIcon fas icon="plus" onClick={() => plusPart(element.id)} />
                                 </article>
-                                {element.quantity} x {element.price} ,-
+                                {element.quantity} x {element.price} zł
                             </MDBListGroupItem>
                         ))
                         :
@@ -274,7 +274,7 @@ export default function Cart() {
                     </MDBListGroupItem>
                     <MDBListGroupItem>
                         <MDBTypography tag='dt' sm='3' color="success">{!isLoading ?
-                            summaryPrice : 0} ,-</MDBTypography>
+                            summaryPrice : 0} zł</MDBTypography>
                     </MDBListGroupItem>
                 </MDBListGroup>
             </MDBCard>

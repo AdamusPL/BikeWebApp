@@ -186,7 +186,7 @@ export default function BikeShop() {
                                                         Drivetrain: {element.drive}
                                                     </MDBCardText>
                                                     <MDBCardText>
-                                                        Price: {element.price} ,-
+                                                        Price: {element.price} zł
                                                     </MDBCardText>
                                                     <MDBCardText className='mb-4'>
                                                         Quantity in stock: {element.quantityInStock}

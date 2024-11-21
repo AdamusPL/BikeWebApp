@@ -96,19 +96,23 @@ export default function OrderList() {
 
                                 {order.orderedBikes.map(bike => {
                                     return (<MDBListGroupItem className="mb-4" key={bike.id}>
-                                        {bike.fullname}, {bike.quantity} x {bike.price} ,-
+                                        {bike.fullname}, {bike.quantity} x {bike.price} zł
                                     </MDBListGroupItem>)
                                 })}
 
                                 {order.orderedParts.map(part => {
                                     return (<MDBListGroupItem className="mb-4" key={part.id}>
-                                        {part.fullname}, {part.quantity} x {part.price} ,-
+                                        {part.fullname}, {part.quantity} x {part.price} zł
                                     </MDBListGroupItem>)
                                 })}
 
+                                <MDBListGroupItem>
+                                    <MDBTypography tag='h4'>Summary</MDBTypography>
+                                </MDBListGroupItem>
+
                                 {!isLoading ?
                                     <MDBListGroupItem>
-                                        {order.price} ,-
+                                        <MDBTypography tag='dt' sm='3' color="success">{order.price} zł </MDBTypography>
                                     </MDBListGroupItem>
                                     : <p>0, -</p>}
 

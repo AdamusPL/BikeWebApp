@@ -137,7 +137,7 @@ export default function BikeDetails() {
                         ))
                     }
                     <article id="buy-block">
-                        <p>{chosenProduct.price} ,-</p>
+                        <p>{chosenProduct.price} zł</p>
                         {
                             isAvailable ?
                                 <article>

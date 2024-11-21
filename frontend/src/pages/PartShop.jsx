@@ -187,7 +187,7 @@ export default function PartShop() {
                                                         Kind: {element.attribute}
                                                     </MDBCardText>
                                                     <MDBCardText>
-                                                        Price: {element.price} ,-
+                                                        Price: {element.price} zł
                                                     </MDBCardText>
                                                     <MDBCardText className='mb-4'>
                                                         Quantity in stock: {element.quantityInStock}

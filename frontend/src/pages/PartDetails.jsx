@@ -121,7 +121,7 @@ export default function PartDetails() {
                 <MDBCol md="4">
                     <p>{chosenProduct.type}: {chosenProduct.attribute}</p>
                     <article id="buy-block">
-                        <p>{chosenProduct.price} ,-</p>
+                        <p>{chosenProduct.price} zł</p>
                         {
                             isAvailable ?
                                 <article>
