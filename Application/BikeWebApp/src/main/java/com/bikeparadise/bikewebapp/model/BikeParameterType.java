@@ -13,13 +13,9 @@ public class BikeParameterType {
     Integer id;
     String type;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Bike_BikeParameterType",
-            joinColumns = @JoinColumn(name = "BikeParameterTypeId"),
-            inverseJoinColumns = @JoinColumn(name = "BikeId"))
-    private List<Bike> bike;
+    @OneToMany
+    private List<BikeAttribute> bikeAttribute;
 
-    @ManyToOne
-    BikeParameterAttribute bikeParameterAttribute;
+    @OneToMany(mappedBy = "bikeParameterType")
+    private List<BikeParameterAttribute> bikeParameterAttribute;
 }

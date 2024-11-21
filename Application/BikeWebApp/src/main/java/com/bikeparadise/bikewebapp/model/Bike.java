@@ -57,15 +57,8 @@ public class Bike {
 
     @ManyToMany
     @JoinTable(
-            name = "Bike_BikeParameterAttribute",
+            name = "Bike_BikeAttribute",
             joinColumns = @JoinColumn(name = "BikeId"),
-            inverseJoinColumns = @JoinColumn(name = "BikeParameterAttributeId"))
-    private List<BikeParameterAttribute> bikeParameterAttribute;
-
-    @ManyToMany
-    @JoinTable(
-            name = "Bike_BikeParameterType",
-            joinColumns = @JoinColumn(name = "BikeId"),
-            inverseJoinColumns = @JoinColumn(name = "BikeParameterTypeId"))
-    private List<BikeParameterType> bikeParameterType;
+            inverseJoinColumns = @JoinColumn(name = "BikeAttributeId"))
+    private List<BikeAttribute> bikeAttribute;
 }

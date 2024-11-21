@@ -2,6 +2,7 @@ package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.dto.*;
 import com.bikeparadise.bikewebapp.model.Bike;
+import com.bikeparadise.bikewebapp.model.BikeAttribute;
 import com.bikeparadise.bikewebapp.model.BikeParameterType;
 import com.bikeparadise.bikewebapp.model.Part;
 import com.bikeparadise.bikewebapp.repository.BikeRepository;
@@ -41,9 +42,9 @@ public class CartService {
             if (bikeOptional.isPresent()) {
                 Bike bike = bikeOptional.get();
                 String make = "";
-                for (BikeParameterType bikeParameterType : bike.getBikeParameterType()) {
-                    if (bikeParameterType.getType().equals("Make")) {
-                        make = bikeParameterType.getBikeParameterAttribute().getAttribute();
+                for (BikeAttribute bikeAttribute : bike.getBikeAttribute()) {
+                    if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
+                        make = bikeAttribute.getBikeParameterAttribute().getAttribute();
                     }
                 }
                 BikeCartInfo productDto = new BikeCartInfo(bike.getId(), make + " " + bike.getModelName(), bike.getPrice().multiply(BigDecimal.valueOf(bikeCartDto.getQuantity())), bikeCartDto.getQuantity(), bike.getBikeIdentificationAvailable().size());
