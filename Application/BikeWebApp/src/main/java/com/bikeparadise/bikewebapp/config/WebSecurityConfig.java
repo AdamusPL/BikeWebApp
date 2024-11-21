@@ -58,9 +58,9 @@ public class WebSecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,  "/bike-shop", "/part-shop",
                                 "/get-detailed-info-about-bike", "/get-bike-shop-filters", "/get-detailed-info-about-part", "/get-part-filters",
-                                "/get-cart-products", "/check-role")
+                                "/check-role")
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register")
+                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register", "/get-cart-products")
                         .permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
