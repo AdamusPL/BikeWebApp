@@ -4,29 +4,51 @@ GO
 SELECT * FROM [User];
 
 SELECT * FROM [BikeParameterAttribute];
+SELECT * FROM [BikeParameterType];
 
-INSERT INTO [BikeParameterAttribute] VALUES('MTB');
-INSERT INTO [BikeParameterAttribute] VALUES('BMX');
-INSERT INTO [BikeParameterAttribute] VALUES('Urban');
-INSERT INTO [BikeParameterAttribute] VALUES('Trekking');
-INSERT INTO [BikeParameterAttribute] VALUES('Road');
-INSERT INTO [BikeParameterAttribute] VALUES('Cross');
+INSERT INTO [BikeParameterAttribute] VALUES('MTB', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('BMX', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Urban', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Trekking', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Road', 1);
+INSERT INTO [BikeParameterAttribute] VALUES('Cross', 1);
 
-INSERT INTO [BikeParameterAttribute] VALUES('XXS');
-INSERT INTO [BikeParameterAttribute] VALUES('XS');
-INSERT INTO [BikeParameterAttribute] VALUES('S');
-INSERT INTO [BikeParameterAttribute] VALUES('M');
-INSERT INTO [BikeParameterAttribute] VALUES('L');
-INSERT INTO [BikeParameterAttribute] VALUES('XL');
-INSERT INTO [BikeParameterAttribute] VALUES('XXL');
+INSERT INTO [BikeParameterAttribute] VALUES('XXS', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('XS', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('S', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('M', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('L', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('XL', 2);
+INSERT INTO [BikeParameterAttribute] VALUES('XXL', 2);
 
-INSERT INTO [BikeParameterAttribute] VALUES('AeroBike');
-INSERT INTO [BikeParameterAttribute] VALUES('Phumay');
-INSERT INTO [BikeParameterAttribute] VALUES('LizardCycle');
+INSERT INTO [BikeParameterAttribute] VALUES('AeroBike', 3);
+INSERT INTO [BikeParameterAttribute] VALUES('Phumay', 3);
+INSERT INTO [BikeParameterAttribute] VALUES('LizardCycle', 3);
 
 INSERT INTO [BikeParameterType] VALUES('Type');
 INSERT INTO [BikeParameterType] VALUES('Frame size');
 INSERT INTO [BikeParameterType] VALUES('Make');
+
+INSERT INTO [BikeAttribute] VALUES(1, 1);
+INSERT INTO [BikeAttribute] VALUES(2, 1);
+INSERT INTO [BikeAttribute] VALUES(3, 1);
+INSERT INTO [BikeAttribute] VALUES(4, 1);
+INSERT INTO [BikeAttribute] VALUES(5, 1);
+INSERT INTO [BikeAttribute] VALUES(6, 1);
+INSERT INTO [BikeAttribute] VALUES(7, 2);
+INSERT INTO [BikeAttribute] VALUES(8, 2);
+INSERT INTO [BikeAttribute] VALUES(9, 2);
+INSERT INTO [BikeAttribute] VALUES(10, 2);
+INSERT INTO [BikeAttribute] VALUES(11, 2);
+INSERT INTO [BikeAttribute] VALUES(12, 2);
+INSERT INTO [BikeAttribute] VALUES(13, 2);
+INSERT INTO [BikeAttribute] VALUES(14, 3);
+INSERT INTO [BikeAttribute] VALUES(15, 3);
+INSERT INTO [BikeAttribute] VALUES(16, 3);
+
+SELECT * FROM [BikeAttribute];
+
+SELECT * FROM [BikeIdentificationAvailable];
 
 INSERT INTO [Bike] (ModelName, Price, Description, ShopAssistantId) VALUES('Swift 4', 1999.00, 'Lorem ipsum', 1);
 INSERT INTO [Bike_BikeParameterType] VALUES(1, 1);
