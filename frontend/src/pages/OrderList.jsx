@@ -46,10 +46,10 @@ export default function OrderList() {
         setOrders(data);
     }
 
-    function changeStatus(order, status) {
+    function changeStatus(orderToUpdate, updatedStatus) {
         const orderDto = {
-            id: status.id,
-            orderId: order.id
+            id: updatedStatus.id,
+            orderId: orderToUpdate.id
         };
 
         fetch(`http://localhost:8080/update-order-status`, {
@@ -62,9 +62,9 @@ export default function OrderList() {
             if (response.ok) {
                 debugger;
 
-                let orderCopy = orders;
-                let foundOrder = orderCopy.find(item => item.id === order.id);
-                foundOrder.status = status.status;
+                let orderCopy = orders.map(order =>
+                    order.id === orderToUpdate.id ? { ...order, status: updatedStatus.status } : order
+                );
 
                 setOrders(orderCopy);
             }
@@ -90,8 +90,8 @@ export default function OrderList() {
                                                     })}
                                                 </MDBDropdownMenu>
                                             </article>
-                                        : <p>{order.status}</p>    
-                                    }
+                                            : <p>{order.status}</p>
+                                        }
                                     </MDBDropdown>
                                 </MDBListGroupItem>
 
