@@ -7,7 +7,7 @@ import { useRole } from "./RoleProvider";
 
 export function Layout({ children }) {
     const [openBasic, setOpenBasic] = useState(false);
-    const { isLoggedIn } = useRole();
+    const { isLoggedIn, isShopAssistant } = useRole();
 
     const isActive = (path) => location.pathname === path ? "active" : "";
 
@@ -38,14 +38,16 @@ export function Layout({ children }) {
                         </ul>
 
                         <ul className="navbar-nav d-flex flex-row me-1">
-                            {isLoggedIn ? 
-                            <li className="nav-item me-3 me-lg-0">
-                                <a className="nav-link" href="/order-list"><MDBIcon fas icon="envelope" className={`${isActive('/order-list') ? "active-elem" : "navbar-elem"}`} /></a>
-                            </li> 
-                            : null}
-                            <li className="nav-item me-3 me-lg-0">
-                                <a className="nav-link" href="/cart"><MDBIcon fas icon="shopping-cart" className={`${isActive('/cart') ? "active-elem" : "navbar-elem"}`} /></a>
-                            </li>
+                            {isLoggedIn ?
+                                <li className="nav-item me-3 me-lg-0">
+                                    <a className="nav-link" href="/order-list"><MDBIcon fas icon="envelope" className={`${isActive('/order-list') ? "active-elem" : "navbar-elem"}`} /></a>
+                                </li>
+                                : null}
+                            {!isShopAssistant ?
+                                <li className="nav-item me-3 me-lg-0">
+                                    <a className="nav-link" href="/cart"><MDBIcon fas icon="shopping-cart" className={`${isActive('/cart') ? "active-elem" : "navbar-elem"}`} /></a>
+                                </li>
+                                : null}
                             <li className="nav-item me-3 me-lg-0">
                                 <a className="nav-link" href="/account"><MDBIcon fas icon="user-alt" className={`${isActive('/account') || isActive('/sign-in') || isActive('/register') ? "active-elem" : "navbar-elem"}`} /></a>
                             </li>

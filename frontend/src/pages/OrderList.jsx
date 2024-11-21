@@ -38,8 +38,7 @@ export default function OrderList() {
     }
 
     async function getClientOrders() {
-        const clientId = 1;
-        const response = await fetch(`http://localhost:8080/get-order-list?clientId=${clientId}`,
+        const response = await fetch(`http://localhost:8080/get-order-list`,
             { credentials: 'include' }
         );
         const data = await response.json();
@@ -97,13 +96,13 @@ export default function OrderList() {
 
                                 {order.orderedBikes.map(bike => {
                                     return (<MDBListGroupItem className="mb-4" key={bike.id}>
-                                        {bike.fullname}
+                                        {bike.fullname}, {bike.quantity} x {bike.price} ,-
                                     </MDBListGroupItem>)
                                 })}
 
                                 {order.orderedParts.map(part => {
                                     return (<MDBListGroupItem className="mb-4" key={part.id}>
-                                        {part.fullname}
+                                        {part.fullname}, {part.quantity} x {part.price} ,-
                                     </MDBListGroupItem>)
                                 })}
 

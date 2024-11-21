@@ -5,6 +5,7 @@ import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Dialog from "../components/Dialog";
+import { useRole } from "../components/RoleProvider";
 
 export default function BikeDetails() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -21,6 +22,8 @@ export default function BikeDetails() {
 
     const [isReviewPosted, setIsReviewPosted] = useState(false);
     const navigate = useNavigate();
+
+    const { isClient } = useRole();
 
     useEffect(() => {
         getDetailedInfo();
@@ -156,19 +159,23 @@ export default function BikeDetails() {
             <p>{chosenProduct.description}</p>
 
             <p className="fw-light">Reviews</p>
-            <p className="fw-lighter">Write a review</p>
-            <article className="d-flex align-items-center mb-2">
-                <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
-                /5
-            </article>
-            <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-            <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
-
-            {
-                isReviewPosted ?
-                    <p>Review posted successfully</p>
-                    :
-                    <p></p>
+            {isClient ?
+                <article>
+                    <p className="fw-lighter">Write a review</p>
+                    <article className="d-flex align-items-center mb-2">
+                        <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
+                        /5
+                    </article>
+                    <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
+                    <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
+                    {
+                        isReviewPosted ?
+                            <p>Review posted successfully</p>
+                            :
+                            <p></p>
+                    }
+                </article>
+            : <p>You must be signed-in to post a review</p>
             }
 
             {

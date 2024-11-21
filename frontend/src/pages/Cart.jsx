@@ -208,7 +208,6 @@ export default function Cart() {
 
     function submitOrder() {
         const order = {
-            clientId: 1,
             bikes: JSON.parse(localStorage.getItem('cart')).bikes,
             parts: JSON.parse(localStorage.getItem('cart')).parts
         };

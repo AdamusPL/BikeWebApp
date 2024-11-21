@@ -4,6 +4,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner
 import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { useRole } from "../components/RoleProvider";
 
 export default function PartDetails() {
 
@@ -18,6 +19,8 @@ export default function PartDetails() {
 
     const [isReviewPosted, setIsReviewPosted] = useState(false);
     const navigate = useNavigate();
+
+    const { isClient } = useRole();
 
     useEffect(() => {
         getDetailedInfo();
@@ -140,14 +143,18 @@ export default function PartDetails() {
             <p>{chosenProduct.description}</p>
 
             <p className="fw-light">Reviews</p>
-            <p className="fw-lighter">Write a review</p>
-            <div className="d-flex align-items-center mb-2">
-                <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
-                <a>/5</a>
-            </div>
-            <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-            <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
-
+            {isClient ?
+                <article>
+                    <p className="fw-lighter">Write a review</p>
+                    <div className="d-flex align-items-center mb-2">
+                        <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
+                        <a>/5</a>
+                    </div>
+                    <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
+                    <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
+                </article>
+                : <p>You must be signed-in to post a review</p>
+                }
             {
                 isReviewPosted ?
                     <p>Review posted successfully</p>
