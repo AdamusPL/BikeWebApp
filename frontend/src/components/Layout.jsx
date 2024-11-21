@@ -3,9 +3,11 @@ import logo from '../assets/logo.png'
 import '../css/Layout.css'
 import CookieModal from "./CookieModal";
 import { MDBIcon } from "mdb-react-ui-kit";
+import { useRole } from "./RoleProvider";
 
 export function Layout({ children }) {
     const [openBasic, setOpenBasic] = useState(false);
+    const { isLoggedIn } = useRole();
 
     const isActive = (path) => location.pathname === path ? "active" : "";
 
@@ -36,9 +38,11 @@ export function Layout({ children }) {
                         </ul>
 
                         <ul className="navbar-nav d-flex flex-row me-1">
+                            {isLoggedIn ? 
                             <li className="nav-item me-3 me-lg-0">
                                 <a className="nav-link" href="/order-list"><MDBIcon fas icon="envelope" className={`${isActive('/order-list') ? "active-elem" : "navbar-elem"}`} /></a>
-                            </li>
+                            </li> 
+                            : null}
                             <li className="nav-item me-3 me-lg-0">
                                 <a className="nav-link" href="/cart"><MDBIcon fas icon="shopping-cart" className={`${isActive('/cart') ? "active-elem" : "navbar-elem"}`} /></a>
                             </li>

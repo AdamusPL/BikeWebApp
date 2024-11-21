@@ -119,7 +119,13 @@ export default function BikeShop() {
         fetch(`http://localhost:8080/delete-bike?bikeId=${id}`, {
             credentials: 'include',
             method: 'DELETE'
-        });
+        })
+        .then(response => {
+            if(response.ok){
+                
+            }
+        })
+        ;
     }
 
     return (<>

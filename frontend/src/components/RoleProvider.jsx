@@ -5,6 +5,8 @@ const RoleContext = createContext();
 
 const RoleProvider = ({ children }) => {
     const [isShopAssistant, setIsShopAssistant] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
     async function checkRole() {
@@ -15,6 +17,11 @@ const RoleProvider = ({ children }) => {
         data.forEach(item => {
             if (item === "ROLE_ADMIN") {
                 setIsShopAssistant(true);
+                setIsLoggedIn(true);
+            }
+            else if(item === "ROLE_USER"){
+                setIsClient(true);
+                setIsLoggedIn(true);
             }
             else if(item === "ROLE_ANONYMOUS"){
                 if(cookies.token){
@@ -28,7 +35,7 @@ const RoleProvider = ({ children }) => {
         checkRole();
     }, []);
 
-    return <RoleContext.Provider value={{ isShopAssistant }}>{children}</RoleContext.Provider>;
+    return <RoleContext.Provider value={{ isShopAssistant, isClient, isLoggedIn }}>{children}</RoleContext.Provider>;
 };
 
 export default RoleProvider;
