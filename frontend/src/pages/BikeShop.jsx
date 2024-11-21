@@ -114,6 +114,13 @@ export default function BikeShop() {
         setIsDialogOpen(!isDialogOpen);
     }
 
+    function removeFromDb(id){
+        fetch(`http://localhost:8080/delete-bike?bikeId=${id}`, {
+            credentials: 'include',
+            method: 'DELETE'
+        });
+    }
+
     return (<>
         <MDBContainer fluid>
             <MDBRow className="h-100">
@@ -153,6 +160,7 @@ export default function BikeShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
+                                            {isShopAssistant ? <article className='close-button'><MDBBtn onClick={() => removeFromDb(element.id)} className="btn-close" color="none" aria-label="Close" /></article> : null}
                                             <MDBCard>
                                                 <Link to={`/bike-shop/${element.id}`}>
                                                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
