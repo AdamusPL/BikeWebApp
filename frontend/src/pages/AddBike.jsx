@@ -13,6 +13,8 @@ export default function AddBike() {
     const [description, setDescription] = useState("");
     const [serialNumbers, setSerialNumbers] = useState("");
 
+    const [isPosted, setIsPosted] = useState(false);
+
     useEffect(() => {
         getFilters();
         setIsLoading(false);
@@ -99,6 +101,10 @@ export default function AddBike() {
                 <p>Nothing found</p>
             }
             <MDBBtn onClick={addPartToDB} color="success" className="mt-4">Add bike</MDBBtn>
+
+            {isPosted ? <p>Bike successfully added</p>
+                :
+                <p></p>}
         </MDBContainer>
     </>)
 }

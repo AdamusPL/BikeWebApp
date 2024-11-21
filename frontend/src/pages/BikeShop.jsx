@@ -122,10 +122,9 @@ export default function BikeShop() {
         })
         .then(response => {
             if(response.ok){
-                
+                setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
             }
-        })
-        ;
+        });
     }
 
     return (<>

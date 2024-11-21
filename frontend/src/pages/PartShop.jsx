@@ -118,7 +118,12 @@ export default function PartShop() {
         fetch(`http://localhost:8080/delete-part?partId=${id}`, {
             credentials: 'include',
             method: 'DELETE'
-        });
+        })
+        .then(response => {
+            if(response.ok){
+                setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
+            }
+        });;
     }
 
     return (<>

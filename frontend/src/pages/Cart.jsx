@@ -42,25 +42,24 @@ export default function Cart() {
             body: JSON.stringify(products)
 
         }).then(response => {
-            debugger;
             if (response.ok) {
                 return response.json();
             }
         }).then(data => {
-            debugger;
             setProducts(data);
         })
     }
 
     function calculateSum() {
+        debugger;
         let priceToPay = 0.0;
 
         products.bikes.map(item => {
-            priceToPay += item.price;
+            priceToPay += item.price * item.quantity;
         })
 
         products.parts.map(item => {
-            priceToPay += item.price;
+            priceToPay += item.price * item.quantity;
         })
 
         setSummaryPrice(priceToPay);
@@ -71,7 +70,13 @@ export default function Cart() {
 
         cart.bikes = cart.bikes.filter(bike => bike.id !== id);
 
+        let productsCopy = {
+            ...products,
+            bikes: products.bikes.filter((b) => b.id !== id)
+        };
+
         localStorage.setItem('cart', JSON.stringify(cart));
+        setProducts(productsCopy);
     }
 
     function removePartFromCart(id) {
@@ -79,7 +84,13 @@ export default function Cart() {
 
         cart.parts = cart.parts.filter(part => part.id !== id);
 
+        let productsCopy = {
+            ...products,
+            parts: products.parts.filter((part) => part.id !== id)
+        };
+
         localStorage.setItem('cart', JSON.stringify(cart));
+        setProducts(productsCopy);
     }
 
     function handleClick() {
@@ -95,8 +106,31 @@ export default function Cart() {
         setBasicModal(!basicModal);
     }
 
+    function minusPart(id) {
+        let cart = JSON.parse(localStorage.getItem('cart'));
+
+        const part = cart.parts.find(b => b.id === id);
+
+        if (part.quantity > 1) {
+            part.quantity -= 1;
+        }
+        else{
+            return;
+        }
+
+        let productsCopy = {
+            ...products,
+            parts: products.parts.map((part) => (
+                part.id === id ? {...part, quantity: part.quantity - 1} : part
+            ))
+        };
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        setProducts(productsCopy);
+    }
+
     function minusBike(id) {
-        debugger;
         let cart = JSON.parse(localStorage.getItem('cart'));
 
         const bike = cart.bikes.find(b => b.id === id);
@@ -104,82 +138,70 @@ export default function Cart() {
         if (bike.quantity > 1) {
             bike.quantity -= 1;
         }
+        else{
+            return;
+        }
+
+        let productsCopy = {
+            ...products,
+            bikes: products.bikes.map((b) => (
+                b.id === id ? {...b, quantity: b.quantity - 1} : b
+            ))
+        };
 
         localStorage.setItem('cart', JSON.stringify(cart));
-
-        let productsCopy = products;
-
-        const bikeProduct = productsCopy.bikes.find(b => b.id === id);
-
-        if (bikeProduct.quantity > 1) {
-            bikeProduct.quantity -= 1;
-        }
-
-        setProducts(productsCopy);
-    }
-
-    function plusBike(id) {
-        debugger;
-        let cart = JSON.parse(localStorage.getItem('cart'));
-
-        const bike = cart.bikes.find(b => b.id === id);
-
-        let productsCopy = products;
-        const bikeProduct = productsCopy.bikes.find(b => b.id === id);
-
-        if (bike.quantity < bikeProduct.quantityInStock) {
-            bike.quantity += 1;
-        }
-
-        localStorage.setItem('cart', JSON.stringify(cart));
-
-        if (bikeProduct.quantity < bike.quantityInStock) {
-            bikeProduct.quantity += 1;
-        }
-
-        setProducts(productsCopy);
-    }
-
-    function minusPart(id) {
-        debugger;
-        let cart = JSON.parse(localStorage.getItem('cart'));
-
-        const part = cart.parts.find(b => b.id === id);
-
-        let productsCopy = products;
-        const partProduct = productsCopy.parts.find(b => b.id === id);
-
-        if (part.quantity > 1) {
-            part.quantity -= 1;
-        }
-
-        localStorage.setItem('cart', JSON.stringify(cart));
-
-        if (partProduct.quantity > 1) {
-            partProduct.quantity -= 1;
-        }
 
         setProducts(productsCopy);
     }
 
     function plusPart(id) {
-        debugger;
         let cart = JSON.parse(localStorage.getItem('cart'));
 
         const part = cart.parts.find(b => b.id === id);
 
-        let productsCopy = products;
-        const partProduct = productsCopy.parts.find(b => b.id === id);
+        const partProduct = products.parts.find(b => b.id === id);
 
         if (part.quantity < partProduct.quantityInStock) {
             part.quantity += 1;
         }
+        else{
+            return;
+        }
+
+        let productsCopy = {
+            ...products,
+            parts: products.parts.map((part) => (
+                part.id === id ? {...part, quantity: part.quantity + 1} : part
+            ))
+        };
 
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        if (partProduct.quantity < part.quantityInStock) {
-            partProduct.quantity += 1;
+        setProducts(productsCopy);
+    }
+
+    function plusBike(id) {
+        let cart = JSON.parse(localStorage.getItem('cart'));
+
+        const bike = cart.bikes.find(b => b.id === id);
+
+        const partProduct = products.bikes.find(b => b.id === id);
+
+        if (bike.quantity < partProduct.quantityInStock) {
+            bike.quantity += 1;
         }
+        else{
+            return;
+        }
+
+        let productsCopy = {
+            ...products,
+            bikes: products.bikes.map((b) => (
+                b.id === id ? {...b, quantity: b.quantity + 1} : b
+            ))
+        };
+
+        localStorage.setItem('cart', JSON.stringify(cart));
 
         setProducts(productsCopy);
     }
@@ -215,14 +237,15 @@ export default function Cart() {
                     </MDBListGroupItem>
                     {!isLoading ?
                         products.bikes.map(element => (
-                            <MDBListGroupItem key={element.id}>{element.fullModelName}
-                                <MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
+                            <MDBListGroupItem key={element.id}>
+                                <article className='close-button-cart'><MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
+                                {element.fullModelName}
                                 <article className="number-of-items">
                                     <MDBIcon fas icon="minus" onClick={() => minusBike(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} defaultValue={element.quantity} />
+                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
                                     <MDBIcon fas icon="plus" onClick={() => plusBike(element.id)} />
                                 </article>
-                                {element.price} ,-
+                                {element.quantity} x {element.price} ,-
                             </MDBListGroupItem>
                         ))
                         :
@@ -233,14 +256,15 @@ export default function Cart() {
                     </MDBListGroupItem>
                     {!isLoading ?
                         products.parts.map(element => (
-                            <MDBListGroupItem key={element.id}>{element.fullModelName}
-                                <MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" />
+                            <MDBListGroupItem key={element.id}>
+                                <article className='close-button-cart'><MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
+                                {element.fullModelName}
                                 <article className="number-of-items">
                                     <MDBIcon fas icon="minus" onClick={() => minusPart(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} defaultValue={element.quantity} />
+                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
                                     <MDBIcon fas icon="plus" onClick={() => plusPart(element.id)} />
                                 </article>
-                                {element.price} ,-
+                                {element.quantity} x {element.price} ,-
                             </MDBListGroupItem>
                         ))
                         :

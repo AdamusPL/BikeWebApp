@@ -3,3 +3,8 @@
     justify-content: end;
     margin-bottom: 20px;
 }
+
+.close-button-cart{
+    display: flex;
+    justify-content: end;
+}
