@@ -29,7 +29,7 @@ public class UserData {
     @OneToMany(mappedBy = "userData", cascade = CascadeType.ALL)
     List<UserEmail> userEmail;
 
-    @OneToOne(mappedBy = "userData")
+    @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)
     Client client;
 
     @OneToOne(mappedBy = "userData", cascade = CascadeType.ALL)

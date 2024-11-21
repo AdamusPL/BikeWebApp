@@ -40,8 +40,10 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/get-all-orders-list",  "/get-add-bike-filters", "/get-order-statuses",
-                                "/get-user-data")
+                        .requestMatchers(HttpMethod.GET, "/get-user-data")
+                        .hasAnyRole("ADMIN", "USER")
+
+                        .requestMatchers(HttpMethod.GET, "/get-all-orders-list",  "/get-add-bike-filters", "/get-order-statuses")
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/add-bike", "/add-part")
                         .hasRole("ADMIN")

@@ -76,13 +76,13 @@ public class OrderService {
                         bikeIdentificationReservedRepository.save(bikeIdentificationReserved);
                         bikeIdentificationReservedList.add(bikeIdentificationReserved);
                         bikeIdentificationAvailableRepository.delete(bikeIdentificationAvailable);
-
-                        Date date = new Date();
-                        Order order = new Order(date, client.get(), orderStatus.get(0), partList, bikeIdentificationReservedList);
-                        orderRepository.save(order);
                     }
                 }
             }
+
+            Date date = new Date();
+            Order order = new Order(date, client.get(), orderStatus.get(0), partList, bikeIdentificationReservedList);
+            orderRepository.save(order);
 
             return ResponseEntity.ok().build();
         }
