@@ -13,7 +13,6 @@ const RoleProvider = ({ children }) => {
         });
         const data = await response.json();
         data.forEach(item => {
-            debugger;
             if (item === "ROLE_ADMIN") {
                 setIsShopAssistant(true);
             }

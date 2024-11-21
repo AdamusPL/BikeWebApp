@@ -35,26 +35,28 @@ export default function PartShop() {
     }, []);
 
     async function getProducts() {
+        debugger;
         const response = await fetch('http://localhost:8080/part-shop');
         const data = await response.json();
 
         const cart = JSON.parse(localStorage.getItem('cart'));
-        if (cart) {
-            data.map(item => {
-                if (item.quantityInStock === 0) {
-                    item.isAvailable = false;
-                }
-                else {
+
+        data.map(item => {
+            item.isAvailable = true;
+            if (item.quantityInStock === 0) {
+                item.isAvailable = false;
+            }
+            else {
+                if (cart) {
                     const found = cart.parts.find(cartItem => cartItem.id === item.id);
-                    item.isAvailable = true;
                     if (found) {
                         if (found.quantity >= item.quantityInStock || found.quantity === 0) {
                             item.isAvailable = false;
                         }
                     }
                 }
-            })
-        }
+            }
+        })
 
         setProducts(data);
     }
@@ -112,7 +114,7 @@ export default function PartShop() {
         setIsDialogOpen(!isDialogOpen);
     }
 
-    function removeFromDb(id){
+    function removeFromDb(id) {
         fetch(`http://localhost:8080/delete-part?partId=${id}`, {
             credentials: 'include',
             method: 'DELETE'

@@ -41,12 +41,13 @@ export default function BikeShop() {
         const data = await response.json();
 
         const cart = JSON.parse(localStorage.getItem('cart'));
-        if (cart) {
-            data.map(item => {
-                if (item.quantityInStock === 0) {
-                    item.isAvailable = false;
-                }
-                else {
+        data.map(item => {
+            item.isAvailable = true;
+            if (item.quantityInStock === 0) {
+                item.isAvailable = false;
+            }
+            else {
+                if (cart) {
                     const found = cart.bikes.find(cartItem => cartItem.id === item.id);
                     item.isAvailable = true;
                     if (found) {
@@ -55,11 +56,11 @@ export default function BikeShop() {
                         }
                     }
                 }
-            })
-        }
-
+            }
+        })
         setProducts(data);
     }
+
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-bike-shop-filters');
@@ -114,7 +115,7 @@ export default function BikeShop() {
         setIsDialogOpen(!isDialogOpen);
     }
 
-    function removeFromDb(id){
+    function removeFromDb(id) {
         fetch(`http://localhost:8080/delete-bike?bikeId=${id}`, {
             credentials: 'include',
             method: 'DELETE'

@@ -36,11 +36,13 @@ export default function Cart() {
         }
 
         fetch(`http://localhost:8080/get-cart-products`, {
+            credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(products)
 
         }).then(response => {
+            debugger;
             if (response.ok) {
                 return response.json();
             }
