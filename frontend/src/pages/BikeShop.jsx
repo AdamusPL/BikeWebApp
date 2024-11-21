@@ -120,11 +120,11 @@ export default function BikeShop() {
             credentials: 'include',
             method: 'DELETE'
         })
-        .then(response => {
-            if(response.ok){
-                setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
-            }
-        });
+            .then(response => {
+                if (response.ok) {
+                    setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
+                }
+            });
     }
 
     return (<>
@@ -191,7 +191,7 @@ export default function BikeShop() {
                                                     <MDBCardText className='mb-4'>
                                                         Quantity in stock: {element.quantityInStock}
                                                     </MDBCardText>
-                                                    {
+                                                    {!isShopAssistant ?
                                                         element.isAvailable ?
                                                             <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
                                                             :
@@ -201,6 +201,7 @@ export default function BikeShop() {
                                                                 </MDBBtn>
                                                                 <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
                                                             </article>
+                                                        : <p></p>
                                                     }
                                                 </MDBCardBody>
                                             </MDBCard>
