@@ -17,6 +17,6 @@ public class BikeParameterAttribute {
     @JoinColumn(name = "BikeParameterTypeId")
     private BikeParameterType bikeParameterType;
 
-    @OneToMany
+    @OneToMany(mappedBy = "bikeParameterAttribute")
     private List<BikeAttribute> bikeAttribute;
 }

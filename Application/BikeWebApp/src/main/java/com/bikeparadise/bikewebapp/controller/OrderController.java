@@ -28,8 +28,8 @@ public class OrderController {
 
     @GetMapping("/get-order-list")
     @ResponseBody
-    public List<OrderListDto> getOrderList(@RequestParam int clientId){
-        return orderService.getOrderList(clientId);
+    public ResponseEntity<List<OrderListDto>> getOrderList(){
+        return orderService.getOrderList();
     }
 
     @GetMapping("/get-all-orders-list")

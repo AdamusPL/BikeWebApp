@@ -6,7 +6,6 @@ import java.util.List;
 
 @Getter
 public class OrderDto {
-    Integer clientId;
     List<OrderItemDto> bikes;
     List<OrderItemDto> parts;
 }

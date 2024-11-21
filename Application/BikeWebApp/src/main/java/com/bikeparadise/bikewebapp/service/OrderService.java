@@ -3,15 +3,15 @@ package com.bikeparadise.bikewebapp.service;
 import com.bikeparadise.bikewebapp.dto.*;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -23,10 +23,12 @@ public class OrderService {
     private final BikeIdentificationReservedRepository bikeIdentificationReservedRepository;
     private final OrderRepository orderRepository;
     private final BikeRepository bikeRepository;
+    private final UserRepository userRepository;
 
     public OrderService(ClientRepository clientRepository, OrderStatusRepository orderStatusRepository,
                         PartRepository partRepository, BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository,
-                        OrderRepository orderRepository, BikeRepository bikeRepository, BikeIdentificationReservedRepository bikeIdentificationReservedRepository) {
+                        OrderRepository orderRepository, BikeRepository bikeRepository,
+                        BikeIdentificationReservedRepository bikeIdentificationReservedRepository, UserRepository userRepository) {
         this.clientRepository = clientRepository;
         this.orderStatusRepository = orderStatusRepository;
         this.partRepository = partRepository;
@@ -34,10 +36,25 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.bikeRepository = bikeRepository;
         this.bikeIdentificationReservedRepository = bikeIdentificationReservedRepository;
+        this.userRepository = userRepository;
     }
 
     public ResponseEntity<String> buy(OrderDto orderDto) {
-        Optional<Client> client = clientRepository.findById(orderDto.getClientId());
+        //retrieve client id
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
+
+        if(foundUsers.size() == 0){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = foundUsers.get(0);
+
+        Optional<Client> client = clientRepository.findById(user.getUserData().getClient().getId());
         //default order status
         List<OrderStatus> orderStatus = orderStatusRepository.findByStatus("Ordered");
 
@@ -90,27 +107,64 @@ public class OrderService {
         return ResponseEntity.notFound().build();
     }
 
-    public List<OrderListDto> getOrderList(int clientId){
+    public ResponseEntity<List<OrderListDto>> getOrderList(){
+        //retrieve client id
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
+
+        if(foundUsers.size() == 0){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = foundUsers.get(0);
+
         List<OrderListDto> score = new ArrayList<>();
-        List<Order> orderList = orderRepository.findByClientId(clientId);
+        List<Order> orderList = orderRepository.findByClientId(user.getUserData().getClient().getId());
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         for(Order order : orderList){
             List<OrderListBikeDto> orderedBikes = new ArrayList<>();
             List<OrderListPartDto> orderedParts = new ArrayList<>();
             BigDecimal finalPrice = new BigDecimal(0);
+
+            List<Integer> bikesSearched = new ArrayList<>();
             for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
-                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName()));
+                boolean stop = false;
+                for(Integer bikeId : bikesSearched){
+                    if(Objects.equals(bikeId, bikeIdentificationReserved.getBike().getId())){
+                        for(OrderListBikeDto orderListBikeDto : orderedBikes){
+                            if(orderListBikeDto.getId().equals(bikeId)){
+                                orderListBikeDto.setQuantity(orderListBikeDto.getQuantity() + 1);
+                                stop = true;
+                            }
+                            if(stop){
+                                break;
+                            }
+                        }
+                    }
+                    if(stop){
+                        break;
+                    }
+                }
+                if(stop){
+                    continue;
+                }
+                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName(), bikeIdentificationReserved.getBike().getPrice(), 1));
                 finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
+                bikesSearched.add(bikeIdentificationReserved.getBike().getId());
             }
             for(Part part : order.getPart()){
-                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName()));
+                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), 1));
                 finalPrice = finalPrice.add(part.getPrice());
             }
             OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);
             score.add(orderListDto);
         }
 
-        return score;
+        return ResponseEntity.ok(score);
     }
 
     public List<OrderListDto> getAllOrdersList(){
@@ -121,12 +175,35 @@ public class OrderService {
             List<OrderListBikeDto> orderedBikes = new ArrayList<>();
             List<OrderListPartDto> orderedParts = new ArrayList<>();
             BigDecimal finalPrice = new BigDecimal(0);
+
+            List<Integer> bikesSearched = new ArrayList<>();
             for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
-                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName()));
+                boolean stop = false;
+                for(Integer bikeId : bikesSearched){
+                    if(Objects.equals(bikeId, bikeIdentificationReserved.getBike().getId())){
+                        for(OrderListBikeDto orderListBikeDto : orderedBikes){
+                            if(orderListBikeDto.getId().equals(bikeId)){
+                                orderListBikeDto.setQuantity(orderListBikeDto.getQuantity() + 1);
+                                stop = true;
+                            }
+                            if(stop){
+                                break;
+                            }
+                        }
+                    }
+                    if(stop){
+                        break;
+                    }
+                }
+                if(stop){
+                    continue;
+                }
+                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName(), bikeIdentificationReserved.getBike().getPrice(), 1));
                 finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
+                bikesSearched.add(bikeIdentificationReserved.getBike().getId());
             }
             for(Part part : order.getPart()){
-                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName()));
+                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), 1));
                 finalPrice = finalPrice.add(part.getPrice());
             }
             OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);

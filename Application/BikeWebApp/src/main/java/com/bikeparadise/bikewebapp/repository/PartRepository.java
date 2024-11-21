@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface PartRepository extends JpaRepository<Part, Integer> {
     List<Part> findAllByBike_Id_AndPartParameterAttribute_PartType_Type(Integer id, String type);
-    Part findPartByMakeAndModelName(String make, String modelName);
+    Part findPartByMakeAndModelNameAndPartParameterAttribute_PartType_Type(String make, String modelName, String type);
 }

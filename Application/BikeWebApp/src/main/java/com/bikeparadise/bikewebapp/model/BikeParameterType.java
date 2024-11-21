@@ -13,7 +13,7 @@ public class BikeParameterType {
     Integer id;
     String type;
 
-    @OneToMany
+    @OneToMany(mappedBy = "bikeParameterType")
     private List<BikeAttribute> bikeAttribute;
 
     @OneToMany(mappedBy = "bikeParameterType")

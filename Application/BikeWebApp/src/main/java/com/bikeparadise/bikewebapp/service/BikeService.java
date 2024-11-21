@@ -250,7 +250,7 @@ public class BikeService {
                         String make = firstPart;
                         String modelName = secondPart;
 
-                        Part part = partRepository.findPartByMakeAndModelName(make, modelName);
+                        Part part = partRepository.findPartByMakeAndModelNameAndPartParameterAttribute_PartType_Type(make, modelName, bikeAddFiltersDto.getParameter());
                         List<Bike> list = part.getBike();
                         list.add(bike);
                         part.setBike(list);
@@ -260,7 +260,6 @@ public class BikeService {
             }
 
             bike.setPart(partsOfBike);
-            bike.setBikeAttribute(bikeAttributes);
             bike.setBikeAttribute(bikeAttributes);
             bikeRepository.save(bike);
             return ResponseEntity.ok().build();
