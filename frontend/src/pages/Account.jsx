@@ -10,6 +10,9 @@ export default function Account() {
     const [userData, setUserData] = useState([]);
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
+    const [email, setEmail] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,6 +43,14 @@ export default function Account() {
         navigate('/sign-in');
     }
 
+    function addPhoneNumber(){
+
+    }
+
+    function addEmail(){
+        
+    }
+
     return (<>
         <MDBContainer className="mt-4">
             <MDBRow tag='dl'>
@@ -68,9 +79,9 @@ export default function Account() {
                     <MDBCol>
                         {userData.phoneNumbers}
                     </MDBCol>
-                    <input className="form-control data-input" label="Phone Number" min="1" max="13" minlength="9"></input>
+                    <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" min="1" max="13" minlength="9"></input>
                     <MDBCol>
-                        <MDBBtn color="success">Add new phone number</MDBBtn>
+                        <MDBBtn onClick={addPhoneNumber} color="success">Add new phone number</MDBBtn>
                     </MDBCol>
                 </article>
             </MDBRow>
@@ -83,9 +94,9 @@ export default function Account() {
                     <MDBCol>
                         {userData.emails}
                     </MDBCol>
-                    <input className="form-control data-input" label="E-Mail Address" min="1" max="13" minlength="9"></input>
+                    <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" min="1" max="13" minlength="9"></input>
                     <MDBCol>
-                        <MDBBtn color="success">Add new e-mail address</MDBBtn>
+                        <MDBBtn onClick={addEmail} color="success">Add new e-mail address</MDBBtn>
                     </MDBCol>
                 </article>
             </MDBRow>
