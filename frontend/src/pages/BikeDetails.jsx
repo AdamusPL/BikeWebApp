@@ -96,11 +96,11 @@ export default function BikeDetails() {
         const review = {
             numberOfStars: numberOfStars,
             description: opinion,
-            clientId: 1,
             bikeId: chosenProduct.id
         };
 
         fetch(`http://localhost:8080/post-bike-review`, {
+            credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(review)

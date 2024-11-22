@@ -84,11 +84,11 @@ export default function PartDetails() {
         const review = {
             numberOfStars: numberOfStars,
             description: opinion,
-            clientId: 1,
             partId: chosenProduct.id
         };
 
         fetch(`http://localhost:8080/post-part-review`, {
+            credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(review)
