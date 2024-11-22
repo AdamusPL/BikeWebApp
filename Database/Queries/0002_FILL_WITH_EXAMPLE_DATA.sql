@@ -127,16 +127,6 @@ INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, PartTypeId, ShopAss
 INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, PartTypeId, ShopAssistantId) VALUES('SwiftZPart', 'E-500 FS', 159.99, 20, 6, 1);
 INSERT INTO [Part] (Make, ModelName, Price, QuantityInStock, PartTypeId, ShopAssistantId) VALUES('SwiftZPart', 'E-500 RS', 159.99, 20, 7, 1);
 
-INSERT INTO [Part_PartAttribute] VALUES(4, 1);
-INSERT INTO [Part_PartAttribute] VALUES(6, 2);
-INSERT INTO [Part_PartAttribute] VALUES(14, 3);
-INSERT INTO [Part_PartAttribute] VALUES(4, 4);
-INSERT INTO [Part_PartAttribute] VALUES(2, 5);
-INSERT INTO [Part_PartAttribute] VALUES(6, 6);
-INSERT INTO [Part_PartAttribute] VALUES(6, 7);
-INSERT INTO [Part_PartAttribute] VALUES(4, 8);
-INSERT INTO [Part_PartAttribute] VALUES(6, 9);
-
 INSERT INTO [OrderStatus] VALUES('Ordered');
 INSERT INTO [OrderStatus] VALUES('In-Progress');
 INSERT INTO [OrderStatus] VALUES('Ready to collect');
