@@ -3,6 +3,7 @@ package com.bikeparadise.bikewebapp.service;
 import com.bikeparadise.bikewebapp.dto.*;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -46,9 +47,9 @@ public class OrderService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
+        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
 
-        if(foundUsers.size() == 0){
+        if (foundUsers.size() == 0) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -78,24 +79,13 @@ public class OrderService {
             List<BikeIdentificationReserved> bikeIdentificationReservedList = new ArrayList<>();
             if (orderDto.getBikes() != null) {
                 for (OrderItemDto bike : orderDto.getBikes()) {
-                    Optional<Bike> bikeOptional = bikeRepository.findById(bike.getId());
-
-                    if (bikeOptional.isPresent()) {
-                        //reduce quantityInStock after buying by Client
-                        Bike actualBike = bikeOptional.get();
-                        bikeRepository.save(actualBike);
-
-                        //assign bike with identification to Client, first from up which is available
-                        BikeIdentificationAvailable bikeIdentificationAvailable = actualBike.getBikeIdentificationAvailable().get(0);
-                        BikeIdentificationReserved bikeIdentificationReserved = new BikeIdentificationReserved(bikeIdentificationAvailable.getSerialNumber(), bikeIdentificationAvailable.getBike());
-
-                        //move available bike identification to entity with reserved identifications
-                        bikeIdentificationReservedRepository.save(bikeIdentificationReserved);
-                        bikeIdentificationReservedList.add(bikeIdentificationReserved);
-                        bikeIdentificationAvailableRepository.delete(bikeIdentificationAvailable);
+                    //assign bike with identification to Client, first from up which is available
+                    for (int i = 0; i < bike.getQuantity(); i++) {
+                        bikeIdentificationAssignment(bike, bikeIdentificationReservedList);
                     }
                 }
             }
+
 
             Date date = new Date();
             Order order = new Order(date, client.get(), orderStatus.get(0), partList, bikeIdentificationReservedList);
@@ -107,16 +97,31 @@ public class OrderService {
         return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<List<OrderListDto>> getOrderList(){
+    @Transactional
+    private void bikeIdentificationAssignment(OrderItemDto bike, List<BikeIdentificationReserved> bikeIdentificationReservedList) {
+        Optional<Bike> bikeOptional = bikeRepository.findById(bike.getId());
+        if (bikeOptional.isPresent()) {
+            Bike actualBike = bikeOptional.get();
+            BikeIdentificationAvailable bikeIdentificationAvailable = actualBike.getBikeIdentificationAvailable().get(0);
+            BikeIdentificationReserved bikeIdentificationReserved = new BikeIdentificationReserved(bikeIdentificationAvailable.getSerialNumber(), bikeIdentificationAvailable.getBike());
+
+            //move available bike identification to entity with reserved identifications
+            bikeIdentificationReservedRepository.save(bikeIdentificationReserved);
+            bikeIdentificationReservedList.add(bikeIdentificationReserved);
+            bikeIdentificationAvailableRepository.delete(bikeIdentificationAvailable);
+        }
+    }
+
+    public ResponseEntity<List<OrderListDto>> getOrderList() {
         //retrieve client id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
+        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
 
-        if(foundUsers.size() == 0){
+        if (foundUsers.size() == 0) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -125,38 +130,47 @@ public class OrderService {
         List<OrderListDto> score = new ArrayList<>();
         List<Order> orderList = orderRepository.findByClientId(user.getUserData().getClient().getId());
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        for(Order order : orderList){
+        for (Order order : orderList) {
             List<OrderListBikeDto> orderedBikes = new ArrayList<>();
             List<OrderListPartDto> orderedParts = new ArrayList<>();
             BigDecimal finalPrice = new BigDecimal(0);
 
             List<Integer> bikesSearched = new ArrayList<>();
-            for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
+            for (BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()) {
                 boolean stop = false;
-                for(Integer bikeId : bikesSearched){
-                    if(Objects.equals(bikeId, bikeIdentificationReserved.getBike().getId())){
-                        for(OrderListBikeDto orderListBikeDto : orderedBikes){
-                            if(orderListBikeDto.getId().equals(bikeId)){
+                for (Integer bikeId : bikesSearched) {
+                    if (Objects.equals(bikeId, bikeIdentificationReserved.getBike().getId())) {
+                        for (OrderListBikeDto orderListBikeDto : orderedBikes) {
+                            if (orderListBikeDto.getId().equals(bikeId)) {
                                 orderListBikeDto.setQuantity(orderListBikeDto.getQuantity() + 1);
                                 stop = true;
                             }
-                            if(stop){
+                            if (stop) {
                                 break;
                             }
                         }
                     }
-                    if(stop){
+                    if (stop) {
                         break;
                     }
                 }
-                if(stop){
+                if (stop) {
+                    finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
                     continue;
                 }
-                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName(), bikeIdentificationReserved.getBike().getPrice(), 1));
+
+                String make = "";
+                for (BikeAttribute bikeAttribute : bikeIdentificationReserved.getBike().getBikeAttribute()) {
+                    if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
+                        make = bikeAttribute.getBikeParameterAttribute().getAttribute();
+                    }
+                }
+
+                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), make + " " + bikeIdentificationReserved.getBike().getModelName(), bikeIdentificationReserved.getBike().getPrice(), 1));
                 finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
                 bikesSearched.add(bikeIdentificationReserved.getBike().getId());
             }
-            for(Part part : order.getPart()){
+            for (Part part : order.getPart()) {
                 orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), 1));
                 finalPrice = finalPrice.add(part.getPrice());
             }
@@ -167,42 +181,52 @@ public class OrderService {
         return ResponseEntity.ok(score);
     }
 
-    public List<OrderListDto> getAllOrdersList(){
+    public List<OrderListDto> getAllOrdersList() {
         List<OrderListDto> score = new ArrayList<>();
         List<Order> orderList = orderRepository.findAll();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        for(Order order : orderList){
+        for (Order order : orderList) {
             List<OrderListBikeDto> orderedBikes = new ArrayList<>();
             List<OrderListPartDto> orderedParts = new ArrayList<>();
             BigDecimal finalPrice = new BigDecimal(0);
 
             List<Integer> bikesSearched = new ArrayList<>();
-            for(BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()){
+            for (BikeIdentificationReserved bikeIdentificationReserved : order.getBikeIdentificationReserved()) {
                 boolean stop = false;
-                for(Integer bikeId : bikesSearched){
-                    if(Objects.equals(bikeId, bikeIdentificationReserved.getBike().getId())){
-                        for(OrderListBikeDto orderListBikeDto : orderedBikes){
-                            if(orderListBikeDto.getId().equals(bikeId)){
+                for (Integer bikeId : bikesSearched) {
+                    if (Objects.equals(bikeId, bikeIdentificationReserved.getBike().getId())) {
+                        for (OrderListBikeDto orderListBikeDto : orderedBikes) {
+                            if (orderListBikeDto.getId().equals(bikeId)) {
                                 orderListBikeDto.setQuantity(orderListBikeDto.getQuantity() + 1);
                                 stop = true;
                             }
-                            if(stop){
+                            if (stop) {
                                 break;
                             }
                         }
                     }
-                    if(stop){
+                    if (stop) {
                         break;
                     }
                 }
-                if(stop){
+                if (stop) {
+                    finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
                     continue;
                 }
-                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), bikeIdentificationReserved.getBike().getModelName() + " " + bikeIdentificationReserved.getBike().getModelName(), bikeIdentificationReserved.getBike().getPrice(), 1));
+
+                String make = "";
+                for (BikeAttribute bikeAttribute : bikeIdentificationReserved.getBike().getBikeAttribute()) {
+                    if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
+                        make = bikeAttribute.getBikeParameterAttribute().getAttribute();
+                    }
+                }
+
+                orderedBikes.add(new OrderListBikeDto(bikeIdentificationReserved.getBike().getId(), make + " " + bikeIdentificationReserved.getBike().getModelName(), bikeIdentificationReserved.getBike().getPrice(), 1));
                 finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
                 bikesSearched.add(bikeIdentificationReserved.getBike().getId());
             }
-            for(Part part : order.getPart()){
+
+            for (Part part : order.getPart()) {
                 orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), 1));
                 finalPrice = finalPrice.add(part.getPrice());
             }
@@ -213,12 +237,12 @@ public class OrderService {
         return score;
     }
 
-    public ResponseEntity<String> updateOrderStatus(OrderStatusOrderDto orderStatusOrderDto){
+    public ResponseEntity<String> updateOrderStatus(OrderStatusOrderDto orderStatusOrderDto) {
         Optional<Order> orderOptional = orderRepository.findById(orderStatusOrderDto.getOrderId());
 
-        if(orderOptional.isPresent()){
+        if (orderOptional.isPresent()) {
             Optional<OrderStatus> orderStatusOptional = orderStatusRepository.findById(orderStatusOrderDto.getId());
-            if(orderStatusOptional.isPresent()){
+            if (orderStatusOptional.isPresent()) {
                 Order order = orderOptional.get();
                 order.setOrderStatus(orderStatusOptional.get());
                 orderRepository.save(order);
@@ -230,11 +254,11 @@ public class OrderService {
 
     }
 
-    public List<OrderStatusDto> getOrderStatuses(){
+    public List<OrderStatusDto> getOrderStatuses() {
         List<OrderStatus> orderStatuses = orderStatusRepository.findAll();
         List<OrderStatusDto> orderStatusDtos = new ArrayList<>();
 
-        for(OrderStatus orderStatus : orderStatuses){
+        for (OrderStatus orderStatus : orderStatuses) {
             OrderStatusDto orderStatusDto = new OrderStatusDto(orderStatus.getId(), orderStatus.getStatus());
             orderStatusDtos.add(orderStatusDto);
         }
