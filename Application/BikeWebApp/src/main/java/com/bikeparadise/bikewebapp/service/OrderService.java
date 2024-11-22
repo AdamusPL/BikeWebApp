@@ -25,11 +25,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final BikeRepository bikeRepository;
     private final UserRepository userRepository;
+    private final PartReservedRepository partReservedRepository;
 
     public OrderService(ClientRepository clientRepository, OrderStatusRepository orderStatusRepository,
                         PartRepository partRepository, BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository,
                         OrderRepository orderRepository, BikeRepository bikeRepository,
-                        BikeIdentificationReservedRepository bikeIdentificationReservedRepository, UserRepository userRepository) {
+                        BikeIdentificationReservedRepository bikeIdentificationReservedRepository, UserRepository userRepository,
+                        PartReservedRepository partReservedRepository) {
         this.clientRepository = clientRepository;
         this.orderStatusRepository = orderStatusRepository;
         this.partRepository = partRepository;
@@ -38,6 +40,7 @@ public class OrderService {
         this.bikeRepository = bikeRepository;
         this.bikeIdentificationReservedRepository = bikeIdentificationReservedRepository;
         this.userRepository = userRepository;
+        this.partReservedRepository = partReservedRepository;
     }
 
     public ResponseEntity<String> buy(OrderDto orderDto) {
@@ -60,18 +63,22 @@ public class OrderService {
         List<OrderStatus> orderStatus = orderStatusRepository.findByStatus("Ordered");
 
         if (client.isPresent() && orderStatus.size() != 0) {
-            List<Part> partList = new ArrayList<>();
+            Date date = new Date();
+            Order order = new Order(date, client.get(), orderStatus.get(0));
+
+            List<PartReserved> partsReservedList = new ArrayList<>();
             if (orderDto.getParts() != null) {
                 for (OrderItemDto part : orderDto.getParts()) {
                     Optional<Part> partOptional = partRepository.findById(part.getId());
 
                     if (partOptional.isPresent()) {
-                        partList.add(partOptional.get());
+                        Part actualPart = partOptional.get();
+                        PartReserved partReserved = new PartReserved(actualPart.getMake(), actualPart.getModelName(), part.getQuantity(), actualPart.getPrice());
+                        partReservedRepository.save(partReserved);
+                        partsReservedList.add(partReserved);
 
-                        //reduce quantityInStock after buying by Client
-                        Part get = partOptional.get();
-                        get.setQuantityInStock(get.getQuantityInStock() - part.getQuantity());
-                        partRepository.save(get);
+                        actualPart.setQuantityInStock(actualPart.getQuantityInStock() - part.getQuantity());
+                        partRepository.save(actualPart);
                     }
                 }
             }
@@ -86,9 +93,8 @@ public class OrderService {
                 }
             }
 
-
-            Date date = new Date();
-            Order order = new Order(date, client.get(), orderStatus.get(0), partList, bikeIdentificationReservedList);
+            order.setBikeIdentificationReserved(bikeIdentificationReservedList);
+            order.setPartReserved(partsReservedList);
             orderRepository.save(order);
 
             return ResponseEntity.ok().build();
@@ -103,7 +109,13 @@ public class OrderService {
         if (bikeOptional.isPresent()) {
             Bike actualBike = bikeOptional.get();
             BikeIdentificationAvailable bikeIdentificationAvailable = actualBike.getBikeIdentificationAvailable().get(0);
-            BikeIdentificationReserved bikeIdentificationReserved = new BikeIdentificationReserved(bikeIdentificationAvailable.getSerialNumber(), bikeIdentificationAvailable.getBike());
+            String make = "";
+            for(BikeAttribute bikeAttribute : actualBike.getBikeAttribute()){
+                if(bikeAttribute.getBikeParameterType().getType().equals("Make")){
+                    make = bikeAttribute.getBikeParameterAttribute().getAttribute();
+                }
+            }
+            BikeIdentificationReserved bikeIdentificationReserved = new BikeIdentificationReserved(make, actualBike.getModelName(), bikeIdentificationAvailable.getSerialNumber(), actualBike.getPrice(), bikeIdentificationAvailable.getBike());
 
             //move available bike identification to entity with reserved identifications
             bikeIdentificationReservedRepository.save(bikeIdentificationReserved);
@@ -170,9 +182,9 @@ public class OrderService {
                 finalPrice = finalPrice.add(bikeIdentificationReserved.getBike().getPrice());
                 bikesSearched.add(bikeIdentificationReserved.getBike().getId());
             }
-            for (Part part : order.getPart()) {
-                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), 1));
-                finalPrice = finalPrice.add(part.getPrice());
+            for (PartReserved partReserved : order.getPartReserved()) {
+                orderedParts.add(new OrderListPartDto(partReserved.getId(), partReserved.getMake() + " " + partReserved.getModelName(), partReserved.getPrice(), 1));
+                finalPrice = finalPrice.add(partReserved.getPrice());
             }
             OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);
             score.add(orderListDto);
@@ -226,9 +238,9 @@ public class OrderService {
                 bikesSearched.add(bikeIdentificationReserved.getBike().getId());
             }
 
-            for (Part part : order.getPart()) {
-                orderedParts.add(new OrderListPartDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), 1));
-                finalPrice = finalPrice.add(part.getPrice());
+            for (PartReserved partReserved : order.getPartReserved()) {
+                orderedParts.add(new OrderListPartDto(partReserved.getId(), partReserved.getMake() + " " + partReserved.getModelName(), partReserved.getPrice(), 1));
+                finalPrice = finalPrice.add(partReserved.getPrice());
             }
             OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);
             score.add(orderListDto);

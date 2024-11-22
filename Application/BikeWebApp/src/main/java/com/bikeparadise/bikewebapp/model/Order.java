@@ -28,12 +28,8 @@ public class Order {
     @ManyToOne
     OrderStatus orderStatus;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Order_Part",
-            joinColumns = @JoinColumn(name = "OrderId"),
-            inverseJoinColumns = @JoinColumn(name = "PartId"))
-    List<Part> part;
+    @OneToMany(mappedBy = "order")
+    private List<PartReserved> partReserved;
 
     @ManyToMany
     @JoinTable(
@@ -42,11 +38,9 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "BikeIdentificationReservedId"))
     List<BikeIdentificationReserved> bikeIdentificationReserved;
 
-    public Order(Date orderDate, Client client, OrderStatus orderStatus, List<Part> part, List<BikeIdentificationReserved> bikeIdentificationReserved){
+    public Order(Date orderDate, Client client, OrderStatus orderStatus){
         this.orderDate = orderDate;
         this.client = client;
         this.orderStatus = orderStatus;
-        this.part = part;
-        this.bikeIdentificationReserved = bikeIdentificationReserved;
     }
 }
