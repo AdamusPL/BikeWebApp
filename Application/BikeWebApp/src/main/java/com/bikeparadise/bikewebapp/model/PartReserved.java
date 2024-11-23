@@ -23,16 +23,18 @@ public class PartReserved {
     Integer quantity;
     BigDecimal price;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Part part;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Order order;
 
-    public PartReserved(String make, String modelName, Integer quantity, BigDecimal price){
+    public PartReserved(String make, String modelName, Integer quantity, BigDecimal price, Part part, Order order){
         this.make = make;
         this.modelName = modelName;
         this.quantity = quantity;
         this.price = price;
+        this.part = part;
+        this.order = order;
     }
 }

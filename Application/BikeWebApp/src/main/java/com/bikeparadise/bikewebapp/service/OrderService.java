@@ -73,7 +73,7 @@ public class OrderService {
 
                     if (partOptional.isPresent()) {
                         Part actualPart = partOptional.get();
-                        PartReserved partReserved = new PartReserved(actualPart.getMake(), actualPart.getModelName(), part.getQuantity(), actualPart.getPrice());
+                        PartReserved partReserved = new PartReserved(actualPart.getMake(), actualPart.getModelName(), part.getQuantity(), actualPart.getPrice(), actualPart, order);
                         partReservedRepository.save(partReserved);
                         partsReservedList.add(partReserved);
 
@@ -183,8 +183,8 @@ public class OrderService {
                 bikesSearched.add(bikeIdentificationReserved.getBike().getId());
             }
             for (PartReserved partReserved : order.getPartReserved()) {
-                orderedParts.add(new OrderListPartDto(partReserved.getId(), partReserved.getMake() + " " + partReserved.getModelName(), partReserved.getPrice(), 1));
-                finalPrice = finalPrice.add(partReserved.getPrice());
+                orderedParts.add(new OrderListPartDto(partReserved.getId(), partReserved.getMake() + " " + partReserved.getModelName(), partReserved.getPrice(), partReserved.getQuantity()));
+                finalPrice = finalPrice.add(partReserved.getPrice().multiply(BigDecimal.valueOf(partReserved.getQuantity())));
             }
             OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);
             score.add(orderListDto);
