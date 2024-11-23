@@ -239,8 +239,8 @@ public class OrderService {
             }
 
             for (PartReserved partReserved : order.getPartReserved()) {
-                orderedParts.add(new OrderListPartDto(partReserved.getId(), partReserved.getMake() + " " + partReserved.getModelName(), partReserved.getPrice(), 1));
-                finalPrice = finalPrice.add(partReserved.getPrice());
+                orderedParts.add(new OrderListPartDto(partReserved.getId(), partReserved.getMake() + " " + partReserved.getModelName(), partReserved.getPrice(), partReserved.getQuantity()));
+                finalPrice = finalPrice.add(partReserved.getPrice().multiply(BigDecimal.valueOf(partReserved.getQuantity())));
             }
             OrderListDto orderListDto = new OrderListDto(order.getId(), formatter.format(order.getOrderDate()), order.getOrderStatus().getStatus(), orderedBikes, orderedParts, finalPrice);
             score.add(orderListDto);
