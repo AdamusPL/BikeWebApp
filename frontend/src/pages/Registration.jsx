@@ -16,7 +16,6 @@ export default function Registration() {
     const [selectedRole, setSelectedRole] = useState(false);
 
     function register() {
-        debugger;
         const userData = {
             firstName: firstName,
             lastName: lastName,
@@ -45,7 +44,6 @@ export default function Registration() {
 
     const handleRadioButtonChange = (event) => {
         setSelectedRole(event.target.value);
-        console.log(event.target.value);
     };
 
 

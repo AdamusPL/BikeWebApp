@@ -30,6 +30,10 @@ export default function Cart() {
     }, [products]);
 
     async function fetchProducts() {
+        if(!localStorage.getItem('cart')){
+            return;
+        }
+
         const products = {
             bikes: JSON.parse(localStorage.getItem('cart')).bikes,
             parts: JSON.parse(localStorage.getItem('cart')).parts
@@ -51,7 +55,6 @@ export default function Cart() {
     }
 
     function calculateSum() {
-        debugger;
         let priceToPay = 0.0;
 
         products.bikes.map(item => {

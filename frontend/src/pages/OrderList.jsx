@@ -21,7 +21,6 @@ export default function OrderList() {
     }, [isShopAssistant]);
 
     async function getAllOrders() {
-        debugger;
         const response = await fetch(`http://localhost:8080/get-all-orders-list`,
             { credentials: 'include' }
         );
@@ -59,8 +58,6 @@ export default function OrderList() {
 
         }).then(response => {
             if (response.ok) {
-                debugger;
-
                 let orderCopy = orders.map(order =>
                     order.id === orderToUpdate.id ? { ...order, status: updatedStatus.status } : order
                 );

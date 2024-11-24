@@ -35,7 +35,6 @@ export default function PartShop() {
     }, []);
 
     async function getProducts() {
-        debugger;
         const response = await fetch('http://localhost:8080/part-shop');
         const data = await response.json();
 

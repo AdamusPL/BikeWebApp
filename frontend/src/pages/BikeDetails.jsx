@@ -85,7 +85,6 @@ export default function BikeDetails() {
         const response = await fetch(`http://localhost:8080/get-detailed-info-about-bike?bikeId=${urlParameters.id}`);
         const data = await response.json();
 
-        debugger;
         const keysArray = Object.keys(data.parts);
         setKeysArray(keysArray);
         setChosenProduct(data);

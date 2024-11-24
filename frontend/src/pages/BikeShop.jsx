@@ -76,7 +76,6 @@ export default function BikeShop() {
             localStorage.setItem('cart', JSON.stringify({ bikes: [{ id: id, quantity: 1 }], parts: [] }));
         }
         else {
-            debugger;
             let cart = JSON.parse(localStorage.getItem('cart'));
             const index = cart.bikes.findIndex(b => b.id === id);
 

@@ -15,6 +15,7 @@ import AddBike from './pages/AddBike.jsx';
 import AddPart from './pages/AddPart.jsx';
 import RoleProvider from './components/RoleProvider.jsx';
 import Unauthorized from './pages/Unauthorized.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
             <Route path='/add-bike' element={<AddBike />}></Route>
             <Route path='/add-part' element={<AddPart />}></Route>
             <Route path='/unauthorized' element={<Unauthorized />}></Route>
+            <Route path="*" element={<NotFound />}></Route>
           </Routes>
         </Layout>
       </BrowserRouter>
