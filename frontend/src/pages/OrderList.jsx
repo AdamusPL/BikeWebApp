@@ -2,6 +2,8 @@ import { MDBCard, MDBContainer, MDBTypography, MDBListGroup, MDBListGroupItem, M
 import { useEffect, useState } from "react"
 import { useRole } from "../components/RoleProvider";
 
+import '../css/OrderList.css'
+
 export default function OrderList() {
 
     const [isLoading, setIsLoading] = useState(true);
@@ -69,26 +71,32 @@ export default function OrderList() {
 
     return (<>
         <MDBContainer>
-            <MDBTypography variant='h1 mt-2'>Your orders</MDBTypography>
-            <MDBCard>
-                {!isLoading ?
-                    orders.map(order => {
-                        return (
-                            <MDBListGroup key={order.id}>
+            {isShopAssistant ?
+                <MDBTypography variant='h1 mt-4'>Here you can manage clients' orders</MDBTypography>
+                : <MDBTypography variant='h1 mt-4'>Your orders</MDBTypography>
+            }
+            {!isLoading ?
+                orders.map(order => {
+                    return (
+                        <MDBCard key={order.id} className='mt-4'>
+                            <MDBListGroup>
                                 <MDBListGroupItem>
-                                    <MDBTypography tag='h4'>Order from: {order.date}</MDBTypography> <MDBDropdown>
-                                        {isShopAssistant ?
-                                            <article>
-                                                <MDBDropdownToggle color='success'> {order.status}</MDBDropdownToggle>
-                                                <MDBDropdownMenu>
-                                                    {orderStatuses.map(status => {
-                                                        return (<MDBDropdownItem key={status.id} link onClick={(e) => changeStatus(order, status)}>{status.status}</MDBDropdownItem>)
-                                                    })}
-                                                </MDBDropdownMenu>
-                                            </article>
-                                            : <p>{order.status}</p>
-                                        }
-                                    </MDBDropdown>
+                                    <article className='order'>
+                                        <MDBTypography tag='h4'>Order from: {order.date}</MDBTypography>
+                                        <MDBDropdown>
+                                            {isShopAssistant ?
+                                                <article>
+                                                    <MDBDropdownToggle color='success'> {order.status}</MDBDropdownToggle>
+                                                    <MDBDropdownMenu>
+                                                        {orderStatuses.map(status => {
+                                                            return (<MDBDropdownItem key={status.id} link onClick={(e) => changeStatus(order, status)}>{status.status}</MDBDropdownItem>)
+                                                        })}
+                                                    </MDBDropdownMenu>
+                                                </article>
+                                                : <p>{order.status}</p>
+                                            }
+                                        </MDBDropdown>
+                                    </article>
                                 </MDBListGroupItem>
 
                                 {order.orderedBikes.map(bike => {
@@ -113,12 +121,14 @@ export default function OrderList() {
                                     </MDBListGroupItem>
                                     : <p>0, -</p>}
 
-                            </MDBListGroup>)
-                    })
-                    :
-                    <p>There are no orders yet.</p>
-                }
-            </MDBCard>
+                            </MDBListGroup>
+                        </MDBCard>
+                    )
+                })
+                :
+                <p>There are no orders yet.</p>
+            }
+
         </MDBContainer >
     </>)
 }

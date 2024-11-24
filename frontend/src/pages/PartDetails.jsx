@@ -5,8 +5,10 @@ import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useRole } from "../components/RoleProvider";
+import Dialog from "../components/Dialog";
 
 export default function PartDetails() {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const urlParameters = useParams();
     const [chosenProduct, setChosenProduct] = useState({});
@@ -29,6 +31,10 @@ export default function PartDetails() {
     useEffect(() => {
         checkAvailability();
     }, [chosenProduct, cart]);
+
+    function closeDialog() {
+        setIsDialogOpen(!isDialogOpen);
+    }
 
     function checkAvailability() {
         if (chosenProduct.quantityInStock === 0) {
@@ -77,6 +83,8 @@ export default function PartDetails() {
 
             localStorage.setItem('cart', JSON.stringify(cart));
         }
+
+        setIsDialogOpen(!isDialogOpen);
 
     }
 
@@ -132,7 +140,7 @@ export default function PartDetails() {
                         {
                             isAvailable ?
                                 <article>
-                                    <MDBBtn className="ms-3" color="success" onClick={addToCart}>Add to cart</MDBBtn>
+                                    <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(chosenProduct.id)} toggleClose={closeDialog} />
                                     <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
                                 </article>
                                 :
@@ -140,7 +148,7 @@ export default function PartDetails() {
                                     <MDBBtn className='me-1' color='secondary'>
                                         Add to cart
                                     </MDBBtn>
-                                    <p>It's not available anymore!</p>
+                                    <p className="mt-2">It's not available anymore!</p>
                                     <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
                                 </article>
                         }
@@ -166,7 +174,7 @@ export default function PartDetails() {
                 isReviewPosted ?
                     <p>Review posted successfully</p>
                     :
-                    <p></p>
+                    null
             }
 
             {

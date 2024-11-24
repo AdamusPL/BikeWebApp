@@ -155,7 +155,7 @@ export default function BikeShop() {
                     {isShopAssistant ?
                         <article id="button">
                             <MDBBtn className="mt-4" color="success" href='/add-bike'>Add new bike</MDBBtn>
-                        </article> : <p></p>}
+                        </article> : null}
 
                     <MDBCol md="11">
                         <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
@@ -204,7 +204,7 @@ export default function BikeShop() {
                                                                 </MDBBtn>
                                                                 <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
                                                             </article>
-                                                        : <p></p>
+                                                        : null
                                                     }
                                                 </MDBCardBody>
                                             </MDBCard>

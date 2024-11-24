@@ -155,7 +155,7 @@ export default function PartShop() {
                         <article id="button">
                             <MDBBtn className="mt-4" color="success" href='/add-part'>Add new part</MDBBtn>
                         </article>
-                        : <p></p>
+                        : null
                     }
 
                     <MDBCol md="11">
@@ -205,7 +205,7 @@ export default function PartShop() {
                                                                 </MDBBtn>
                                                                 <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
                                                             </article>
-                                                        : <p></p>
+                                                        : null
                                                     }
                                                 </MDBCardBody>
                                             </MDBCard>

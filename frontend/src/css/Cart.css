@@ -1,4 +1,27 @@
 .number-of-items{
+    width: '50px';
+    margin-left: '10px';
+    margin-right: '10px';
+}
+
+.item{
     display: flex;
     align-items: center;
+}
+
+.minus{
+    margin-left: 50px;
+}
+
+.plus{
+    margin-right: 50px;
+}
+
+.middle{
+    display: flex;
+    align-items: center;
+}
+
+.price{
+    margin-right: 50px;
 }

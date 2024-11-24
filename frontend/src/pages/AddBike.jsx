@@ -105,7 +105,7 @@ export default function AddBike() {
 
             {isPosted ? <p>Bike successfully added</p>
                 :
-                <p></p>}
+                null}
         </MDBContainer>
     </>)
 }

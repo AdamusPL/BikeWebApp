@@ -125,7 +125,7 @@ export default function AddPart() {
 
             {isPosted ? <p>Part successfully added</p>
                 :
-                <p></p>}
+                null}
 
         </MDBContainer>
     </>)

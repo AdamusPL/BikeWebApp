@@ -170,7 +170,7 @@ export default function BikeDetails() {
                     <p className="fw-lighter">Write a review</p>
                     <article className="d-flex align-items-center mb-2">
                         <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
-                        /5
+                        <span>/5</span>
                     </article>
                     <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
                     <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
@@ -178,7 +178,7 @@ export default function BikeDetails() {
                         isReviewPosted ?
                             <p>Review posted successfully</p>
                             :
-                            <p></p>
+                            null
                     }
                 </article>
                 : <p>You must be signed-in to post a review</p>

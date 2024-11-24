@@ -30,13 +30,17 @@ export default function Cart() {
     }, [products]);
 
     async function fetchProducts() {
-        if(!localStorage.getItem('cart')){
+        if (!localStorage.getItem('cart')) {
             return;
         }
 
         const products = {
             bikes: JSON.parse(localStorage.getItem('cart')).bikes,
             parts: JSON.parse(localStorage.getItem('cart')).parts
+        }
+
+        if(products.bikes.length === 0 && products.parts.length === 0){
+            return;
         }
 
         fetch(`http://localhost:8080/get-cart-products`, {
@@ -97,6 +101,10 @@ export default function Cart() {
     }
 
     function handleClick() {
+        if(isLoading){
+            return;
+        }
+
         if (cookies.token === undefined) {
             navigate('/sign-in');
         }
@@ -117,14 +125,14 @@ export default function Cart() {
         if (part.quantity > 1) {
             part.quantity -= 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             parts: products.parts.map((part) => (
-                part.id === id ? {...part, quantity: part.quantity - 1} : part
+                part.id === id ? { ...part, quantity: part.quantity - 1 } : part
             ))
         };
 
@@ -141,14 +149,14 @@ export default function Cart() {
         if (bike.quantity > 1) {
             bike.quantity -= 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             bikes: products.bikes.map((b) => (
-                b.id === id ? {...b, quantity: b.quantity - 1} : b
+                b.id === id ? { ...b, quantity: b.quantity - 1 } : b
             ))
         };
 
@@ -167,14 +175,14 @@ export default function Cart() {
         if (part.quantity < partProduct.quantityInStock) {
             part.quantity += 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             parts: products.parts.map((part) => (
-                part.id === id ? {...part, quantity: part.quantity + 1} : part
+                part.id === id ? { ...part, quantity: part.quantity + 1 } : part
             ))
         };
 
@@ -193,14 +201,14 @@ export default function Cart() {
         if (bike.quantity < partProduct.quantityInStock) {
             bike.quantity += 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             bikes: products.bikes.map((b) => (
-                b.id === id ? {...b, quantity: b.quantity + 1} : b
+                b.id === id ? { ...b, quantity: b.quantity + 1 } : b
             ))
         };
 
@@ -231,47 +239,52 @@ export default function Cart() {
 
     return (<>
         <MDBContainer>
-            <MDBTypography variant='h1 mt-2'>Cart</MDBTypography>
-            <MDBCard>
+            <MDBCard className="mt-4">
                 <MDBListGroup>
                     <MDBListGroupItem>
-                        <MDBTypography tag='h4'>Bikes</MDBTypography>
+                        <MDBTypography tag='h1'>Cart</MDBTypography>
                     </MDBListGroupItem>
                     {!isLoading ?
                         products.bikes.map(element => (
                             <MDBListGroupItem key={element.id}>
-                                <article className='close-button-cart'><MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
-                                {element.fullModelName}
-                                <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element.id)} />
+                                <article className='item'>
+                                    <span>{element.fullModelName}</span>
+                                    <MDBIcon className='minus' fas icon="minus" onClick={() => minusBike(element.id)} />
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
-                                    <MDBIcon fas icon="plus" onClick={() => plusBike(element.id)} />
+                                    <MDBIcon className='plus' fas icon="plus" onClick={() => plusBike(element.id)} />
+                                    <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    <article className='close-button-cart'><MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
                                 </article>
-                                {element.quantity} x {element.price} zł
                             </MDBListGroupItem>
                         ))
                         :
-                        <p>Your cart is empty!</p>
+                        null
                     }
-                    <MDBListGroupItem>
-                        <MDBTypography tag='h4'>Parts</MDBTypography>
-                    </MDBListGroupItem>
+
                     {!isLoading ?
                         products.parts.map(element => (
                             <MDBListGroupItem key={element.id}>
-                                <article className='close-button-cart'><MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
-                                {element.fullModelName}
-                                <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusPart(element.id)} />
+                                <article className='item'>
+                                    <span>{element.fullModelName}</span>
+                                    <MDBIcon className='minus' fas icon="minus" onClick={() => minusPart(element.id)} />
                                     <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
-                                    <MDBIcon fas icon="plus" onClick={() => plusPart(element.id)} />
+                                    <MDBIcon className='plus' fas icon="plus" onClick={() => plusPart(element.id)} />
+                                    <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    <article className='close-button-cart'><MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
                                 </article>
-                                {element.quantity} x {element.price} zł
                             </MDBListGroupItem>
                         ))
                         :
-                        <p>Your cart is empty!</p>
+                        null
                     }
+
+                    {isLoading ?
+                        <MDBListGroupItem>
+                            Your cart is empty
+                        </MDBListGroupItem>
+                        : <MDBListGroupItem></MDBListGroupItem>
+                    }
+
                     <MDBListGroupItem>
                         <MDBTypography tag='h4'>Summary</MDBTypography>
                     </MDBListGroupItem>
