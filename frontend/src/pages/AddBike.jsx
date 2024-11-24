@@ -1,5 +1,6 @@
 import { MDBContainer, MDBInput, MDBDropdown, MDBDropdownToggle, MDBDropdownItem, MDBDropdownMenu, MDBTextArea, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
+import '../css/AddBike.css';
 
 export default function AddBike() {
 
@@ -21,7 +22,7 @@ export default function AddBike() {
     }, [])
 
     async function getFilters() {
-        const response = await fetch('http://localhost:8080/get-add-bike-filters', {credentials: 'include'});
+        const response = await fetch('http://localhost:8080/get-add-bike-filters', { credentials: 'include' });
         const data = await response.json();
 
         let defaultValues = [];
@@ -85,8 +86,8 @@ export default function AddBike() {
             {!isLoading ?
                 keysArray.map((element, index) => {
                     return (
-                        <div key={element} className="d-flex align-items-center mt-2">
-                            <MDBDropdown>
+                        <div key={element} className='choice'>
+                            <MDBDropdown className='margin-item'>
                                 <MDBDropdownToggle color='success'>{element}</MDBDropdownToggle>
                                 <MDBDropdownMenu>
                                     {filters[element].map(item => (
@@ -94,7 +95,7 @@ export default function AddBike() {
                                     ))}
                                 </MDBDropdownMenu>
                             </MDBDropdown>
-                            <a>{defaultValues[index].attribute}</a>
+                            <p className='value'>{defaultValues[index].attribute}</p>
                         </div>)
                 })
                 :

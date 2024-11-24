@@ -90,8 +90,8 @@ export default function AddPart() {
 
 
             {!isLoading ?
-                <div className="d-flex align-items-center mt-2">
-                    <MDBDropdown>
+                <div className="choice">
+                    <MDBDropdown className='margin-item mb-4 mt-4'>
                         <MDBDropdownToggle color='success'>Type</MDBDropdownToggle>
                         <MDBDropdownMenu>
                             {keysArray.map(item => (
@@ -106,8 +106,8 @@ export default function AddPart() {
             }
 
             {!isLoading ?
-                <div className="d-flex align-items-center mt-2">
-                    <MDBDropdown>
+                <div className="choice">
+                    <MDBDropdown className='margin-item'>
                         <MDBDropdownToggle color='success'>Attribute</MDBDropdownToggle>
                         <MDBDropdownMenu>
                             {attributes.map(item => (

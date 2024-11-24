@@ -128,11 +128,19 @@ export default function BikeDetails() {
                         />
                     </figure>
                     <h1>{chosenProduct.fullModelName}</h1>
+                    <p>{chosenProduct.description}</p>
                 </MDBCol>
                 <MDBCol md="4">
                     {
                         keysArray.map(element => (
-                            <p key={element}>{element}: {chosenProduct.parts[element]}</p>
+                            <MDBRow tag='dl'>
+                                <MDBCol key={element} tag='dt' sm='3'>
+                                    {element}
+                                </MDBCol>
+                                <MDBCol tag='dd' sm='9'>
+                                    {chosenProduct.parts[element]}
+                                </MDBCol>
+                            </MDBRow>
                         ))
                     }
                     <article id="buy-block">
@@ -155,7 +163,6 @@ export default function BikeDetails() {
                     </article>
                 </MDBCol>
             </MDBRow>
-            <p>{chosenProduct.description}</p>
 
             <p className="fw-light">Reviews</p>
             {isClient ?
@@ -174,7 +181,7 @@ export default function BikeDetails() {
                             <p></p>
                     }
                 </article>
-            : <p>You must be signed-in to post a review</p>
+                : <p>You must be signed-in to post a review</p>
             }
 
             {

@@ -119,7 +119,14 @@ export default function PartDetails() {
                     <h1>{chosenProduct.fullModelName}</h1>
                 </MDBCol>
                 <MDBCol md="4">
-                    <p>{chosenProduct.type}: {chosenProduct.attribute}</p>
+                    <MDBRow tag='dl'>
+                        <MDBCol tag='dt' sm='3'>
+                            {chosenProduct.type}
+                        </MDBCol>
+                        <MDBCol tag='dd' sm='9'>
+                            {chosenProduct.attribute}
+                        </MDBCol>
+                    </MDBRow>
                     <article id="buy-block">
                         <p>{chosenProduct.price} zł</p>
                         {
@@ -154,7 +161,7 @@ export default function PartDetails() {
                     <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
                 </article>
                 : <p>You must be signed-in to post a review</p>
-                }
+            }
             {
                 isReviewPosted ?
                     <p>Review posted successfully</p>

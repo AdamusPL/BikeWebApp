@@ -177,18 +177,22 @@ export default function BikeShop() {
                                                     </MDBRipple>
                                                 </Link>
                                                 <MDBCardBody>
-                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.fullModelName}</MDBCardTitle>
-                                                    <MDBCardText>
-                                                        Type: {element.type}
+                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Type:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.type}</MDBTypography>
                                                     </MDBCardText>
-                                                    <MDBCardText>
-                                                        Drivetrain: {element.drive}
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Drivetrain:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.drive}</MDBTypography>
                                                     </MDBCardText>
-                                                    <MDBCardText>
-                                                        Price: {element.price} zł
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Price:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.price} zł</MDBTypography>
                                                     </MDBCardText>
-                                                    <MDBCardText className='mb-4'>
-                                                        Quantity in stock: {element.quantityInStock}
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Quantity in stock:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.quantityInStock}</MDBTypography>
                                                     </MDBCardText>
                                                     {!isShopAssistant ?
                                                         element.isAvailable ?

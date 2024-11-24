@@ -178,18 +178,22 @@ export default function PartShop() {
                                                     </MDBRipple>
                                                 </Link>
                                                 <MDBCardBody>
-                                                    <MDBCardTitle className='mb-4' tag='h2'>{element.fullModelName}</MDBCardTitle>
-                                                    <MDBCardText>
-                                                        Type: {element.type}
+                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Type:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.type}</MDBTypography>
                                                     </MDBCardText>
-                                                    <MDBCardText>
-                                                        Kind: {element.attribute}
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Kind:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.attribute}</MDBTypography>
                                                     </MDBCardText>
-                                                    <MDBCardText>
-                                                        Price: {element.price} zł
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Price:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.price} zł</MDBTypography>
                                                     </MDBCardText>
-                                                    <MDBCardText className='mb-4'>
-                                                        Quantity in stock: {element.quantityInStock}
+                                                    <MDBCardText className='choice'>
+                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Quantity in stock:</MDBTypography>
+                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.quantityInStock}</MDBTypography>
                                                     </MDBCardText>
                                                     {!isShopAssistant ?
                                                         element.isAvailable ?
