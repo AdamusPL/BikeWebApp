@@ -19,8 +19,8 @@ import NotFound from './pages/NotFound.jsx';
 
 function App() {
   return (
-    <RoleProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <RoleProvider>
         <Layout>
           <Routes>
             <Route path='/' element={<Home />}></Route>
@@ -39,8 +39,8 @@ function App() {
             <Route path="*" element={<NotFound />}></Route>
           </Routes>
         </Layout>
-      </BrowserRouter>
-    </RoleProvider>
+      </RoleProvider>
+    </BrowserRouter>
   );
 }
 

@@ -1,9 +1,11 @@
 import { MDBContainer, MDBTypography } from "mdb-react-ui-kit";
 
-export default function Unauthorized(){
-    return(<>
-        <MDBContainer>
-            <MDBTypography>401 Unauthorized</MDBTypography>
-        </MDBContainer>
+import '../css/Unauthorized.css'
+
+export default function Unauthorized() {
+    return (<>
+        <MDBTypography tag='div' id="error-info" className='display-1 pb-3 mb-3 border-bottom'>
+            401 Unauthorized
+        </MDBTypography>
     </>)
 }

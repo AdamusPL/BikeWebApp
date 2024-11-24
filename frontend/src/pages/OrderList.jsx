@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useRole } from "../components/RoleProvider";
 
 import '../css/OrderList.css'
+import { useNavigate } from "react-router-dom";
 
 export default function OrderList() {
 
@@ -11,7 +12,10 @@ export default function OrderList() {
     const [orderStatuses, setOrderStatuses] = useState([]);
     const { isShopAssistant } = useRole();
 
+    const navigate = useNavigate();
+
     useEffect(() => {
+        debugger;
         if (isShopAssistant) {
             getOrderStatuses();
             getAllOrders();
@@ -26,6 +30,9 @@ export default function OrderList() {
         const response = await fetch(`http://localhost:8080/get-all-orders-list`,
             { credentials: 'include' }
         );
+        if(response.status === 401){
+            navigate('/unauthorized');
+        }
         const data = await response.json();
         setOrders(data);
     }
@@ -42,6 +49,11 @@ export default function OrderList() {
         const response = await fetch(`http://localhost:8080/get-order-list`,
             { credentials: 'include' }
         );
+
+        if(response.status === 401){
+            navigate('/unauthorized');
+        }
+        
         const data = await response.json();
         setOrders(data);
     }

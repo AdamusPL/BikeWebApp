@@ -1,5 +1,6 @@
 import { useContext, createContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const RoleContext = createContext();
 
@@ -8,6 +9,8 @@ const RoleProvider = ({ children }) => {
     const [isClient, setIsClient] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
+
+    const navigate = useNavigate();
 
     async function checkRole() {
         const response = await fetch('http://localhost:8080/check-role', {

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import '../css/Cart.css'
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { useRole } from "../components/RoleProvider";
 
 export default function Cart() {
 
@@ -15,6 +16,7 @@ export default function Cart() {
     const [summaryPrice, setSummaryPrice] = useState(0.0);
     const [basicModal, setBasicModal] = useState(false);
     const [cookies, setCookie] = useCookies(['token']);
+    const { isShopAssistant } = useRole();
 
     const navigate = useNavigate();
 
@@ -30,6 +32,10 @@ export default function Cart() {
     }, [products]);
 
     async function fetchProducts() {
+        if(isShopAssistant){
+            navigate('/unauthorized');
+        }
+
         if (!localStorage.getItem('cart')) {
             return;
         }

@@ -1,5 +1,6 @@
 import { MDBContainer, MDBInput, MDBDropdown, MDBDropdownToggle, MDBDropdownItem, MDBDropdownMenu, MDBTextArea, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AddPart() {
     const [filters, setFilters] = useState([]);
@@ -16,13 +17,20 @@ export default function AddPart() {
 
     const [isPosted, setIsPosted] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         getFilters();
         setIsLoading(false);
     }, [])
 
     async function getFilters() {
-        const response = await fetch('http://localhost:8080/get-part-filters');
+        const response = await fetch('http://localhost:8080/get-add-part-filters');
+
+        if(response.status === 401){
+            navigate('/unauthorized');
+        }
+
         const data = await response.json();
         setFilters(data);
 

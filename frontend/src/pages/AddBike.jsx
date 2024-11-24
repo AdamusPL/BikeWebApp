@@ -1,6 +1,7 @@
 import { MDBContainer, MDBInput, MDBDropdown, MDBDropdownToggle, MDBDropdownItem, MDBDropdownMenu, MDBTextArea, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import '../css/AddBike.css';
+import { useNavigate } from "react-router-dom";
 
 export default function AddBike() {
 
@@ -15,6 +16,7 @@ export default function AddBike() {
     const [serialNumbers, setSerialNumbers] = useState("");
 
     const [isPosted, setIsPosted] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getFilters();
@@ -23,6 +25,12 @@ export default function AddBike() {
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-add-bike-filters', { credentials: 'include' });
+        debugger;
+
+        if(response.status === 401){
+            navigate('/unauthorized');
+        }
+
         const data = await response.json();
 
         let defaultValues = [];
