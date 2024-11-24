@@ -15,6 +15,7 @@ public class PartAttribute {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+
     String attribute;
 
     @Override

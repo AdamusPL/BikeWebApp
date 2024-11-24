@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BikeIdentificationAvailableRepository extends JpaRepository<BikeIdentificationAvailable, Integer> {
+    BikeIdentificationAvailable findFirstByBike_Id(Integer id);
 }

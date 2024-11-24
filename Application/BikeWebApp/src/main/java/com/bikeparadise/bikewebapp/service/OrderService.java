@@ -43,6 +43,7 @@ public class OrderService {
         this.partReservedRepository = partReservedRepository;
     }
 
+
     public ResponseEntity<String> buy(OrderDto orderDto) {
         //retrieve client id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -103,16 +104,16 @@ public class OrderService {
         return ResponseEntity.notFound().build();
     }
 
-    @Transactional
     private void bikeIdentificationAssignment(OrderItemDto bike, List<BikeIdentificationReserved> bikeIdentificationReservedList) {
         Optional<Bike> bikeOptional = bikeRepository.findById(bike.getId());
         if (bikeOptional.isPresent()) {
             Bike actualBike = bikeOptional.get();
-            BikeIdentificationAvailable bikeIdentificationAvailable = actualBike.getBikeIdentificationAvailable().get(0);
+            BikeIdentificationAvailable bikeIdentificationAvailable = bikeIdentificationAvailableRepository.findFirstByBike_Id(actualBike.getId());
             String make = "";
             for(BikeAttribute bikeAttribute : actualBike.getBikeAttribute()){
                 if(bikeAttribute.getBikeParameterType().getType().equals("Make")){
                     make = bikeAttribute.getBikeParameterAttribute().getAttribute();
+                    break;
                 }
             }
             BikeIdentificationReserved bikeIdentificationReserved = new BikeIdentificationReserved(make, actualBike.getModelName(), bikeIdentificationAvailable.getSerialNumber(), actualBike.getPrice(), bikeIdentificationAvailable.getBike());
@@ -120,7 +121,12 @@ public class OrderService {
             //move available bike identification to entity with reserved identifications
             bikeIdentificationReservedRepository.save(bikeIdentificationReserved);
             bikeIdentificationReservedList.add(bikeIdentificationReserved);
+            bikeIdentificationAvailable.setBike(null);
+            List<BikeIdentificationAvailable> bikeIdentificationAvailables = actualBike.getBikeIdentificationAvailable();
+            bikeIdentificationAvailables.removeAll(List.of(bikeIdentificationAvailable));
+            actualBike.setBikeIdentificationAvailable(bikeIdentificationAvailables);
             bikeIdentificationAvailableRepository.delete(bikeIdentificationAvailable);
+            bikeRepository.save(actualBike);
         }
     }
 

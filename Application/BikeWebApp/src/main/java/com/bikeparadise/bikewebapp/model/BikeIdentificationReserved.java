@@ -18,6 +18,8 @@ public class BikeIdentificationReserved {
     Integer id;
     String make;
     String modelName;
+
+    @Column(unique=true)
     String serialNumber;
     BigDecimal price;
 

@@ -17,6 +17,8 @@ public class PartType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+
+    @Column(unique=true)
     String type;
 
     @OneToMany(mappedBy = "partType")
