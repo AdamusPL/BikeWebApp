@@ -95,7 +95,7 @@ public class BikeService {
                 }
             }
 
-            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make + " " + bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
+            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
             bikeShopDtoList.add(bikeShopDto);
         }
         return bikeShopDtoList;
