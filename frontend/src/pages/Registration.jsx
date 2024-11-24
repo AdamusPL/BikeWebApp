@@ -68,7 +68,7 @@ export default function Registration() {
             <MDBInput label="Confirm Password" id="typePassword" type="password" className="mt-3" onChange={(e) => { setConfirmedPassword(e.target.value) }} />
 
             <MDBContainer className="mt-3">
-                <MDBRadio name='flexRadioDefault' id='client' label='Client' value={false} onChange={handleRadioButtonChange} defaultChecked />
+                <MDBRadio name='flexRadioDefault' id='client' label='Customer' value={false} onChange={handleRadioButtonChange} defaultChecked />
                 <MDBRadio name='flexRadioDefault' id='shop-assistant' label='Shop Assistant' value={true} onChange={handleRadioButtonChange} />
             </MDBContainer>
 

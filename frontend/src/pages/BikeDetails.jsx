@@ -77,6 +77,14 @@ export default function BikeDetails() {
             localStorage.setItem('cart', JSON.stringify(cart));
         }
 
+        let cartAfterModifying = JSON.parse(localStorage.getItem('cart'));
+
+        const index = cartAfterModifying.bikes.findIndex(b => b.id === chosenProduct.id);
+
+        if (cartAfterModifying.bikes[index].quantity >= chosenProduct.quantityInStock) {
+            setIsAvailable(false);
+        }
+
         setIsDialogOpen(!isDialogOpen);
 
     }
@@ -167,7 +175,7 @@ export default function BikeDetails() {
             <p className="fw-light">Reviews</p>
             {isClient ?
                 <article>
-                    <p className="fw-lighter">Write a review</p>
+                    <p>Write a review</p>
                     <article className="d-flex align-items-center mb-2">
                         <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
                         <span>/5</span>

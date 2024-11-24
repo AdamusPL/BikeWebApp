@@ -84,6 +84,14 @@ export default function PartDetails() {
             localStorage.setItem('cart', JSON.stringify(cart));
         }
 
+        let cartAfterModifying = JSON.parse(localStorage.getItem('cart'));
+
+        const index = cartAfterModifying.parts.findIndex(b => b.id === chosenProduct.id);
+
+        if (cartAfterModifying.parts[index].quantity >= chosenProduct.quantityInStock) {
+            setIsAvailable(false);
+        }
+
         setIsDialogOpen(!isDialogOpen);
 
     }
@@ -160,10 +168,10 @@ export default function PartDetails() {
             <p className="fw-light">Reviews</p>
             {isClient ?
                 <article>
-                    <p className="fw-lighter">Write a review</p>
+                    <p>Write a review</p>
                     <div className="d-flex align-items-center mb-2">
-                        <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
-                        <a>/5</a>
+                        <input id="stars" className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
+                        <span>/5</span>
                     </div>
                     <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
                     <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>

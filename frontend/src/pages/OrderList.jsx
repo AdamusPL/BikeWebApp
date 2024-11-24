@@ -72,7 +72,7 @@ export default function OrderList() {
     return (<>
         <MDBContainer>
             {isShopAssistant ?
-                <MDBTypography variant='h1 mt-4'>Here you can manage clients' orders</MDBTypography>
+                <MDBTypography variant='h1 mt-4'>Here you can manage customer orders</MDBTypography>
                 : <MDBTypography variant='h1 mt-4'>Your orders</MDBTypography>
             }
             {!isLoading ?
