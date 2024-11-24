@@ -39,6 +39,12 @@ public class PartController {
         return partService.getFilters();
     }
 
+    @GetMapping("/get-add-part-filters")
+    @ResponseBody
+    public Map<String, List<String>> getAddPartFilters(){
+        return partService.getFilters();
+    }
+
     @PostMapping("/add-part")
     public ResponseEntity<String> addPart(@RequestBody PartDto partDto){
         return partService.addPart(partDto);
