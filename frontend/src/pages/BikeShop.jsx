@@ -12,7 +12,14 @@ import {
     MDBBtn,
     MDBCheckbox,
     MDBRipple,
-    MDBTypography
+    MDBTypography,
+    MDBModalDialog,
+    MDBModalContent,
+    MDBModalHeader,
+    MDBModalTitle,
+    MDBModalBody,
+    MDBModalFooter,
+    MDBModal
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
 
@@ -29,6 +36,9 @@ export default function BikeShop() {
     const [keysArray, setKeysArray] = useState([]);
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
     const { isShopAssistant } = useRole();
+
+    const [basicModal, setBasicModal] = useState(false);
+    const toggleOpen = () => setBasicModal(!basicModal);
 
     useEffect(() => {
         getProducts();
@@ -121,7 +131,9 @@ export default function BikeShop() {
         })
             .then(response => {
                 if (response.ok) {
+                    debugger;
                     setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
+                    toggleOpen();
                 }
             });
     }
@@ -165,7 +177,28 @@ export default function BikeShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
-                                            {isShopAssistant ? <article className='close-button'><MDBBtn onClick={() => removeFromDb(element.id)} className="btn-close" color="none" aria-label="Close" /></article> : null}
+                                            {isShopAssistant ? <article className='close-button'>
+                                                <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
+                                                <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
+                                                    <MDBModalDialog>
+                                                        <MDBModalContent>
+                                                            <MDBModalHeader>
+                                                                <MDBModalTitle>Product removal</MDBModalTitle>
+                                                                <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
+                                                            </MDBModalHeader>
+                                                            <MDBModalBody>Are you sure you want to remove that product?</MDBModalBody>
+
+                                                            <MDBModalFooter>
+                                                                <MDBBtn color='secondary' onClick={toggleOpen}>
+                                                                    No
+                                                                </MDBBtn>
+                                                                <MDBBtn color='success' onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                            </MDBModalFooter>
+                                                        </MDBModalContent>
+                                                    </MDBModalDialog>
+                                                </MDBModal>
+                                            </article> : null}
+
                                             <MDBCard>
                                                 <Link to={`/bike-shop/${element.id}`}>
                                                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
