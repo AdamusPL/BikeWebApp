@@ -1,6 +1,7 @@
 import {
     MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon,
-    MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter
+    MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter,
+    MDBCol
 } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 
@@ -32,7 +33,7 @@ export default function Cart() {
     }, [products]);
 
     async function fetchProducts() {
-        if(isShopAssistant){
+        if (isShopAssistant) {
             navigate('/unauthorized');
         }
 
@@ -45,7 +46,7 @@ export default function Cart() {
             parts: JSON.parse(localStorage.getItem('cart')).parts
         }
 
-        if(products.bikes.length === 0 && products.parts.length === 0){
+        if (products.bikes.length === 0 && products.parts.length === 0) {
             return;
         }
 
@@ -107,7 +108,7 @@ export default function Cart() {
     }
 
     function handleClick() {
-        if(isLoading){
+        if (isLoading) {
             return;
         }
 
@@ -254,11 +255,17 @@ export default function Cart() {
                         products.bikes.map(element => (
                             <MDBListGroupItem key={element.id}>
                                 <article className='item'>
-                                    <span>{element.fullModelName}</span>
-                                    <MDBIcon className='minus' fas icon="minus" onClick={() => minusBike(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
-                                    <MDBIcon className='plus' fas icon="plus" onClick={() => plusBike(element.id)} />
-                                    <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    <MDBCol>
+                                        <span>{element.fullModelName}</span>
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <MDBIcon className='minus' fas icon="minus" onClick={() => minusBike(element.id)} />
+                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
+                                        <MDBIcon className='plus' fas icon="plus" onClick={() => plusBike(element.id)} />
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    </MDBCol>
                                     <article className='close-button-cart'><MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
                                 </article>
                             </MDBListGroupItem>
@@ -271,11 +278,17 @@ export default function Cart() {
                         products.parts.map(element => (
                             <MDBListGroupItem key={element.id}>
                                 <article className='item'>
-                                    <span>{element.fullModelName}</span>
-                                    <MDBIcon className='minus' fas icon="minus" onClick={() => minusPart(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
-                                    <MDBIcon className='plus' fas icon="plus" onClick={() => plusPart(element.id)} />
-                                    <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    <MDBCol>
+                                        <span>{element.fullModelName}</span>
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <MDBIcon className='minus' fas icon="minus" onClick={() => minusPart(element.id)} />
+                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
+                                        <MDBIcon className='plus' fas icon="plus" onClick={() => plusPart(element.id)} />
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    </MDBCol>
                                     <article className='close-button-cart'><MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
                                 </article>
                             </MDBListGroupItem>
@@ -295,12 +308,12 @@ export default function Cart() {
                         <MDBTypography tag='h4'>Summary</MDBTypography>
                     </MDBListGroupItem>
                     <MDBListGroupItem>
-                        <MDBTypography tag='dt' sm='3' color="success">{!isLoading ?
+                        <MDBTypography tag='strong' className="button-out">{!isLoading ?
                             summaryPrice : 0} zł</MDBTypography>
                     </MDBListGroupItem>
                 </MDBListGroup>
             </MDBCard>
-            <MDBBtn className="mt-4" color="success" onClick={handleClick}>Buy now</MDBBtn>
+            <MDBBtn className="mt-4 classic-button" onClick={handleClick}>Buy now</MDBBtn>
             <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
                 <MDBModalDialog>
                     <MDBModalContent>
@@ -314,7 +327,7 @@ export default function Cart() {
                             <MDBBtn color='secondary' onClick={toggleOpen}>
                                 Give me more time
                             </MDBBtn>
-                            <MDBBtn onClick={submitOrder} color="success">Yes</MDBBtn>
+                            <MDBBtn onClick={submitOrder} className="classic-button">Yes</MDBBtn>
                         </MDBModalFooter>
                     </MDBModalContent>
                 </MDBModalDialog>

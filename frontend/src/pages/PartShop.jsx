@@ -154,7 +154,7 @@ export default function PartShop() {
                     }
 
                     <p className='mt-4'>Price</p>
-                    <article id='price'>
+                    <article id='price' className='mb-4'>
                         <input className='form-control input'></input>
                         <p id='minus'>-</p>
                         <input className='form-control input'></input>
@@ -164,7 +164,7 @@ export default function PartShop() {
                 <MDBCol>
                     {isShopAssistant ?
                         <article id="button">
-                            <MDBBtn className="mt-4" color="success" href='/add-part'>Add new part</MDBBtn>
+                            <MDBBtn className="mt-4" style={{ backgroundColor: "#002E80" }} href='/add-part'>Add new part</MDBBtn>
                         </article>
                         : null
                     }
@@ -192,7 +192,7 @@ export default function PartShop() {
                                                                 <MDBBtn color='secondary' onClick={toggleOpen}>
                                                                     No
                                                                 </MDBBtn>
-                                                                <MDBBtn color='success' onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                                <MDBBtn style={{ backgroundColor: "#002E80" }} onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
                                                             </MDBModalFooter>
                                                         </MDBModalContent>
                                                     </MDBModalDialog>
@@ -210,22 +210,38 @@ export default function PartShop() {
                                                 </Link>
                                                 <MDBCardBody>
                                                     <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Type:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.type}</MDBTypography>
-                                                    </MDBCardText>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Kind:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.attribute}</MDBTypography>
-                                                    </MDBCardText>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Price:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.price} zł</MDBTypography>
-                                                    </MDBCardText>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Quantity in stock:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.quantityInStock}</MDBTypography>
-                                                    </MDBCardText>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Type:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.type}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Kind:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.attribute}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Price:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.price}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Quantity in stock:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.quantityInStock}
+                                                        </MDBCol>
+                                                    </MDBRow>
                                                     {!isShopAssistant ?
                                                         element.isAvailable ?
                                                             <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />

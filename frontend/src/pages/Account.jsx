@@ -43,12 +43,12 @@ export default function Account() {
         navigate('/sign-in');
     }
 
-    function addPhoneNumber(){
+    function addPhoneNumber() {
 
     }
 
-    function addEmail(){
-        
+    function addEmail() {
+
     }
 
     return (<>
@@ -76,12 +76,12 @@ export default function Account() {
                     <MDBCol tag='dt' sm='3'>
                         Phone Numbers:
                     </MDBCol>
-                    <MDBCol>
+                    <MDBCol tag='dd'>
                         {userData.phoneNumbers}
                     </MDBCol>
                     <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" min="1" max="13" minLength="9"></input>
                     <MDBCol>
-                        <MDBBtn onClick={addPhoneNumber} color="success">Add new phone number</MDBBtn>
+                        <MDBBtn onClick={addPhoneNumber} className='classic-button'>Add new phone number</MDBBtn>
                     </MDBCol>
                 </article>
             </MDBRow>
@@ -91,19 +91,19 @@ export default function Account() {
                     <MDBCol tag='dt' sm='3'>
                         E-Mail Addresses:
                     </MDBCol>
-                    <MDBCol>
+                    <MDBCol tag='dd'>
                         {userData.emails}
                     </MDBCol>
                     <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" min="1" max="13" minLength="9"></input>
                     <MDBCol>
-                        <MDBBtn onClick={addEmail} color="success">Add new e-mail address</MDBBtn>
+                        <MDBBtn onClick={addEmail} className='classic-button'>Add new e-mail address</MDBBtn>
                     </MDBCol>
                 </article>
             </MDBRow>
 
             <MDBRow tag='dl'>
-                <MDBCol tag='dt' sm='3'>
-                    <MDBBtn color="success" onClick={logOut}>Log out</MDBBtn>
+                <MDBCol tag='dt'>
+                    <MDBBtn className='classic-button' onClick={logOut}>Log out</MDBBtn>
                 </MDBCol>
             </MDBRow>
         </MDBContainer>

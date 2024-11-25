@@ -142,10 +142,10 @@ export default function BikeDetails() {
                     {
                         keysArray.map(element => (
                             <MDBRow tag='dl'>
-                                <MDBCol key={element} tag='dt' sm='3'>
+                                <MDBCol key={element} tag='dt'>
                                     {element}
                                 </MDBCol>
-                                <MDBCol tag='dd' sm='9'>
+                                <MDBCol tag='dd'>
                                     {chosenProduct.parts[element]}
                                 </MDBCol>
                             </MDBRow>
@@ -181,7 +181,7 @@ export default function BikeDetails() {
                         <span>/5</span>
                     </article>
                     <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-                    <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
+                    <MDBBtn className="mt-2 classic-button" onClick={addReview}>Add review</MDBBtn>
                     {
                         isReviewPosted ?
                             <p>Review posted successfully</p>

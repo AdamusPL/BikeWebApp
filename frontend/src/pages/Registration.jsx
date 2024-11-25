@@ -73,7 +73,7 @@ export default function Registration() {
             </MDBContainer>
 
             <div className="d-flex justify-content-center">
-                <MDBBtn className="mt-4" color="success" onClick={register}>Create an account</MDBBtn>
+                <MDBBtn className="mt-4" style={{backgroundColor: "#002E80"}} onClick={register}>Create an account</MDBBtn>
             </div>
             <p className="mt-4">{loginStatus}</p>
         </MDBContainer>

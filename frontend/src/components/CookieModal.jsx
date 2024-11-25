@@ -28,7 +28,7 @@ export default function CookieModal() {
                         <MDBModalBody className=''>
                             <div className='d-flex justify-content-center align-items-center my-3'>
                                 <p className='mb-0'>This page use cookies to provide services at highest level. Further using that page means you agree to use them.</p>
-                                <MDBBtn color='success' className='ms-2' onClick={confirmCookies}>
+                                <MDBBtn className='ms-2 classic-button' onClick={confirmCookies}>
                                     OK
                                 </MDBBtn>
                             </div>

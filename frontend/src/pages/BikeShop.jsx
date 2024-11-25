@@ -34,7 +34,6 @@ export default function BikeShop() {
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState([]);
     const [keysArray, setKeysArray] = useState([]);
-    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
     const { isShopAssistant } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
@@ -91,7 +90,6 @@ export default function BikeShop() {
 
             if (index !== -1) {
                 cart.bikes[index].quantity += 1;
-                setCart(cart);
             }
 
             else {
@@ -156,7 +154,7 @@ export default function BikeShop() {
                     }
 
                     <p className='mt-4'>Price</p>
-                    <article id='price'>
+                    <article id='price' className='mb-4'>
                         <input className='form-control input'></input>
                         <p id='minus'>-</p>
                         <input className='form-control input'></input>
@@ -166,7 +164,7 @@ export default function BikeShop() {
                 <MDBCol>
                     {isShopAssistant ?
                         <article id="button">
-                            <MDBBtn className="mt-4" color="success" href='/add-bike'>Add new bike</MDBBtn>
+                            <MDBBtn className="mt-4 classic-button" href='/add-bike'>Add new bike</MDBBtn>
                         </article> : null}
 
                     <MDBCol md="11">
@@ -192,7 +190,7 @@ export default function BikeShop() {
                                                                 <MDBBtn color='secondary' onClick={toggleOpen}>
                                                                     No
                                                                 </MDBBtn>
-                                                                <MDBBtn color='success' onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                                <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
                                                             </MDBModalFooter>
                                                         </MDBModalContent>
                                                     </MDBModalDialog>
@@ -211,21 +209,39 @@ export default function BikeShop() {
                                                 </Link>
                                                 <MDBCardBody>
                                                     <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Type:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.type}</MDBTypography>
-                                                    </MDBCardText>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Drivetrain:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.drive}</MDBTypography>
-                                                    </MDBCardText>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Price:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.price} zł</MDBTypography>
-                                                    </MDBCardText>
-                                                    <MDBCardText className='choice'>
-                                                        <MDBTypography className='margin-item' sm='3' tag='dt'>Quantity in stock:</MDBTypography>
-                                                        <MDBTypography className='value-item' sm='9' tag='dd'>{element.quantityInStock}</MDBTypography>
+                                                    <MDBCardText>
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Type:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.type}
+                                                            </MDBCol>
+                                                        </MDBRow>
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Drivetrain:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.drive}
+                                                            </MDBCol>
+                                                        </MDBRow>
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Price:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.price}
+                                                            </MDBCol>
+                                                        </MDBRow>
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Quantity in stock:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.quantityInStock}
+                                                            </MDBCol>
+                                                        </MDBRow>
                                                     </MDBCardText>
                                                     {!isShopAssistant ?
                                                         element.isAvailable ?

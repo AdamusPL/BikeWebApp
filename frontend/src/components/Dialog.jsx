@@ -11,7 +11,7 @@ import {
 
 export default function Dialog({ isOpen, toggleOpen, toggleClose}) {
     return (<>
-        <MDBBtn color='success' onClick={toggleOpen}>Add to cart</MDBBtn>
+        <MDBBtn className='classic-button' onClick={toggleOpen}>Add to cart</MDBBtn>
 
         <MDBModal
             animationDirection='right'
@@ -21,7 +21,7 @@ export default function Dialog({ isOpen, toggleOpen, toggleClose}) {
         >
             <MDBModalDialog position='top-right' side>
                 <MDBModalContent>
-                    <MDBModalHeader className='bg-success text-white'>
+                    <MDBModalHeader className='text-white classic-button'>
                         <MDBModalTitle>Product in the cart</MDBModalTitle>
                         <MDBBtn
                             color='none'
@@ -32,7 +32,7 @@ export default function Dialog({ isOpen, toggleOpen, toggleClose}) {
                     <MDBModalBody>
                         <div className='row'>
                             <div className='col-3 text-center'>
-                                <i className='fas fa-shopping-cart fa-4x text-success'></i>
+                                <i className='fas fa-shopping-cart fa-4x button-out'></i>
                             </div>
 
                             <div className='col-9'>
@@ -42,8 +42,8 @@ export default function Dialog({ isOpen, toggleOpen, toggleClose}) {
                         </div>
                     </MDBModalBody>
                     <MDBModalFooter>
-                        <MDBBtn color='success' href='/cart'>Go to the cart</MDBBtn>
-                        <MDBBtn outline color='success' onClick={toggleClose}>
+                        <MDBBtn className='classic-button' href='/cart'>Go to the cart</MDBBtn>
+                        <MDBBtn outline className='button-out' onClick={toggleClose}>
                             Close
                         </MDBBtn>
                     </MDBModalFooter>

@@ -30,9 +30,9 @@ export default function OrderList() {
         const response = await fetch(`http://localhost:8080/get-all-orders-list`,
             { credentials: 'include' }
         );
-        if(response.status === 401){
-            navigate('/unauthorized');
-        }
+        // if(response.status === 401){
+        //     navigate('/unauthorized');
+        // }
         const data = await response.json();
         setOrders(data);
     }
@@ -50,9 +50,9 @@ export default function OrderList() {
             { credentials: 'include' }
         );
 
-        if(response.status === 401){
-            navigate('/unauthorized');
-        }
+        // if(response.status === 401){
+        //     navigate('/unauthorized');
+        // }
         
         const data = await response.json();
         setOrders(data);
@@ -98,7 +98,7 @@ export default function OrderList() {
                                         <MDBDropdown>
                                             {isShopAssistant ?
                                                 <article>
-                                                    <MDBDropdownToggle color='success'> {order.status}</MDBDropdownToggle>
+                                                    <MDBDropdownToggle className='classic-button'> {order.status}</MDBDropdownToggle>
                                                     <MDBDropdownMenu>
                                                         {orderStatuses.map(status => {
                                                             return (<MDBDropdownItem key={status.id} link onClick={(e) => changeStatus(order, status)}>{status.status}</MDBDropdownItem>)
@@ -129,7 +129,7 @@ export default function OrderList() {
 
                                 {!isLoading ?
                                     <MDBListGroupItem>
-                                        <MDBTypography tag='dt' sm='3' color="success">{order.price} zł </MDBTypography>
+                                        <MDBTypography tag='dt' sm='3' className='button-out'>{order.price} zł </MDBTypography>
                                     </MDBListGroupItem>
                                     : <p>0, -</p>}
 

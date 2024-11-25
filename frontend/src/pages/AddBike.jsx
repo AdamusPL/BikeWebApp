@@ -96,7 +96,7 @@ export default function AddBike() {
                     return (
                         <div key={element} className='choice'>
                             <MDBDropdown className='margin-item'>
-                                <MDBDropdownToggle color='success'>{element}</MDBDropdownToggle>
+                                <MDBDropdownToggle className='classic-button'>{element}</MDBDropdownToggle>
                                 <MDBDropdownMenu>
                                     {filters[element].map(item => (
                                         <MDBDropdownItem key={item} onClick={() => changeParameter(element, item)}>{item}</MDBDropdownItem>
@@ -109,7 +109,7 @@ export default function AddBike() {
                 :
                 <p>Nothing found</p>
             }
-            <MDBBtn onClick={addPartToDB} color="success" className="mt-4">Add bike</MDBBtn>
+            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button">Add bike</MDBBtn>
 
             {isPosted ? <p>Bike successfully added</p>
                 :

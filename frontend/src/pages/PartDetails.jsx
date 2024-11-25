@@ -136,10 +136,10 @@ export default function PartDetails() {
                 </MDBCol>
                 <MDBCol md="4">
                     <MDBRow tag='dl'>
-                        <MDBCol tag='dt' sm='3'>
+                        <MDBCol tag='dt'>
                             {chosenProduct.type}
                         </MDBCol>
-                        <MDBCol tag='dd' sm='9'>
+                        <MDBCol tag='dd'>
                             {chosenProduct.attribute}
                         </MDBCol>
                     </MDBRow>
@@ -174,7 +174,7 @@ export default function PartDetails() {
                         <span>/5</span>
                     </div>
                     <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-                    <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
+                    <MDBBtn className="mt-2 classic-button" onClick={addReview}>Add review</MDBBtn>
                 </article>
                 : <p>You must be signed-in to post a review</p>
             }
