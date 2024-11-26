@@ -133,6 +133,7 @@ export default function BikeDetails() {
                             src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                             className='img-fluid rounded shadow-3'
                             alt='...'
+                            width='700px'
                         />
                     </figure>
                     <h1>{chosenProduct.fullModelName}</h1>

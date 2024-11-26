@@ -205,6 +205,7 @@ export default function PartShop() {
                                                             src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                                                             alt='...'
                                                             position='top'
+                                                            width='300px'
                                                         />
                                                     </MDBRipple>
                                                 </Link>

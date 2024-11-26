@@ -1,4 +1,4 @@
-import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdb-react-ui-kit";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -71,34 +71,34 @@ export default function Account() {
                 </MDBCol>
             </MDBRow>
 
-            <MDBRow tag='dl'>
-                <article className="d-flex align-items-center mb-2">
-                    <MDBCol tag='dt' sm='3'>
-                        Phone Numbers:
-                    </MDBCol>
-                    <MDBCol tag='dd'>
-                        {userData.phoneNumbers}
-                    </MDBCol>
+            <MDBRow className="data-with-fields mb-2">
+                <MDBCol>
+                    <MDBTypography tag='strong'>Phone Numbers:</MDBTypography>
+                </MDBCol>
+                <MDBCol>
+                    {userData.phoneNumbers}
+                </MDBCol>
+                <MDBCol>
                     <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" min="1" max="13" minLength="9"></input>
-                    <MDBCol>
-                        <MDBBtn onClick={addPhoneNumber} className='classic-button'>Add new phone number</MDBBtn>
-                    </MDBCol>
-                </article>
+                </MDBCol>
+                <MDBCol>
+                    <MDBBtn onClick={addPhoneNumber} className='classic-button'>Add new phone number</MDBBtn>
+                </MDBCol>
             </MDBRow>
 
-            <MDBRow tag='dl'>
-                <article className="d-flex align-items-center mb-2">
-                    <MDBCol tag='dt' sm='3'>
-                        E-Mail Addresses:
-                    </MDBCol>
-                    <MDBCol tag='dd'>
-                        {userData.emails}
-                    </MDBCol>
+            <MDBRow className="data-with-fields mb-2">
+                <MDBCol>
+                    <MDBTypography tag='strong'>E-Mail Addresses:</MDBTypography>
+                </MDBCol>
+                <MDBCol>
+                    {userData.emails}
+                </MDBCol>
+                <MDBCol>
                     <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" min="1" max="13" minLength="9"></input>
-                    <MDBCol>
-                        <MDBBtn onClick={addEmail} className='classic-button'>Add new e-mail address</MDBBtn>
-                    </MDBCol>
-                </article>
+                </MDBCol>
+                <MDBCol>
+                    <MDBBtn onClick={addEmail} className='classic-button'>Add new e-mail address</MDBBtn>
+                </MDBCol>
             </MDBRow>
 
             <MDBRow tag='dl'>
