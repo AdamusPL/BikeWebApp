@@ -51,9 +51,9 @@ export default function SignIn() {
             <MDBInput label="Username" id="typeText" type="text" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
             <MDBInput label="Password" id="typePassword" type="password" className="mt-3" onChange={(e) => { setPassword(e.target.value) }} />
             <div className="d-flex justify-content-center">
-                <MDBBtn className="mt-4" color="success" onClick={signIn}>Sign-in</MDBBtn>
+                <MDBBtn aria-label="Sign-in to account" className="mt-4" style={{backgroundColor: "#002E80"}} onClick={signIn}>Sign-in</MDBBtn>
             </div>
-            <p className="mt-5">Don't have an account? Register <Link to='/register'>here</Link></p>
+            <p className="mt-5">Don't have an account? Register <Link color="#002E80" style={{fontWeight: 'bold'}} to='/register'>here</Link></p>
             <p className="mt-5">{loginStatus}</p>
         </MDBContainer>
     );

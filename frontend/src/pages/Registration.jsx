@@ -16,7 +16,6 @@ export default function Registration() {
     const [selectedRole, setSelectedRole] = useState(false);
 
     function register() {
-        debugger;
         const userData = {
             firstName: firstName,
             lastName: lastName,
@@ -45,7 +44,6 @@ export default function Registration() {
 
     const handleRadioButtonChange = (event) => {
         setSelectedRole(event.target.value);
-        console.log(event.target.value);
     };
 
 
@@ -70,14 +68,14 @@ export default function Registration() {
             <MDBInput label="Confirm Password" id="typePassword" type="password" className="mt-3" onChange={(e) => { setConfirmedPassword(e.target.value) }} />
 
             <MDBContainer className="mt-3">
-                <MDBRadio name='flexRadioDefault' id='client' label='Client' value={false} onChange={handleRadioButtonChange} defaultChecked />
+                <MDBRadio name='flexRadioDefault' id='client' label='Customer' value={false} onChange={handleRadioButtonChange} defaultChecked />
                 <MDBRadio name='flexRadioDefault' id='shop-assistant' label='Shop Assistant' value={true} onChange={handleRadioButtonChange} />
             </MDBContainer>
 
             <div className="d-flex justify-content-center">
-                <MDBBtn className="mt-4" color="success" onClick={register}>Create an account</MDBBtn>
+                <MDBBtn className="mt-4" style={{backgroundColor: "#002E80"}} onClick={register}>Create an account</MDBBtn>
             </div>
-            <p className="mt-5">{loginStatus}</p>
+            <p className="mt-4">{loginStatus}</p>
         </MDBContainer>
     </>)
 }

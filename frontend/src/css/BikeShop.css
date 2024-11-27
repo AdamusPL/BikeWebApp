@@ -18,5 +18,9 @@
 
 #sidebar{
     color: white;
-    background-color: #1B5E20;
+    background-color: #002E80;
+}
+
+.value-item{
+    margin-top: 8px;
 }

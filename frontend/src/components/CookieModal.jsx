@@ -25,14 +25,11 @@ export default function CookieModal() {
             <MDBModal animationDirection='bottom' open={bottomModal} tabIndex='-1' onClose={() => setBottomModal(false)}>
                 <MDBModalDialog position='bottom' frame>
                     <MDBModalContent>
-                        <MDBModalBody className='py-1'>
+                        <MDBModalBody className=''>
                             <div className='d-flex justify-content-center align-items-center my-3'>
-                                <p className='mb-0'>We use cookies to improve your website experience</p>
-                                <MDBBtn color='success' size='sm' className='ms-2' onClick={confirmCookies}>
-                                    Ok, thanks
-                                </MDBBtn>
-                                <MDBBtn size='sm' className='ms-2'>
-                                    Learn more
+                                <p className='mb-0'>This page use cookies to provide services at highest level. Further using that page means you agree to use them.</p>
+                                <MDBBtn className='ms-2 classic-button' onClick={confirmCookies}>
+                                    OK
                                 </MDBBtn>
                             </div>
                         </MDBModalBody>

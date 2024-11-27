@@ -1,5 +1,6 @@
 import { MDBContainer, MDBInput, MDBDropdown, MDBDropdownToggle, MDBDropdownItem, MDBDropdownMenu, MDBTextArea, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AddPart() {
     const [filters, setFilters] = useState([]);
@@ -16,13 +17,21 @@ export default function AddPart() {
 
     const [isPosted, setIsPosted] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         getFilters();
         setIsLoading(false);
     }, [])
 
     async function getFilters() {
-        const response = await fetch('http://localhost:8080/get-part-filters');
+        const response = await fetch('http://localhost:8080/get-add-part-filters', {credentials: 'include'});
+        debugger;
+
+        if(response.status === 401){
+            navigate('/unauthorized');
+        }
+
         const data = await response.json();
         setFilters(data);
 
@@ -90,9 +99,9 @@ export default function AddPart() {
 
 
             {!isLoading ?
-                <div className="d-flex align-items-center mt-2">
-                    <MDBDropdown>
-                        <MDBDropdownToggle color='success'>Type</MDBDropdownToggle>
+                <div className="choice">
+                    <MDBDropdown className='margin-item mb-4 mt-4'>
+                        <MDBDropdownToggle className="classic-button">Type</MDBDropdownToggle>
                         <MDBDropdownMenu>
                             {keysArray.map(item => (
                                 <MDBDropdownItem key={item} onClick={() => changeType(item)}>{item}</MDBDropdownItem>
@@ -106,9 +115,9 @@ export default function AddPart() {
             }
 
             {!isLoading ?
-                <div className="d-flex align-items-center mt-2">
-                    <MDBDropdown>
-                        <MDBDropdownToggle color='success'>Attribute</MDBDropdownToggle>
+                <div className="choice">
+                    <MDBDropdown className='margin-item'>
+                        <MDBDropdownToggle className="classic-button">Attribute</MDBDropdownToggle>
                         <MDBDropdownMenu>
                             {attributes.map(item => (
                                 <MDBDropdownItem key={item} onClick={() => changeAttribute(item)}>{item}</MDBDropdownItem>
@@ -121,11 +130,11 @@ export default function AddPart() {
                 <p>No data found</p>
             }
 
-            <MDBBtn onClick={addPartToDB} color="success" className="mt-4">Add part</MDBBtn>
+            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button">Add part</MDBBtn>
 
             {isPosted ? <p>Part successfully added</p>
                 :
-                <p></p>}
+                null}
 
         </MDBContainer>
     </>)

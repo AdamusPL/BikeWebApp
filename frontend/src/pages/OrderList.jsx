@@ -2,6 +2,9 @@ import { MDBCard, MDBContainer, MDBTypography, MDBListGroup, MDBListGroupItem, M
 import { useEffect, useState } from "react"
 import { useRole } from "../components/RoleProvider";
 
+import '../css/OrderList.css'
+import { useNavigate } from "react-router-dom";
+
 export default function OrderList() {
 
     const [isLoading, setIsLoading] = useState(true);
@@ -9,7 +12,10 @@ export default function OrderList() {
     const [orderStatuses, setOrderStatuses] = useState([]);
     const { isShopAssistant } = useRole();
 
+    const navigate = useNavigate();
+
     useEffect(() => {
+        debugger;
         if (isShopAssistant) {
             getOrderStatuses();
             getAllOrders();
@@ -21,10 +27,12 @@ export default function OrderList() {
     }, [isShopAssistant]);
 
     async function getAllOrders() {
-        debugger;
         const response = await fetch(`http://localhost:8080/get-all-orders-list`,
             { credentials: 'include' }
         );
+        // if(response.status === 401){
+        //     navigate('/unauthorized');
+        // }
         const data = await response.json();
         setOrders(data);
     }
@@ -41,6 +49,11 @@ export default function OrderList() {
         const response = await fetch(`http://localhost:8080/get-order-list`,
             { credentials: 'include' }
         );
+
+        // if(response.status === 401){
+        //     navigate('/unauthorized');
+        // }
+        
         const data = await response.json();
         setOrders(data);
     }
@@ -59,8 +72,6 @@ export default function OrderList() {
 
         }).then(response => {
             if (response.ok) {
-                debugger;
-
                 let orderCopy = orders.map(order =>
                     order.id === orderToUpdate.id ? { ...order, status: updatedStatus.status } : order
                 );
@@ -72,26 +83,32 @@ export default function OrderList() {
 
     return (<>
         <MDBContainer>
-            <MDBTypography variant='h1 mt-2'>Your orders</MDBTypography>
-            <MDBCard>
-                {!isLoading ?
-                    orders.map(order => {
-                        return (
-                            <MDBListGroup key={order.id}>
+            {isShopAssistant ?
+                <MDBTypography variant='h1 mt-4'>Here you can manage customer orders</MDBTypography>
+                : <MDBTypography variant='h1 mt-4'>Your orders</MDBTypography>
+            }
+            {!isLoading ?
+                orders.map(order => {
+                    return (
+                        <MDBCard key={order.id} className='mt-4'>
+                            <MDBListGroup>
                                 <MDBListGroupItem>
-                                    <MDBTypography tag='h4'>Order from: {order.date}</MDBTypography> <MDBDropdown>
-                                        {isShopAssistant ?
-                                            <article>
-                                                <MDBDropdownToggle color='success'> {order.status}</MDBDropdownToggle>
-                                                <MDBDropdownMenu>
-                                                    {orderStatuses.map(status => {
-                                                        return (<MDBDropdownItem key={status.id} link onClick={(e) => changeStatus(order, status)}>{status.status}</MDBDropdownItem>)
-                                                    })}
-                                                </MDBDropdownMenu>
-                                            </article>
-                                            : <p>{order.status}</p>
-                                        }
-                                    </MDBDropdown>
+                                    <article className='order'>
+                                        <MDBTypography tag='h4'>Order from: {order.date}</MDBTypography>
+                                        <MDBDropdown>
+                                            {isShopAssistant ?
+                                                <article>
+                                                    <MDBDropdownToggle className='classic-button'> {order.status}</MDBDropdownToggle>
+                                                    <MDBDropdownMenu>
+                                                        {orderStatuses.map(status => {
+                                                            return (<MDBDropdownItem key={status.id} link onClick={(e) => changeStatus(order, status)}>{status.status}</MDBDropdownItem>)
+                                                        })}
+                                                    </MDBDropdownMenu>
+                                                </article>
+                                                : <p>{order.status}</p>
+                                            }
+                                        </MDBDropdown>
+                                    </article>
                                 </MDBListGroupItem>
 
                                 {order.orderedBikes.map(bike => {
@@ -112,16 +129,18 @@ export default function OrderList() {
 
                                 {!isLoading ?
                                     <MDBListGroupItem>
-                                        <MDBTypography tag='dt' sm='3' color="success">{order.price} zł </MDBTypography>
+                                        <MDBTypography tag='dt' sm='3' className='button-out'>{order.price} zł </MDBTypography>
                                     </MDBListGroupItem>
                                     : <p>0, -</p>}
 
-                            </MDBListGroup>)
-                    })
-                    :
-                    <p>There are no orders yet.</p>
-                }
-            </MDBCard>
+                            </MDBListGroup>
+                        </MDBCard>
+                    )
+                })
+                :
+                <p>There are no orders yet.</p>
+            }
+
         </MDBContainer >
     </>)
 }

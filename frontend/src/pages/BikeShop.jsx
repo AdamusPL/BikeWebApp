@@ -12,7 +12,14 @@ import {
     MDBBtn,
     MDBCheckbox,
     MDBRipple,
-    MDBTypography
+    MDBTypography,
+    MDBModalDialog,
+    MDBModalContent,
+    MDBModalHeader,
+    MDBModalTitle,
+    MDBModalBody,
+    MDBModalFooter,
+    MDBModal
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
 
@@ -27,8 +34,10 @@ export default function BikeShop() {
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState([]);
     const [keysArray, setKeysArray] = useState([]);
-    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
     const { isShopAssistant } = useRole();
+
+    const [basicModal, setBasicModal] = useState(false);
+    const toggleOpen = () => setBasicModal(!basicModal);
 
     useEffect(() => {
         getProducts();
@@ -76,13 +85,11 @@ export default function BikeShop() {
             localStorage.setItem('cart', JSON.stringify({ bikes: [{ id: id, quantity: 1 }], parts: [] }));
         }
         else {
-            debugger;
             let cart = JSON.parse(localStorage.getItem('cart'));
             const index = cart.bikes.findIndex(b => b.id === id);
 
             if (index !== -1) {
                 cart.bikes[index].quantity += 1;
-                setCart(cart);
             }
 
             else {
@@ -122,7 +129,9 @@ export default function BikeShop() {
         })
             .then(response => {
                 if (response.ok) {
+                    debugger;
                     setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
+                    toggleOpen();
                 }
             });
     }
@@ -145,7 +154,7 @@ export default function BikeShop() {
                     }
 
                     <p className='mt-4'>Price</p>
-                    <article id='price'>
+                    <article id='price' className='mb-4'>
                         <input className='form-control input'></input>
                         <p id='minus'>-</p>
                         <input className='form-control input'></input>
@@ -155,8 +164,8 @@ export default function BikeShop() {
                 <MDBCol>
                     {isShopAssistant ?
                         <article id="button">
-                            <MDBBtn className="mt-4" color="success" href='/add-bike'>Add new bike</MDBBtn>
-                        </article> : <p></p>}
+                            <MDBBtn className="mt-4 classic-button" href='/add-bike'>Add new bike</MDBBtn>
+                        </article> : null}
 
                     <MDBCol md="11">
                         <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
@@ -166,7 +175,28 @@ export default function BikeShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
-                                            {isShopAssistant ? <article className='close-button'><MDBBtn onClick={() => removeFromDb(element.id)} className="btn-close" color="none" aria-label="Close" /></article> : null}
+                                            {isShopAssistant ? <article className='close-button'>
+                                                <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
+                                                <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
+                                                    <MDBModalDialog>
+                                                        <MDBModalContent>
+                                                            <MDBModalHeader>
+                                                                <MDBModalTitle>Product removal</MDBModalTitle>
+                                                                <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
+                                                            </MDBModalHeader>
+                                                            <MDBModalBody>Are you sure you want to remove that product?</MDBModalBody>
+
+                                                            <MDBModalFooter>
+                                                                <MDBBtn color='secondary' onClick={toggleOpen}>
+                                                                    No
+                                                                </MDBBtn>
+                                                                <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                            </MDBModalFooter>
+                                                        </MDBModalContent>
+                                                    </MDBModalDialog>
+                                                </MDBModal>
+                                            </article> : null}
+
                                             <MDBCard>
                                                 <Link to={`/bike-shop/${element.id}`}>
                                                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
@@ -174,22 +204,45 @@ export default function BikeShop() {
                                                             src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                                                             alt='...'
                                                             position='top'
+                                                            width='300px'
                                                         />
                                                     </MDBRipple>
                                                 </Link>
                                                 <MDBCardBody>
-                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.fullModelName}</MDBCardTitle>
+                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
                                                     <MDBCardText>
-                                                        Type: {element.type}
-                                                    </MDBCardText>
-                                                    <MDBCardText>
-                                                        Drivetrain: {element.drive}
-                                                    </MDBCardText>
-                                                    <MDBCardText>
-                                                        Price: {element.price} zł
-                                                    </MDBCardText>
-                                                    <MDBCardText className='mb-4'>
-                                                        Quantity in stock: {element.quantityInStock}
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Type:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.type}
+                                                            </MDBCol>
+                                                        </MDBRow>
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Drivetrain:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.drive}
+                                                            </MDBCol>
+                                                        </MDBRow>
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Price:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.price}
+                                                            </MDBCol>
+                                                        </MDBRow>
+                                                        <MDBRow tag='dl'>
+                                                            <MDBCol tag='dt'>
+                                                                Quantity in stock:
+                                                            </MDBCol>
+                                                            <MDBCol tag='dd'>
+                                                                {element.quantityInStock}
+                                                            </MDBCol>
+                                                        </MDBRow>
                                                     </MDBCardText>
                                                     {!isShopAssistant ?
                                                         element.isAvailable ?
@@ -201,7 +254,7 @@ export default function BikeShop() {
                                                                 </MDBBtn>
                                                                 <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
                                                             </article>
-                                                        : <p></p>
+                                                        : null
                                                     }
                                                 </MDBCardBody>
                                             </MDBCard>

@@ -5,8 +5,10 @@ import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useRole } from "../components/RoleProvider";
+import Dialog from "../components/Dialog";
 
 export default function PartDetails() {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const urlParameters = useParams();
     const [chosenProduct, setChosenProduct] = useState({});
@@ -29,6 +31,10 @@ export default function PartDetails() {
     useEffect(() => {
         checkAvailability();
     }, [chosenProduct, cart]);
+
+    function closeDialog() {
+        setIsDialogOpen(!isDialogOpen);
+    }
 
     function checkAvailability() {
         if (chosenProduct.quantityInStock === 0) {
@@ -78,17 +84,27 @@ export default function PartDetails() {
             localStorage.setItem('cart', JSON.stringify(cart));
         }
 
+        let cartAfterModifying = JSON.parse(localStorage.getItem('cart'));
+
+        const index = cartAfterModifying.parts.findIndex(b => b.id === chosenProduct.id);
+
+        if (cartAfterModifying.parts[index].quantity >= chosenProduct.quantityInStock) {
+            setIsAvailable(false);
+        }
+
+        setIsDialogOpen(!isDialogOpen);
+
     }
 
     async function addReview() {
         const review = {
             numberOfStars: numberOfStars,
             description: opinion,
-            clientId: 1,
             partId: chosenProduct.id
         };
 
         fetch(`http://localhost:8080/post-part-review`, {
+            credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(review)
@@ -114,18 +130,26 @@ export default function PartDetails() {
                             src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                             className='img-fluid rounded shadow-3'
                             alt='...'
+                            width='700px'
                         />
                     </figure>
                     <h1>{chosenProduct.fullModelName}</h1>
                 </MDBCol>
                 <MDBCol md="4">
-                    <p>{chosenProduct.type}: {chosenProduct.attribute}</p>
+                    <MDBRow tag='dl'>
+                        <MDBCol tag='dt'>
+                            {chosenProduct.type}
+                        </MDBCol>
+                        <MDBCol tag='dd'>
+                            {chosenProduct.attribute}
+                        </MDBCol>
+                    </MDBRow>
                     <article id="buy-block">
                         <p>{chosenProduct.price} zł</p>
                         {
                             isAvailable ?
                                 <article>
-                                    <MDBBtn className="ms-3" color="success" onClick={addToCart}>Add to cart</MDBBtn>
+                                    <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(chosenProduct.id)} toggleClose={closeDialog} />
                                     <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
                                 </article>
                                 :
@@ -133,7 +157,7 @@ export default function PartDetails() {
                                     <MDBBtn className='me-1' color='secondary'>
                                         Add to cart
                                     </MDBBtn>
-                                    <p>It's not available anymore!</p>
+                                    <p className="mt-2">It's not available anymore!</p>
                                     <p className="mt-2">Quantity in stock: {chosenProduct.quantityInStock}</p>
                                 </article>
                         }
@@ -145,21 +169,21 @@ export default function PartDetails() {
             <p className="fw-light">Reviews</p>
             {isClient ?
                 <article>
-                    <p className="fw-lighter">Write a review</p>
+                    <p>Write a review</p>
                     <div className="d-flex align-items-center mb-2">
-                        <a><input className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input></a>
-                        <a>/5</a>
+                        <input id="stars" className="form-control" style={{ width: '50px' }} label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
+                        <span>/5</span>
                     </div>
                     <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-                    <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
+                    <MDBBtn className="mt-2 classic-button" onClick={addReview}>Add review</MDBBtn>
                 </article>
                 : <p>You must be signed-in to post a review</p>
-                }
+            }
             {
                 isReviewPosted ?
                     <p>Review posted successfully</p>
                     :
-                    <p></p>
+                    null
             }
 
             {

@@ -1,0 +1,12 @@
+.choice{
+    display: flex;
+    align-items: center;
+}
+
+.margin-item{
+    margin-right: 20px;
+}
+
+.value{
+    margin-top: 15px;
+}

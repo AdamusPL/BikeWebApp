@@ -1,12 +1,14 @@
 import {
     MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon,
-    MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter
+    MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter,
+    MDBCol
 } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 
 import '../css/Cart.css'
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { useRole } from "../components/RoleProvider";
 
 export default function Cart() {
 
@@ -15,6 +17,7 @@ export default function Cart() {
     const [summaryPrice, setSummaryPrice] = useState(0.0);
     const [basicModal, setBasicModal] = useState(false);
     const [cookies, setCookie] = useCookies(['token']);
+    const { isShopAssistant } = useRole();
 
     const navigate = useNavigate();
 
@@ -30,9 +33,21 @@ export default function Cart() {
     }, [products]);
 
     async function fetchProducts() {
+        if (isShopAssistant) {
+            navigate('/unauthorized');
+        }
+
+        if (!localStorage.getItem('cart')) {
+            return;
+        }
+
         const products = {
             bikes: JSON.parse(localStorage.getItem('cart')).bikes,
             parts: JSON.parse(localStorage.getItem('cart')).parts
+        }
+
+        if (products.bikes.length === 0 && products.parts.length === 0) {
+            return;
         }
 
         fetch(`http://localhost:8080/get-cart-products`, {
@@ -51,7 +66,6 @@ export default function Cart() {
     }
 
     function calculateSum() {
-        debugger;
         let priceToPay = 0.0;
 
         products.bikes.map(item => {
@@ -94,6 +108,10 @@ export default function Cart() {
     }
 
     function handleClick() {
+        if (isLoading) {
+            return;
+        }
+
         if (cookies.token === undefined) {
             navigate('/sign-in');
         }
@@ -114,14 +132,14 @@ export default function Cart() {
         if (part.quantity > 1) {
             part.quantity -= 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             parts: products.parts.map((part) => (
-                part.id === id ? {...part, quantity: part.quantity - 1} : part
+                part.id === id ? { ...part, quantity: part.quantity - 1 } : part
             ))
         };
 
@@ -138,14 +156,14 @@ export default function Cart() {
         if (bike.quantity > 1) {
             bike.quantity -= 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             bikes: products.bikes.map((b) => (
-                b.id === id ? {...b, quantity: b.quantity - 1} : b
+                b.id === id ? { ...b, quantity: b.quantity - 1 } : b
             ))
         };
 
@@ -164,14 +182,14 @@ export default function Cart() {
         if (part.quantity < partProduct.quantityInStock) {
             part.quantity += 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             parts: products.parts.map((part) => (
-                part.id === id ? {...part, quantity: part.quantity + 1} : part
+                part.id === id ? { ...part, quantity: part.quantity + 1 } : part
             ))
         };
 
@@ -190,14 +208,14 @@ export default function Cart() {
         if (bike.quantity < partProduct.quantityInStock) {
             bike.quantity += 1;
         }
-        else{
+        else {
             return;
         }
 
         let productsCopy = {
             ...products,
             bikes: products.bikes.map((b) => (
-                b.id === id ? {...b, quantity: b.quantity + 1} : b
+                b.id === id ? { ...b, quantity: b.quantity + 1 } : b
             ))
         };
 
@@ -228,57 +246,74 @@ export default function Cart() {
 
     return (<>
         <MDBContainer>
-            <MDBTypography variant='h1 mt-2'>Cart</MDBTypography>
-            <MDBCard>
+            <MDBCard className="mt-4">
                 <MDBListGroup>
                     <MDBListGroupItem>
-                        <MDBTypography tag='h4'>Bikes</MDBTypography>
+                        <MDBTypography tag='h1'>Cart</MDBTypography>
                     </MDBListGroupItem>
                     {!isLoading ?
                         products.bikes.map(element => (
                             <MDBListGroupItem key={element.id}>
-                                <article className='close-button-cart'><MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
-                                {element.fullModelName}
-                                <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusBike(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
-                                    <MDBIcon fas icon="plus" onClick={() => plusBike(element.id)} />
+                                <article className='item'>
+                                    <MDBCol>
+                                        <span>{element.fullModelName}</span>
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <MDBIcon className='minus' fas icon="minus" onClick={() => minusBike(element.id)} />
+                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
+                                        <MDBIcon className='plus' fas icon="plus" onClick={() => plusBike(element.id)} />
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    </MDBCol>
+                                    <article className='close-button-cart'><MDBBtn onClick={() => removeBikeFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
                                 </article>
-                                {element.quantity} x {element.price} zł
                             </MDBListGroupItem>
                         ))
                         :
-                        <p>Your cart is empty!</p>
+                        null
                     }
-                    <MDBListGroupItem>
-                        <MDBTypography tag='h4'>Parts</MDBTypography>
-                    </MDBListGroupItem>
+
                     {!isLoading ?
                         products.parts.map(element => (
                             <MDBListGroupItem key={element.id}>
-                                <article className='close-button-cart'><MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
-                                {element.fullModelName}
-                                <article className="number-of-items">
-                                    <MDBIcon fas icon="minus" onClick={() => minusPart(element.id)} />
-                                    <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
-                                    <MDBIcon fas icon="plus" onClick={() => plusPart(element.id)} />
+                                <article className='item'>
+                                    <MDBCol>
+                                        <span>{element.fullModelName}</span>
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <MDBIcon className='minus' fas icon="minus" onClick={() => minusPart(element.id)} />
+                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
+                                        <MDBIcon className='plus' fas icon="plus" onClick={() => plusPart(element.id)} />
+                                    </MDBCol>
+                                    <MDBCol className='middle'>
+                                        <span className='price'>{element.quantity} x {element.price} zł</span>
+                                    </MDBCol>
+                                    <article className='close-button-cart'><MDBBtn onClick={() => removePartFromCart(element.id)} className="btn-close" color="none" aria-label="Close" /></article>
                                 </article>
-                                {element.quantity} x {element.price} zł
                             </MDBListGroupItem>
                         ))
                         :
-                        <p>Your cart is empty!</p>
+                        null
                     }
+
+                    {isLoading ?
+                        <MDBListGroupItem>
+                            Your cart is empty
+                        </MDBListGroupItem>
+                        : <MDBListGroupItem></MDBListGroupItem>
+                    }
+
                     <MDBListGroupItem>
                         <MDBTypography tag='h4'>Summary</MDBTypography>
                     </MDBListGroupItem>
                     <MDBListGroupItem>
-                        <MDBTypography tag='dt' sm='3' color="success">{!isLoading ?
+                        <MDBTypography tag='strong' className="button-out">{!isLoading ?
                             summaryPrice : 0} zł</MDBTypography>
                     </MDBListGroupItem>
                 </MDBListGroup>
             </MDBCard>
-            <MDBBtn className="mt-4" color="success" onClick={handleClick}>Buy now</MDBBtn>
+            <MDBBtn className="mt-4 classic-button" onClick={handleClick}>Buy now</MDBBtn>
             <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
                 <MDBModalDialog>
                     <MDBModalContent>
@@ -292,7 +327,7 @@ export default function Cart() {
                             <MDBBtn color='secondary' onClick={toggleOpen}>
                                 Give me more time
                             </MDBBtn>
-                            <MDBBtn onClick={submitOrder} color="success">Yes</MDBBtn>
+                            <MDBBtn onClick={submitOrder} className="classic-button">Yes</MDBBtn>
                         </MDBModalFooter>
                     </MDBModalContent>
                 </MDBModalDialog>

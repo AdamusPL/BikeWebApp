@@ -1,4 +1,4 @@
-import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdb-react-ui-kit";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -43,12 +43,12 @@ export default function Account() {
         navigate('/sign-in');
     }
 
-    function addPhoneNumber(){
+    function addPhoneNumber() {
 
     }
 
-    function addEmail(){
-        
+    function addEmail() {
+
     }
 
     return (<>
@@ -71,39 +71,39 @@ export default function Account() {
                 </MDBCol>
             </MDBRow>
 
-            <MDBRow tag='dl'>
-                <article className="d-flex align-items-center mb-2">
-                    <MDBCol tag='dt' sm='3'>
-                        Phone Numbers:
-                    </MDBCol>
-                    <MDBCol>
-                        {userData.phoneNumbers}
-                    </MDBCol>
-                    <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" min="1" max="13" minlength="9"></input>
-                    <MDBCol>
-                        <MDBBtn onClick={addPhoneNumber} color="success">Add new phone number</MDBBtn>
-                    </MDBCol>
-                </article>
+            <MDBRow className="data-with-fields mb-2">
+                <MDBCol>
+                    <MDBTypography tag='strong'>Phone Numbers:</MDBTypography>
+                </MDBCol>
+                <MDBCol>
+                    {userData.phoneNumbers}
+                </MDBCol>
+                <MDBCol>
+                    <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" min="1" max="13" minLength="9"></input>
+                </MDBCol>
+                <MDBCol>
+                    <MDBBtn onClick={addPhoneNumber} className='classic-button'>Add new phone number</MDBBtn>
+                </MDBCol>
+            </MDBRow>
+
+            <MDBRow className="data-with-fields mb-2">
+                <MDBCol>
+                    <MDBTypography tag='strong'>E-Mail Addresses:</MDBTypography>
+                </MDBCol>
+                <MDBCol>
+                    {userData.emails}
+                </MDBCol>
+                <MDBCol>
+                    <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" min="1" max="13" minLength="9"></input>
+                </MDBCol>
+                <MDBCol>
+                    <MDBBtn onClick={addEmail} className='classic-button'>Add new e-mail address</MDBBtn>
+                </MDBCol>
             </MDBRow>
 
             <MDBRow tag='dl'>
-                <article className="d-flex align-items-center mb-2">
-                    <MDBCol tag='dt' sm='3'>
-                        E-Mail Addresses:
-                    </MDBCol>
-                    <MDBCol>
-                        {userData.emails}
-                    </MDBCol>
-                    <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" min="1" max="13" minlength="9"></input>
-                    <MDBCol>
-                        <MDBBtn onClick={addEmail} color="success">Add new e-mail address</MDBBtn>
-                    </MDBCol>
-                </article>
-            </MDBRow>
-
-            <MDBRow tag='dl'>
-                <MDBCol tag='dt' sm='3'>
-                    <MDBBtn color="success" onClick={logOut}>Log out</MDBBtn>
+                <MDBCol tag='dt'>
+                    <MDBBtn className='classic-button' onClick={logOut}>Log out</MDBBtn>
                 </MDBCol>
             </MDBRow>
         </MDBContainer>

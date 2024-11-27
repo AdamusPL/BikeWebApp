@@ -77,6 +77,14 @@ export default function BikeDetails() {
             localStorage.setItem('cart', JSON.stringify(cart));
         }
 
+        let cartAfterModifying = JSON.parse(localStorage.getItem('cart'));
+
+        const index = cartAfterModifying.bikes.findIndex(b => b.id === chosenProduct.id);
+
+        if (cartAfterModifying.bikes[index].quantity >= chosenProduct.quantityInStock) {
+            setIsAvailable(false);
+        }
+
         setIsDialogOpen(!isDialogOpen);
 
     }
@@ -85,7 +93,6 @@ export default function BikeDetails() {
         const response = await fetch(`http://localhost:8080/get-detailed-info-about-bike?bikeId=${urlParameters.id}`);
         const data = await response.json();
 
-        debugger;
         const keysArray = Object.keys(data.parts);
         setKeysArray(keysArray);
         setChosenProduct(data);
@@ -96,11 +103,11 @@ export default function BikeDetails() {
         const review = {
             numberOfStars: numberOfStars,
             description: opinion,
-            clientId: 1,
             bikeId: chosenProduct.id
         };
 
         fetch(`http://localhost:8080/post-bike-review`, {
+            credentials: 'include',
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(review)
@@ -126,14 +133,23 @@ export default function BikeDetails() {
                             src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                             className='img-fluid rounded shadow-3'
                             alt='...'
+                            width='700px'
                         />
                     </figure>
                     <h1>{chosenProduct.fullModelName}</h1>
+                    <p>{chosenProduct.description}</p>
                 </MDBCol>
                 <MDBCol md="4">
                     {
                         keysArray.map(element => (
-                            <p key={element}>{element}: {chosenProduct.parts[element]}</p>
+                            <MDBRow tag='dl'>
+                                <MDBCol key={element} tag='dt'>
+                                    {element}
+                                </MDBCol>
+                                <MDBCol tag='dd'>
+                                    {chosenProduct.parts[element]}
+                                </MDBCol>
+                            </MDBRow>
                         ))
                     }
                     <article id="buy-block">
@@ -156,26 +172,25 @@ export default function BikeDetails() {
                     </article>
                 </MDBCol>
             </MDBRow>
-            <p>{chosenProduct.description}</p>
 
             <p className="fw-light">Reviews</p>
             {isClient ?
                 <article>
-                    <p className="fw-lighter">Write a review</p>
+                    <p>Write a review</p>
                     <article className="d-flex align-items-center mb-2">
                         <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
-                        /5
+                        <span>/5</span>
                     </article>
                     <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-                    <MDBBtn className="mt-2" color="success" onClick={addReview}>Add review</MDBBtn>
+                    <MDBBtn className="mt-2 classic-button" onClick={addReview}>Add review</MDBBtn>
                     {
                         isReviewPosted ?
                             <p>Review posted successfully</p>
                             :
-                            <p></p>
+                            null
                     }
                 </article>
-            : <p>You must be signed-in to post a review</p>
+                : <p>You must be signed-in to post a review</p>
             }
 
             {

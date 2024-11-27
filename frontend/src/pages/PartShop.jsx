@@ -12,7 +12,14 @@ import {
     MDBBtn,
     MDBCheckbox,
     MDBRipple,
-    MDBTypography
+    MDBTypography,
+    MDBModal,
+    MDBModalDialog,
+    MDBModalContent,
+    MDBModalHeader,
+    MDBModalTitle,
+    MDBModalBody,
+    MDBModalFooter
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
 import Dialog from '../components/Dialog';
@@ -28,6 +35,9 @@ export default function PartShop() {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
     const { isShopAssistant } = useRole();
 
+    const [basicModal, setBasicModal] = useState(false);
+    const toggleOpen = () => setBasicModal(!basicModal);
+
     useEffect(() => {
         getProducts();
         getFilters();
@@ -35,7 +45,6 @@ export default function PartShop() {
     }, []);
 
     async function getProducts() {
-        debugger;
         const response = await fetch('http://localhost:8080/part-shop');
         const data = await response.json();
 
@@ -122,6 +131,7 @@ export default function PartShop() {
             .then(response => {
                 if (response.ok) {
                     setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
+                    toggleOpen();
                 }
             });;
     }
@@ -144,7 +154,7 @@ export default function PartShop() {
                     }
 
                     <p className='mt-4'>Price</p>
-                    <article id='price'>
+                    <article id='price' className='mb-4'>
                         <input className='form-control input'></input>
                         <p id='minus'>-</p>
                         <input className='form-control input'></input>
@@ -154,9 +164,9 @@ export default function PartShop() {
                 <MDBCol>
                     {isShopAssistant ?
                         <article id="button">
-                            <MDBBtn className="mt-4" color="success" href='/add-part'>Add new part</MDBBtn>
+                            <MDBBtn className="mt-4" style={{ backgroundColor: "#002E80" }} href='/add-part'>Add new part</MDBBtn>
                         </article>
-                        : <p></p>
+                        : null
                     }
 
                     <MDBCol md="11">
@@ -167,7 +177,27 @@ export default function PartShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
-                                            {isShopAssistant ? <article className='close-button'><MDBBtn onClick={() => removeFromDb(element.id)} className="btn-close" color="none" aria-label="Close" /></article> : null}
+                                            {isShopAssistant ? <article className='close-button'>
+                                                <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
+                                                <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
+                                                    <MDBModalDialog>
+                                                        <MDBModalContent>
+                                                            <MDBModalHeader>
+                                                                <MDBModalTitle>Product removal</MDBModalTitle>
+                                                                <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
+                                                            </MDBModalHeader>
+                                                            <MDBModalBody>Are you sure you want to remove that product?</MDBModalBody>
+
+                                                            <MDBModalFooter>
+                                                                <MDBBtn color='secondary' onClick={toggleOpen}>
+                                                                    No
+                                                                </MDBBtn>
+                                                                <MDBBtn style={{ backgroundColor: "#002E80" }} onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                            </MDBModalFooter>
+                                                        </MDBModalContent>
+                                                    </MDBModalDialog>
+                                                </MDBModal>
+                                            </article> : null}
                                             <MDBCard>
                                                 <Link to={`/part-shop/${element.id}`}>
                                                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
@@ -175,23 +205,44 @@ export default function PartShop() {
                                                             src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
                                                             alt='...'
                                                             position='top'
+                                                            width='300px'
                                                         />
                                                     </MDBRipple>
                                                 </Link>
                                                 <MDBCardBody>
-                                                    <MDBCardTitle className='mb-4' tag='h2'>{element.fullModelName}</MDBCardTitle>
-                                                    <MDBCardText>
-                                                        Type: {element.type}
-                                                    </MDBCardText>
-                                                    <MDBCardText>
-                                                        Kind: {element.attribute}
-                                                    </MDBCardText>
-                                                    <MDBCardText>
-                                                        Price: {element.price} zł
-                                                    </MDBCardText>
-                                                    <MDBCardText className='mb-4'>
-                                                        Quantity in stock: {element.quantityInStock}
-                                                    </MDBCardText>
+                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Type:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.type}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Kind:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.attribute}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Price:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.price}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Quantity in stock:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.quantityInStock}
+                                                        </MDBCol>
+                                                    </MDBRow>
                                                     {!isShopAssistant ?
                                                         element.isAvailable ?
                                                             <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
@@ -202,7 +253,7 @@ export default function PartShop() {
                                                                 </MDBBtn>
                                                                 <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
                                                             </article>
-                                                        : <p></p>
+                                                        : null
                                                     }
                                                 </MDBCardBody>
                                             </MDBCard>

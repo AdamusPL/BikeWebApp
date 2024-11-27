@@ -2,3 +2,8 @@
     width: 200px;
     margin-right: 50px;
 }
+
+.data-with-fields{
+    display: flex;
+    justify-content: space-between;
+}
