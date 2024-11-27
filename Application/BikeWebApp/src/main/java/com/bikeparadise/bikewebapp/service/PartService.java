@@ -35,7 +35,7 @@ public class PartService {
         for (Part part :
                 partList) {
 
-            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
+            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
             partShopDtoList.add(partShopDto);
         }
 

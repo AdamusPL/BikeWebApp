@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -15,7 +16,12 @@ public class BikeIdentificationReserved {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+    String make;
+    String modelName;
+
+    @Column(unique=true)
     String serialNumber;
+    BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "BikeId")
@@ -28,8 +34,11 @@ public class BikeIdentificationReserved {
             inverseJoinColumns = @JoinColumn(name = "OrderId"))
     List<Order> order;
 
-    public BikeIdentificationReserved(String serialNumber, Bike bike){
+    public BikeIdentificationReserved(String make, String modelName, String serialNumber, BigDecimal price, Bike bike){
+        this.make = make;
+        this.modelName = modelName;
         this.serialNumber = serialNumber;
+        this.price = price;
         this.bike = bike;
     }
 }

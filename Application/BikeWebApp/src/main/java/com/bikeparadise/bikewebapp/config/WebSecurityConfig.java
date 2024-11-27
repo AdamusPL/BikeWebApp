@@ -43,7 +43,10 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/get-user-data")
                         .hasAnyRole("ADMIN", "USER")
 
-                        .requestMatchers(HttpMethod.GET, "/get-all-orders-list",  "/get-add-bike-filters", "/get-order-statuses")
+                        .requestMatchers(HttpMethod.POST, "/get-cart-products")
+                        .hasAnyRole("ANONYMOUS", "USER")
+
+                        .requestMatchers(HttpMethod.GET, "/get-all-orders-list",  "/get-add-bike-filters", "/get-order-statuses", "/get-add-part-filters")
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/add-bike", "/add-part")
                         .hasRole("ADMIN")
@@ -52,7 +55,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/update-order-status")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/get-order-list", "/get-user-data")
+                        .requestMatchers(HttpMethod.GET, "/get-order-list")
                         .hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/buy", "/post-bike-review", "/post-part-review")
                         .hasRole("USER")
@@ -62,7 +65,7 @@ public class WebSecurityConfig {
                                 "/get-detailed-info-about-bike", "/get-bike-shop-filters", "/get-detailed-info-about-part", "/get-part-filters",
                                 "/check-role")
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register", "/get-cart-products")
+                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register")
                         .permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

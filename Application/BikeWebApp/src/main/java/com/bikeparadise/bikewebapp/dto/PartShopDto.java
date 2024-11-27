@@ -10,7 +10,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class PartShopDto {
     Integer id;
-    String fullModelName;
+    String make;
+    String modelName;
     String type;
     String attribute;
     BigDecimal price;

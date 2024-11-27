@@ -41,12 +41,8 @@ public class Part {
     @OneToMany(mappedBy = "part")
     private List<Review> review;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Order_Part",
-            joinColumns = @JoinColumn(name = "PartId"),
-            inverseJoinColumns = @JoinColumn(name = "OrderId"))
-    private List<Order> order;
+    @OneToMany(mappedBy = "part")
+    private List<PartReserved> partReserved;
 
     public Part(String make, String modelName, BigDecimal price, Integer quantityInStock, String description, PartParameterAttribute partParameterAttribute, ShopAssistant shopAssistant){
         this.make = make;

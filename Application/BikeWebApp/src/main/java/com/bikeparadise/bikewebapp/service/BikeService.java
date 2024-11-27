@@ -53,7 +53,7 @@ public class BikeService {
             } else if (frontDerailleur.size() == 0) {
                 String rearNumberOfGears = "";
 
-                if (rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().equals("rows")) {
+                if (rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
                     rearNumberOfGears = rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
                 }
 
@@ -61,7 +61,7 @@ public class BikeService {
             } else if (rearDerailleur.size() == 0) {
                 String frontNumberOfGears = "";
 
-                if (frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().equals("rows")) {
+                if (frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
                     frontNumberOfGears = frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
                 }
 
@@ -95,7 +95,7 @@ public class BikeService {
                 }
             }
 
-            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make + " " + bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
+            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
             bikeShopDtoList.add(bikeShopDto);
         }
         return bikeShopDtoList;

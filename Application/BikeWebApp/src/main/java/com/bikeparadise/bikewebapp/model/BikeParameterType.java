@@ -11,6 +11,8 @@ public class BikeParameterType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+
+    @Column(unique=true)
     String type;
 
     @OneToMany(mappedBy = "bikeParameterType")

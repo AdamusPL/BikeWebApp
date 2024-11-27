@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class BikeShopDto {
     Integer id;
-    String fullModelName;
+    String make;
+    String modelName;
     String type;
     String drive;
     BigDecimal price;

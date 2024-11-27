@@ -17,6 +17,8 @@ public class BikeIdentificationAvailable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+
+    @Column(unique=true)
     String serialNumber;
 
     public BikeIdentificationAvailable(String serialNumber){
