@@ -1,0 +1,50 @@
+{
+  "name": "mdb-react-template",
+  "version": "9.0.0",
+  "description": "template for mdb-react-ui-kit",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "font-awesome": "^4.7.0",
+    "http-server": "^14.1.1",
+    "mdb-react-ui-kit": "9.0.0",
+    "react": "^18.1.0",
+    "react-cookie": "^7.2.2",
+    "react-dom": "^18.1.0",
+    "react-router-dom": "^6.26.2",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "keywords": [
+    "template",
+    "react"
+  ],
+  "author": "MDBootstrap",
+  "license": "SEE LICENSE IN <License.txt>",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-private-property-in-object": "^7.25.8"
+  }
+}
