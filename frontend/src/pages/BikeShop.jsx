@@ -33,7 +33,6 @@ export default function BikeShop() {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState([]);
-    const [keysArray, setKeysArray] = useState([]);
     const { isShopAssistant } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
@@ -45,10 +44,18 @@ export default function BikeShop() {
         setIsLoading(false);
     }, []);
 
+    useEffect(() => {
+        filterChanged();
+    }, [filters])
+
     async function getProducts() {
         const response = await fetch('http://localhost:8080/bike-shop');
         const data = await response.json();
 
+        checkAvailability(data);
+    }
+
+    function checkAvailability(data){
         const cart = JSON.parse(localStorage.getItem('cart'));
         data.map(item => {
             item.isAvailable = true;
@@ -73,10 +80,8 @@ export default function BikeShop() {
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-bike-shop-filters');
-        const data = await response.json();
+        let data = await response.json();
 
-        const keysArray = Object.keys(data);
-        setKeysArray(keysArray);
         setFilters(data);
     }
 
@@ -129,11 +134,41 @@ export default function BikeShop() {
         })
             .then(response => {
                 if (response.ok) {
-                    debugger;
                     setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
                     toggleOpen();
                 }
             });
+    }
+
+    function applyFilter(typeId, attributeId) {
+        setFilters(prevArray =>
+            prevArray.map(type =>
+                type.id === typeId
+                    ? {
+                        ...type,
+                        attribute: type.attribute.map(attribute =>
+                            attribute.id === attributeId
+                                ? { ...attribute, isChecked: !attribute.isChecked }
+                                : attribute
+                        )
+                    }
+                    : type
+            )
+        );
+    }
+
+    async function filterChanged(){
+        const response = await fetch(`http://localhost:8080/filter-bikes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filters)
+        });
+
+        debugger;
+
+        const data = await response.json();
+
+        checkAvailability(data);
     }
 
     return (<>
@@ -141,11 +176,11 @@ export default function BikeShop() {
             <MDBRow className="h-100">
                 <MDBCol id='sidebar' md="auto">
                     {!isLoading ?
-                        keysArray.map(element => (
-                            <article key={element} className='mt-4'>
-                                <p>{element}</p>
-                                {filters[element].map(item => (
-                                    <MDBCheckbox key={item} name='flexCheck' value='' id='flexCheckDefault' label={item} />
+                        filters.map(element => (
+                            <article key={element.id} className='mt-4'>
+                                <p>{element.type}</p>
+                                {element.attribute.map(item => (
+                                    <MDBCheckbox onClick={() => applyFilter(element.id, item.id)} key={item.id} name='flexCheck' value='' id='flexCheckDefault' label={item.attribute} />
                                 ))}
                             </article>
                         ))
