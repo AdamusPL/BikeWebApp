@@ -30,7 +30,6 @@ export default function PartShop() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [keysArray, setKeysArray] = useState([]);
     const [filters, setFilters] = useState([]);
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
     const { role } = useRole();
@@ -44,10 +43,18 @@ export default function PartShop() {
         setIsLoading(false);
     }, []);
 
+    useEffect(() => {
+        filterChanged();
+    }, [filters]);
+
     async function getProducts() {
         const response = await fetch('http://localhost:8080/part-shop');
         const data = await response.json();
 
+        checkAvailability(data);
+    }
+
+    function checkAvailability(data){
         const cart = JSON.parse(localStorage.getItem('cart'));
 
         data.map(item => {
@@ -74,8 +81,6 @@ export default function PartShop() {
         const response = await fetch('http://localhost:8080/get-part-filters');
         const data = await response.json();
 
-        const keysArray = Object.keys(data);
-        setKeysArray(keysArray);
         setFilters(data);
     }
 
@@ -133,20 +138,45 @@ export default function PartShop() {
                     setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
                     toggleOpen();
                 }
-            });;
+            });
+    }
+
+    function applyFilter(typeId) {
+        setFilters(prevArray =>
+            prevArray.map(type =>
+                type.id === typeId
+                    ? {
+                        ...type,
+                        isChecked: !type.isChecked
+                    }
+                    : type
+            )
+        );
+    }
+
+    async function filterChanged() {
+        const response = await fetch(`http://localhost:8080/filter-parts-by-type`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filters)
+        });
+
+        debugger;
+
+        const data = await response.json();
+
+        checkAvailability(data);
     }
 
     return (<>
         <MDBContainer fluid>
             <MDBRow className="h-100">
                 <MDBCol id='sidebar' md="auto">
+                    <p className='mt-4'>Type</p>
                     {!isLoading ?
-                        keysArray.map(element => (
-                            <article key={element} className='mt-4'>
-                                <p>{element}</p>
-                                {filters[element].map(item => (
-                                    <MDBCheckbox key={item} name='flexCheck' value='' id='flexCheckDefault' label={item} />
-                                ))}
+                        filters.map(element => (
+                            <article key={element.id} className='mt-4'>
+                                <MDBCheckbox onClick={() => applyFilter(element.id)} key={element.id} name='flexCheck' value='' id='flexCheckDefault' label={element.type} />
                             </article>
                         ))
                         :

@@ -46,7 +46,7 @@ export default function BikeShop() {
 
     useEffect(() => {
         filterChanged();
-    }, [filters])
+    }, [filters]);
 
     async function getProducts() {
         const response = await fetch('http://localhost:8080/bike-shop');
@@ -80,7 +80,7 @@ export default function BikeShop() {
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-bike-shop-filters');
-        let data = await response.json();
+        const data = await response.json();
 
         setFilters(data);
     }
