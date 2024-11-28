@@ -4,7 +4,6 @@ import {
     MDBCardImage,
     MDBCardBody,
     MDBCardTitle,
-    MDBCardText,
     MDBRow,
     MDBCol,
     MDBContainer,
@@ -31,14 +30,12 @@ export default function PartShop() {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState([]);
-    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
     const { role } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
     const toggleOpen = () => setBasicModal(!basicModal);
 
     useEffect(() => {
-        getProducts();
         getFilters();
         setIsLoading(false);
     }, []);
@@ -46,13 +43,6 @@ export default function PartShop() {
     useEffect(() => {
         filterChanged();
     }, [filters]);
-
-    async function getProducts() {
-        const response = await fetch('http://localhost:8080/part-shop');
-        const data = await response.json();
-
-        checkAvailability(data);
-    }
 
     function checkAvailability(data){
         const cart = JSON.parse(localStorage.getItem('cart'));
@@ -94,7 +84,6 @@ export default function PartShop() {
 
             if (index !== -1) {
                 cart.parts[index].quantity += 1;
-                setCart(cart);
             }
 
             else {

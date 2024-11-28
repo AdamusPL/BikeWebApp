@@ -39,7 +39,6 @@ export default function BikeShop() {
     const toggleOpen = () => setBasicModal(!basicModal);
 
     useEffect(() => {
-        getProducts();
         getFilters();
         setIsLoading(false);
     }, []);
@@ -47,13 +46,6 @@ export default function BikeShop() {
     useEffect(() => {
         filterChanged();
     }, [filters]);
-
-    async function getProducts() {
-        const response = await fetch('http://localhost:8080/bike-shop');
-        const data = await response.json();
-
-        checkAvailability(data);
-    }
 
     function checkAvailability(data){
         const cart = JSON.parse(localStorage.getItem('cart'));
@@ -76,7 +68,6 @@ export default function BikeShop() {
         })
         setProducts(data);
     }
-
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-bike-shop-filters');
