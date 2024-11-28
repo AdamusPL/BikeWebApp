@@ -23,7 +23,7 @@ export default function BikeDetails() {
     const [isReviewPosted, setIsReviewPosted] = useState(false);
     const navigate = useNavigate();
 
-    const { isClient } = useRole();
+    const { role } = useRole();
 
     useEffect(() => {
         getDetailedInfo();
@@ -174,7 +174,7 @@ export default function BikeDetails() {
             </MDBRow>
 
             <p className="fw-light">Reviews</p>
-            {isClient ?
+            {role === 'ROLE_USER' ?
                 <article>
                     <p>Write a review</p>
                     <article className="d-flex align-items-center mb-2">

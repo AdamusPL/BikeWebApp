@@ -17,23 +17,23 @@ export default function Cart() {
     const [summaryPrice, setSummaryPrice] = useState(0.0);
     const [basicModal, setBasicModal] = useState(false);
     const [cookies, setCookie] = useCookies(['token']);
-    const { isShopAssistant } = useRole();
+    const { role } = useRole();
 
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [role]);
 
     useEffect(() => {
         if (products) {
             calculateSum();
             setIsLoading(false);
         }
-    }, [products]);
+    }, [products, role]);
 
     async function fetchProducts() {
-        if (isShopAssistant) {
+        if (role === 'ROLE_ADMIN') {
             navigate('/unauthorized');
         }
 

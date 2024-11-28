@@ -33,7 +33,7 @@ export default function BikeShop() {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState([]);
-    const { isShopAssistant } = useRole();
+    const { role } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
     const toggleOpen = () => setBasicModal(!basicModal);
@@ -197,7 +197,7 @@ export default function BikeShop() {
                 </MDBCol>
 
                 <MDBCol>
-                    {isShopAssistant ?
+                    {role === 'ROLE_ADMIN' ?
                         <article id="button">
                             <MDBBtn className="mt-4 classic-button" href='/add-bike'>Add new bike</MDBBtn>
                         </article> : null}
@@ -210,7 +210,7 @@ export default function BikeShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
-                                            {isShopAssistant ? <article className='close-button'>
+                                            {role === 'ROLE_ADMIN' ? <article className='close-button'>
                                                 <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
                                                 <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
                                                     <MDBModalDialog>
@@ -279,7 +279,7 @@ export default function BikeShop() {
                                                             </MDBCol>
                                                         </MDBRow>
                                                     </MDBCardText>
-                                                    {!isShopAssistant ?
+                                                    {role !== 'ROLE_ADMIN' ?
                                                         element.isAvailable ?
                                                             <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
                                                             :

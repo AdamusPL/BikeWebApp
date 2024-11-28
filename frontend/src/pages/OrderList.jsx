@@ -10,29 +10,32 @@ export default function OrderList() {
     const [isLoading, setIsLoading] = useState(true);
     const [orders, setOrders] = useState([]);
     const [orderStatuses, setOrderStatuses] = useState([]);
-    const { isShopAssistant } = useRole();
+    const { role } = useRole();
 
     const navigate = useNavigate();
 
     useEffect(() => {
         debugger;
-        if (isShopAssistant) {
+        if (role === 'ROLE_ADMIN' && !isLoading) {
             getOrderStatuses();
             getAllOrders();
         }
-        else {
+        else if(role === 'ROLE_USER' && !isLoading) {
+            getClientOrders();
+        }
+        else if(role === 'ROLE_ANONYMOUS' && !isLoading){
             getClientOrders();
         }
         setIsLoading(false);
-    }, [isShopAssistant]);
+    }, [role]);
 
     async function getAllOrders() {
         const response = await fetch(`http://localhost:8080/get-all-orders-list`,
             { credentials: 'include' }
         );
-        // if(response.status === 401){
-        //     navigate('/unauthorized');
-        // }
+        if(response.status === 401){
+            navigate('/unauthorized');
+        }
         const data = await response.json();
         setOrders(data);
     }
@@ -50,9 +53,9 @@ export default function OrderList() {
             { credentials: 'include' }
         );
 
-        // if(response.status === 401){
-        //     navigate('/unauthorized');
-        // }
+        if(response.status === 401){
+            navigate('/unauthorized');
+        }
         
         const data = await response.json();
         setOrders(data);
@@ -83,7 +86,7 @@ export default function OrderList() {
 
     return (<>
         <MDBContainer>
-            {isShopAssistant ?
+            {role === 'ROLE_ADMIN' ?
                 <MDBTypography variant='h1 mt-4'>Here you can manage customer orders</MDBTypography>
                 : <MDBTypography variant='h1 mt-4'>Your orders</MDBTypography>
             }
@@ -96,7 +99,7 @@ export default function OrderList() {
                                     <article className='order'>
                                         <MDBTypography tag='h4'>Order from: {order.date}</MDBTypography>
                                         <MDBDropdown>
-                                            {isShopAssistant ?
+                                            {role === 'ROLE_ADMIN' ?
                                                 <article>
                                                     <MDBDropdownToggle className='classic-button'> {order.status}</MDBDropdownToggle>
                                                     <MDBDropdownMenu>

@@ -5,9 +5,7 @@ import { useNavigate } from "react-router-dom";
 const RoleContext = createContext();
 
 const RoleProvider = ({ children }) => {
-    const [isShopAssistant, setIsShopAssistant] = useState(false);
-    const [isClient, setIsClient] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [role, setRole] = useState("");
     const [cookies, setCookie, removeCookie] = useCookies(['token']);
 
     const navigate = useNavigate();
@@ -19,17 +17,16 @@ const RoleProvider = ({ children }) => {
         const data = await response.json();
         data.forEach(item => {
             if (item === "ROLE_ADMIN") {
-                setIsShopAssistant(true);
-                setIsLoggedIn(true);
+                setRole(item);
             }
             else if(item === "ROLE_USER"){
-                setIsClient(true);
-                setIsLoggedIn(true);
+                setRole(item);
             }
             else if(item === "ROLE_ANONYMOUS"){
                 if(cookies.token){
                     removeCookie('token');
                 }
+                setRole(item);
             }
         })
     }
@@ -38,7 +35,7 @@ const RoleProvider = ({ children }) => {
         checkRole();
     }, []);
 
-    return <RoleContext.Provider value={{ isShopAssistant, isClient, isLoggedIn }}>{children}</RoleContext.Provider>;
+    return <RoleContext.Provider value={{ role }}>{children}</RoleContext.Provider>;
 };
 
 export default RoleProvider;
