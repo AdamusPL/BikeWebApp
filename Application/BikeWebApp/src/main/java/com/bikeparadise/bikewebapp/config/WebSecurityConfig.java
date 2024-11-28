@@ -65,7 +65,7 @@ public class WebSecurityConfig {
                                 "/get-detailed-info-about-bike", "/get-bike-shop-filters", "/get-detailed-info-about-part", "/get-part-filters",
                                 "/check-role")
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register")
+                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register", "/filter-bikes")
                         .permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

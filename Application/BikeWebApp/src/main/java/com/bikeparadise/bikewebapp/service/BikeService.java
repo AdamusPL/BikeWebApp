@@ -36,64 +36,85 @@ public class BikeService {
         this.bikeIdentificationAvailableRepository = bikeIdentificationAvailableRepository;
     }
 
+    private String getDrive(Bike bike) {
+        //get drive parameters
+        List<Part> frontDerailleur = partRepository.findAllByBike_Id_AndPartParameterAttribute_PartType_Type(bike.getId(), "Front Derailleur");
+        List<Part> rearDerailleur = partRepository.findAllByBike_Id_AndPartParameterAttribute_PartType_Type(bike.getId(), "Rear Derailleur");
+
+        String drive = "";
+
+        if (frontDerailleur.size() == 0 && rearDerailleur.size() == 0) {
+            drive = "1x1";
+        } else if (frontDerailleur.size() == 0) {
+            String rearNumberOfGears = "";
+
+            if (rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
+                rearNumberOfGears = rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
+            }
+
+            drive = "1x" + rearNumberOfGears;
+        } else if (rearDerailleur.size() == 0) {
+            String frontNumberOfGears = "";
+
+            if (frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
+                frontNumberOfGears = frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
+            }
+
+            drive = frontNumberOfGears + "x1";
+        } else {
+            String rearNumberOfGears = "";
+
+            if (rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
+                rearNumberOfGears = rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
+            }
+
+            String frontNumberOfGears = "";
+            if (frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
+                frontNumberOfGears = frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
+            }
+
+            drive = frontNumberOfGears + "x" + rearNumberOfGears;
+        }
+        return drive;
+    }
+
+    private String getMake(Bike bike) {
+        //get bike make
+        String make = "";
+
+        for (BikeAttribute bikeAttribute :
+                bike.getBikeAttribute()) {
+            if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
+                make = bikeAttribute.getBikeParameterAttribute().getAttribute();
+            }
+        }
+
+        return make;
+    }
+
+    private String getType(Bike bike) {
+        //get bike type
+        String type = "";
+
+        for (BikeAttribute bikeAttribute :
+                bike.getBikeAttribute()) {
+            if (bikeAttribute.getBikeParameterType().getType().equals("Type")) {
+                type = bikeAttribute.getBikeParameterAttribute().getAttribute();
+            }
+        }
+
+        return type;
+    }
+
     public List<BikeShopDto> getBikes() {
         List<BikeShopDto> bikeShopDtoList = new ArrayList<>();
         List<Bike> bikeList = bikeRepository.findAll();
         for (Bike bike :
                 bikeList) {
 
-            //get drive parameters
-            List<Part> frontDerailleur = partRepository.findAllByBike_Id_AndPartParameterAttribute_PartType_Type(bike.getId(), "Front Derailleur");
-            List<Part> rearDerailleur = partRepository.findAllByBike_Id_AndPartParameterAttribute_PartType_Type(bike.getId(), "Rear Derailleur");
-
-            String drive = "";
-
-            if (frontDerailleur.size() == 0 && rearDerailleur.size() == 0) {
-                drive = "1x1";
-            } else if (frontDerailleur.size() == 0) {
-                String rearNumberOfGears = "";
-
-                if (rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
-                    rearNumberOfGears = rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
-                }
-
-                drive = "1x" + rearNumberOfGears;
-            } else if (rearDerailleur.size() == 0) {
-                String frontNumberOfGears = "";
-
-                if (frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
-                    frontNumberOfGears = frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
-                }
-
-                drive = frontNumberOfGears + "x1";
-            } else {
-                String rearNumberOfGears = "";
-
-                if (rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
-                    rearNumberOfGears = rearDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
-                }
-
-                String frontNumberOfGears = "";
-                if (frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().contains("rows")) {
-                    frontNumberOfGears = frontDerailleur.get(0).getPartParameterAttribute().getPartAttribute().getAttribute().replaceAll("[^0-9]", "");
-                }
-
-                drive = frontNumberOfGears + "x" + rearNumberOfGears;
-            }
-
-            //get bike type
-            String type = "";
-            //get bike make
-            String make = "";
-            for (BikeAttribute bikeAttribute :
-                    bike.getBikeAttribute()) {
-                if (bikeAttribute.getBikeParameterType().getType().equals("Type")) {
-                    type = bikeAttribute.getBikeParameterAttribute().getAttribute();
-                }
-                if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
-                    make = bikeAttribute.getBikeParameterAttribute().getAttribute();
-                }
-            }
+            String drive = getDrive(bike);
+            String make = getMake(bike);
+            String type = getType(bike);
 
             BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
             bikeShopDtoList.add(bikeShopDto);
@@ -101,15 +122,15 @@ public class BikeService {
         return bikeShopDtoList;
     }
 
-    public Map<String, List<String>> getAddBikeFilters(){
+    public Map<String, List<String>> getAddBikeFilters() {
         Map<String, List<String>> filters = new HashMap<>();
         List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
 
         //bike parameters
-        for (BikeParameterType bikeParameterType:
+        for (BikeParameterType bikeParameterType :
                 bikeParameterTypeList) {
             List<String> list = new ArrayList<>();
-            for(BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()){
+            for (BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()) {
                 list.add(bikeParameterAttribute.getAttribute());
             }
             filters.put(bikeParameterType.getType(), list);
@@ -117,11 +138,11 @@ public class BikeService {
 
         //parts
         List<PartType> partTypeList = partTypeRepository.findAll();
-        for(PartType partType : partTypeList){
+        for (PartType partType : partTypeList) {
             List<String> values = new ArrayList<>();
             values.add("None");
-            for(PartParameterAttribute partParameterAttribute : partType.getPartParameterAttribute()){
-                for(Part part : partParameterAttribute.getPart()){
+            for (PartParameterAttribute partParameterAttribute : partType.getPartParameterAttribute()) {
+                for (Part part : partParameterAttribute.getPart()) {
                     values.add(part.getMake() + " " + part.getModelName());
                 }
             }
@@ -132,22 +153,66 @@ public class BikeService {
 
     }
 
-    public Map<String, List<String>> getShopFilters(){
-        Map<String, List<String>> filters = new HashMap<>();
+    public List<FilterDto> getShopFilters() {
+        List<FilterDto> filters = new ArrayList<>();
         List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
 
-        for (BikeParameterType bikeParameterType:
+        for (BikeParameterType bikeParameterType :
                 bikeParameterTypeList) {
-            List<String> list = new ArrayList<>();
-            for(BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()){
-                list.add(bikeParameterAttribute.getAttribute());
+            List<FilterAttributeDto> list = new ArrayList<>();
+            for (BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()) {
+                list.add(new FilterAttributeDto(bikeParameterAttribute.getId(), bikeParameterAttribute.getAttribute(), false));
             }
-            filters.put(bikeParameterType.getType(), list);
+            filters.add(new FilterDto(bikeParameterType.getId(), bikeParameterType.getType(), list));
         }
 
         return filters;
 
     }
+
+    public List<BikeShopDto> getFilteredBikes(List<FilterDto> filters) {
+        List<Bike> bikes;
+        List<BikeShopDto> bikeShopDtoList = new ArrayList<>();
+        List<String> attributes = new ArrayList<>();
+        for (FilterDto filterDto : filters) {
+            for (FilterAttributeDto filterAttributeDto : filterDto.getAttribute()) {
+                if (filterAttributeDto.isChecked()) {
+                    attributes.add(filterAttributeDto.getAttribute());
+                }
+            }
+        }
+
+        if(attributes.size() == 0){
+            return getBikes();
+        }
+
+        bikes = bikeRepository.findByBikeAttribute_BikeParameterAttribute_AttributeIn(attributes);
+
+        for (Bike bike : bikes) {
+            //check if attributes matches demanding
+            int matches = 0;
+            for(String attribute : attributes){
+                for(BikeAttribute bikeAttribute : bike.getBikeAttribute()){
+                    if(bikeAttribute.getBikeParameterAttribute().getAttribute().equals(attribute)){
+                        matches++;
+                    }
+                }
+            }
+
+            if(matches != attributes.size()){
+                continue;
+            }
+
+            String drive = getDrive(bike);
+            String make = getMake(bike);
+            String type = getType(bike);
+
+            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
+            bikeShopDtoList.add(bikeShopDto);
+        }
+
+        return bikeShopDtoList;
+}
 
     public BikeDetailedInfoDto getDetailedInfoAboutBike(int id) {
         Optional<Bike> bikeOptional = bikeRepository.findById(id);
@@ -175,8 +240,8 @@ public class BikeService {
 
             //get make
             String make = "";
-            for(BikeAttribute bikeAttribute : bike.getBikeAttribute()){
-                if(bikeAttribute.getBikeParameterType().getType().equals("Make")){
+            for (BikeAttribute bikeAttribute : bike.getBikeAttribute()) {
+                if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
                     make = bikeAttribute.getBikeParameterAttribute().getAttribute();
                 }
             }
@@ -215,7 +280,7 @@ public class BikeService {
             Bike bike = new Bike(bikeAddDto.getModelName(), bikeAddDto.getPrice(), bikeAddDto.getDescription(), shopAssistant.get());
             String[] words = bikeAddDto.getBikeIdentificationsAvailable().split(" ");
             List<BikeIdentificationAvailable> bikeIdsAvailable = new ArrayList<>();
-            for(String word : words){
+            for (String word : words) {
                 BikeIdentificationAvailable bikeIdentificationAvailable = new BikeIdentificationAvailable(word);
                 bikeIdentificationAvailableRepository.save(bikeIdentificationAvailable);
                 bikeIdentificationAvailable.setBike(bike);
@@ -228,22 +293,18 @@ public class BikeService {
             List<BikeAttribute> bikeAttributes = new ArrayList<>();
 
             //retrieve make & model name
-            for(BikeAddFiltersDto bikeAddFiltersDto : bikeAddDto.getParts()){
+            for (BikeAddFiltersDto bikeAddFiltersDto : bikeAddDto.getParts()) {
 
                 //if part exist in bike
-                if(bikeAddFiltersDto.getAttribute().equals("None")){
+                if (bikeAddFiltersDto.getAttribute().equals("None")) {
 
-                }
-
-                else if(bikeAddFiltersDto.getParameter().equals("Type") || bikeAddFiltersDto.getParameter().equals("Frame size") || bikeAddFiltersDto.getParameter().equals("Make")){
+                } else if (bikeAddFiltersDto.getParameter().equals("Type") || bikeAddFiltersDto.getParameter().equals("Frame size") || bikeAddFiltersDto.getParameter().equals("Make")) {
                     BikeAttribute bikeAttribute = bikeAttributeRepository.findBikeAttributeByBikeParameterType_TypeAndBikeParameterAttribute_Attribute(bikeAddFiltersDto.getParameter(), bikeAddFiltersDto.getAttribute());
                     bikeAttributes.add(bikeAttribute);
-                }
-
-                else{
+                } else {
                     int spaceIndex = bikeAddFiltersDto.getAttribute().indexOf(" ");
 
-                    if(spaceIndex != -1) {
+                    if (spaceIndex != -1) {
                         String firstPart = bikeAddFiltersDto.getAttribute().substring(0, spaceIndex);
                         String secondPart = bikeAddFiltersDto.getAttribute().substring(spaceIndex + 1);
 
@@ -272,7 +333,7 @@ public class BikeService {
         Optional<Bike> bike = bikeRepository.findById(id);
         if (bike.isPresent()) {
             //if someone has bought this bike, you cannot remove it
-            if(bike.get().getBikeIdentificationReserved().size() != 0){
+            if (bike.get().getBikeIdentificationReserved().size() != 0) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             bikeIdentificationAvailableRepository.deleteAll(bike.get().getBikeIdentificationAvailable());

@@ -10,4 +10,5 @@ import java.util.List;
 public interface BikeRepository extends JpaRepository<Bike, Integer> {
     List<Bike> findBikeByPriceBetween(Double lowerRange, Double upperRange);
     List<Bike> findBikeByPart_PartParameterAttribute_PartType_PartAttribute_Attribute(String parameter);
+    List<Bike> findByBikeAttribute_BikeParameterAttribute_AttributeIn(List<String> attributes);
 }
