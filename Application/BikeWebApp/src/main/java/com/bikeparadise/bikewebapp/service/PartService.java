@@ -1,9 +1,6 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.PartDto;
-import com.bikeparadise.bikewebapp.dto.PartShopDto;
-import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
+import com.bikeparadise.bikewebapp.dto.*;
 import com.bikeparadise.bikewebapp.model.*;
 import com.bikeparadise.bikewebapp.repository.*;
 import org.springframework.http.ResponseEntity;
@@ -61,20 +58,48 @@ public class PartService {
         return null;
     }
 
-    public Map<String, List<String>> getFilters() {
-        Map<String, List<String>> filters = new HashMap<>();
+    public List<PartTypeFilterDto> getFilters() {
+        List<PartTypeFilterDto> filters = new ArrayList<>();
         List<PartType> partTypeList = partTypeRepository.findAll();
 
         for (PartType partType : partTypeList) {
             String type = partType.getType();
-            List<String> attributes = new ArrayList<>();
-            for(PartAttribute partAttribute : partType.getPartAttribute()){
-                attributes.add(partAttribute.getAttribute());
-            }
-            filters.put(type, attributes);
+            filters.add(new PartTypeFilterDto(partType.getId(), type, false));
         }
 
         return filters;
+    }
+
+    public List<PartShopDto> getFilteredParts(List<PartTypeFilterDto> partTypeFilterDtos){
+        List<String> types = new ArrayList<>();
+
+        int checked = 0;
+        for(PartTypeFilterDto partTypeFilterDto : partTypeFilterDtos){
+            if(partTypeFilterDto.isChecked()){
+                checked++;
+            }
+        }
+
+        if(checked == 0){
+            return getParts();
+        }
+
+        for(PartTypeFilterDto partTypeFilterDto : partTypeFilterDtos){
+            if(partTypeFilterDto.isChecked()){
+                types.add(partTypeFilterDto.getType());
+            }
+        }
+
+        List<Part> parts = partRepository.findPartByPartParameterAttribute_PartType_TypeIn(types);
+        List<PartShopDto> partShopDtoList = new ArrayList<>();
+
+        for(Part part : parts){
+            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
+            partShopDtoList.add(partShopDto);
+        }
+
+        return partShopDtoList;
+
     }
 
     public ResponseEntity<String> addPart(PartDto partDto) {
