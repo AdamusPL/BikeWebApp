@@ -32,7 +32,7 @@ export default function BikeShop() {
 
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [filters, setFilters] = useState([]);
+    const [filters, setFilters] = useState({});
     const { role } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
@@ -44,10 +44,12 @@ export default function BikeShop() {
     }, []);
 
     useEffect(() => {
-        filterChanged();
+        if (!isLoading) {
+            filterChanged();
+        }
     }, [filters]);
 
-    function checkAvailability(data){
+    function checkAvailability(data) {
         const cart = JSON.parse(localStorage.getItem('cart'));
         data.map(item => {
             item.isAvailable = true;
@@ -72,6 +74,8 @@ export default function BikeShop() {
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-bike-shop-filters');
         const data = await response.json();
+
+        debugger;
 
         setFilters(data);
     }
@@ -148,14 +152,12 @@ export default function BikeShop() {
         );
     }
 
-    async function filterChanged(){
+    async function filterChanged() {
         const response = await fetch(`http://localhost:8080/filter-bikes`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(filters)
         });
-
-        debugger;
 
         const data = await response.json();
 
@@ -167,7 +169,7 @@ export default function BikeShop() {
             <MDBRow className="h-100">
                 <MDBCol id='sidebar' md="auto">
                     {!isLoading ?
-                        filters.map(element => (
+                        filters.filterCheckboxDtos.map(element => (
                             <article key={element.id} className='mt-4'>
                                 <p>{element.type}</p>
                                 {element.attribute.map(item => (
@@ -181,9 +183,9 @@ export default function BikeShop() {
 
                     <p className='mt-4'>Price</p>
                     <article id='price' className='mb-4'>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' value={filters.minPrice}></input>
                         <p id='minus'>-</p>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' value={filters.maxPrice}></input>
                     </article>
                 </MDBCol>
 

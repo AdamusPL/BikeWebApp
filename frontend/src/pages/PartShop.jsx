@@ -211,7 +211,7 @@ export default function PartShop() {
                                                                 <MDBBtn color='secondary' onClick={toggleOpen}>
                                                                     No
                                                                 </MDBBtn>
-                                                                <MDBBtn style={{ backgroundColor: "#002E80" }} onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                                <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
                                                             </MDBModalFooter>
                                                         </MDBModalContent>
                                                     </MDBModalDialog>

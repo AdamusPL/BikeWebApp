@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner, MDBIcon } from "mdb-react-ui-kit";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner, MDBIcon, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from "mdb-react-ui-kit";
 import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -22,6 +22,9 @@ export default function BikeDetails() {
 
     const [isReviewPosted, setIsReviewPosted] = useState(false);
     const navigate = useNavigate();
+
+    const [basicModal, setBasicModal] = useState(false);
+    const toggleOpen = () => setBasicModal(!basicModal);
 
     const { role } = useRole();
 
@@ -117,10 +120,31 @@ export default function BikeDetails() {
                 setIsReviewPosted(true);
             }
         })
+
+        setChosenProduct((chosenProduct) => ({
+            ...chosenProduct,
+            reviews: [...chosenProduct.reviews, review],
+        }));
     }
 
     function backToShop() {
         navigate('/bike-shop');
+    }
+
+    function removeFromDb(id) {
+        fetch(`http://localhost:8080/delete-review?reviewId=${id}`, {
+            credentials: 'include',
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    setChosenProduct((chosenProduct) => ({
+                        ...chosenProduct,
+                        reviews: chosenProduct.reviews.filter((r) => r.id !== id),
+                    }));
+                    toggleOpen();
+                }
+            });
     }
 
     return (<>
@@ -201,6 +225,30 @@ export default function BikeDetails() {
                         chosenProduct.reviews.map(element => {
                             return (
                                 <div key={element.id} className="mt-5">
+                                    {role === 'ROLE_ADMIN' ?
+                                        <article className="close-button">
+                                            <MDBBtn className='btn-close' onClick={toggleOpen} color="none" aria-label="Close" />
+                                        </article>
+                                        : null
+                                    }
+                                    <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
+                                        <MDBModalDialog>
+                                            <MDBModalContent>
+                                                <MDBModalHeader>
+                                                    <MDBModalTitle>Review removal</MDBModalTitle>
+                                                    <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
+                                                </MDBModalHeader>
+                                                <MDBModalBody>Are you sure you want to remove that review?</MDBModalBody>
+
+                                                <MDBModalFooter>
+                                                    <MDBBtn color='secondary' onClick={toggleOpen}>
+                                                        No
+                                                    </MDBBtn>
+                                                    <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                </MDBModalFooter>
+                                            </MDBModalContent>
+                                        </MDBModalDialog>
+                                    </MDBModal>
                                     <p>{element.firstName} {element.lastName}</p>
                                     <p>{(() => {
                                         const options = [];
