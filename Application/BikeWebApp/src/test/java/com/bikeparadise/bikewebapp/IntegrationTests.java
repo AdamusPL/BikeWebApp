@@ -1,8 +1,8 @@
 package com.bikeparadise.bikewebapp;
 
-import com.bikeparadise.bikewebapp.model.Bike;
-import com.bikeparadise.bikewebapp.model.ShopAssistant;
-import com.bikeparadise.bikewebapp.repository.BikeRepository;
+import com.bikeparadise.bikewebapp.model.bike.Bike;
+import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
+import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
 import com.bikeparadise.bikewebapp.service.BikeService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

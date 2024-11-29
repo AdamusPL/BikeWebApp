@@ -1,10 +1,7 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.dto.BikeDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.BikeAddDto;
-import com.bikeparadise.bikewebapp.dto.BikeShopDto;
-import com.bikeparadise.bikewebapp.dto.FilterDto;
-import com.bikeparadise.bikewebapp.model.Bike;
+import com.bikeparadise.bikewebapp.dto.bike.*;
+import com.bikeparadise.bikewebapp.model.bike.Bike;
 import com.bikeparadise.bikewebapp.service.BikeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,7 +33,7 @@ public class BikeController {
 
     @GetMapping("/get-bike-shop-filters")
     @ResponseBody
-    public List<FilterDto> getShopFilters(){
+    public FiltersDto getShopFilters(){
         return bikeService.getShopFilters();
     }
 
@@ -48,7 +45,7 @@ public class BikeController {
 
     @PostMapping("/filter-bikes")
     @ResponseBody
-    public List<BikeShopDto> getFilteredBikes(@RequestBody List<FilterDto> filters){
+    public List<BikeShopDto> getFilteredBikes(@RequestBody List<FilterCheckboxDto> filters){
         return bikeService.getFilteredBikes(filters);
     }
 

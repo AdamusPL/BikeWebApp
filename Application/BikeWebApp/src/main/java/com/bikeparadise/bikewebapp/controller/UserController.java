@@ -1,16 +1,14 @@
 package com.bikeparadise.bikewebapp.controller;
 
 import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
-import com.bikeparadise.bikewebapp.dto.UserInfoDto;
-import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
-import com.bikeparadise.bikewebapp.dto.UserSignInDto;
+import com.bikeparadise.bikewebapp.dto.user.UserInfoDto;
+import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;
+import com.bikeparadise.bikewebapp.dto.user.UserSignInDto;
 import com.bikeparadise.bikewebapp.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 
 @Controller

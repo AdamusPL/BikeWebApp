@@ -1,7 +1,7 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.dto.CartDto;
-import com.bikeparadise.bikewebapp.dto.CartItems;
+import com.bikeparadise.bikewebapp.dto.cart.CartDto;
+import com.bikeparadise.bikewebapp.dto.cart.CartItems;
 import com.bikeparadise.bikewebapp.service.CartService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;

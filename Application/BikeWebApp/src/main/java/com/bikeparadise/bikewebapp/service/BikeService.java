@@ -1,14 +1,27 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.*;
-import com.bikeparadise.bikewebapp.model.*;
-import com.bikeparadise.bikewebapp.repository.*;
+import com.bikeparadise.bikewebapp.dto.bike.*;
+import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
+import com.bikeparadise.bikewebapp.model.bike.*;
+import com.bikeparadise.bikewebapp.model.part.Part;
+import com.bikeparadise.bikewebapp.model.part.PartAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartType;
+import com.bikeparadise.bikewebapp.model.review.Review;
+import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
+import com.bikeparadise.bikewebapp.repository.bike.BikeAttributeRepository;
+import com.bikeparadise.bikewebapp.repository.bike.BikeIdentificationAvailableRepository;
+import com.bikeparadise.bikewebapp.repository.bike.BikeParameterTypeRepository;
+import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
+import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -153,8 +166,8 @@ public class BikeService {
 
     }
 
-    public List<FilterDto> getShopFilters() {
-        List<FilterDto> filters = new ArrayList<>();
+    public FiltersDto getShopFilters() {
+        List<FilterCheckboxDto> filters = new ArrayList<>();
         List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
 
         for (BikeParameterType bikeParameterType :
@@ -163,19 +176,25 @@ public class BikeService {
             for (BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()) {
                 list.add(new FilterAttributeDto(bikeParameterAttribute.getId(), bikeParameterAttribute.getAttribute(), false));
             }
-            filters.add(new FilterDto(bikeParameterType.getId(), bikeParameterType.getType(), list));
+            filters.add(new FilterCheckboxDto(bikeParameterType.getId(), bikeParameterType.getType(), list));
         }
 
-        return filters;
+        //find max and min price
+        BigDecimal maxPrice = bikeRepository.findMaxPrice();
+        BigDecimal minPrice = bikeRepository.findMinPrice();
+
+        FiltersDto filtersDto = new FiltersDto(filters, minPrice, maxPrice);
+
+        return filtersDto;
 
     }
 
-    public List<BikeShopDto> getFilteredBikes(List<FilterDto> filters) {
+    public List<BikeShopDto> getFilteredBikes(List<FilterCheckboxDto> filters) {
         List<Bike> bikes;
         List<BikeShopDto> bikeShopDtoList = new ArrayList<>();
         List<String> attributes = new ArrayList<>();
-        for (FilterDto filterDto : filters) {
-            for (FilterAttributeDto filterAttributeDto : filterDto.getAttribute()) {
+        for (FilterCheckboxDto filterCheckboxDto : filters) {
+            for (FilterAttributeDto filterAttributeDto : filterCheckboxDto.getAttribute()) {
                 if (filterAttributeDto.isChecked()) {
                     attributes.add(filterAttributeDto.getAttribute());
                 }
@@ -253,21 +272,9 @@ public class BikeService {
         return null;
     }
 
-//    public List<Bike> getBikeByFrameSize(String frameSize) {
-//        return bikeRepository.findBikeByBikeFrameSize_FrameSize(frameSize);
-//    }
-//
-//    public List<Bike> getBikeByType(String type) {
-//        return bikeRepository.findBikeByBikeType_Type(type);
-//    }
-
     public List<Bike> getBikeByPrice(Double lowerRange, Double upperRange) {
         return bikeRepository.findBikeByPriceBetween(lowerRange, upperRange);
     }
-
-//    public List<Bike> getBikeByMake(String make) {
-//        return bikeRepository.findBikeByMake(make);
-//    }
 
     public List<Bike> getBikeByPartAttribute(String parameter) {
         return bikeRepository.findBikeByPart_PartParameterAttribute_PartType_PartAttribute_Attribute(parameter);
@@ -332,10 +339,6 @@ public class BikeService {
     public ResponseEntity<String> deleteBike(Integer id) {
         Optional<Bike> bike = bikeRepository.findById(id);
         if (bike.isPresent()) {
-            //if someone has bought this bike, you cannot remove it
-            if (bike.get().getBikeIdentificationReserved().size() != 0) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
             bikeIdentificationAvailableRepository.deleteAll(bike.get().getBikeIdentificationAvailable());
             bikeRepository.delete(bike.get());
             return ResponseEntity.ok().build();

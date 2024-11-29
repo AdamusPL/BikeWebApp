@@ -1,11 +1,25 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.*;
-import com.bikeparadise.bikewebapp.model.*;
-import com.bikeparadise.bikewebapp.repository.*;
+import com.bikeparadise.bikewebapp.dto.part.PartDetailedInfoDto;
+import com.bikeparadise.bikewebapp.dto.part.PartDto;
+import com.bikeparadise.bikewebapp.dto.part.PartShopDto;
+import com.bikeparadise.bikewebapp.dto.part.PartTypeFilterDto;
+import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
+import com.bikeparadise.bikewebapp.model.part.Part;
+import com.bikeparadise.bikewebapp.model.part.PartAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartType;
+import com.bikeparadise.bikewebapp.model.review.Review;
+import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
+import com.bikeparadise.bikewebapp.repository.part.PartAttributeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartParameterAttributeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
+import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -58,7 +72,7 @@ public class PartService {
         return null;
     }
 
-    public List<PartTypeFilterDto> getFilters() {
+    public List<PartTypeFilterDto> getShopFilters() {
         List<PartTypeFilterDto> filters = new ArrayList<>();
         List<PartType> partTypeList = partTypeRepository.findAll();
 
@@ -66,6 +80,9 @@ public class PartService {
             String type = partType.getType();
             filters.add(new PartTypeFilterDto(partType.getId(), type, false));
         }
+
+        BigDecimal maxPrice = partRepository.findMaxPrice();
+        BigDecimal minPrice = partRepository.findMinPrice();
 
         return filters;
     }

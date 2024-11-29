@@ -1,7 +1,7 @@
 package com.bikeparadise.bikewebapp.config;
 
-import com.bikeparadise.bikewebapp.model.User;
-import com.bikeparadise.bikewebapp.repository.UserRepository;
+import com.bikeparadise.bikewebapp.model.user.User;
+import com.bikeparadise.bikewebapp.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

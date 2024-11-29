@@ -50,7 +50,7 @@ public class WebSecurityConfig {
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/add-bike", "/add-part")
                         .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/delete-bike", "/delete-part")
+                        .requestMatchers(HttpMethod.DELETE, "/delete-bike", "/delete-part", "/delete-review")
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/update-order-status")
                         .hasRole("ADMIN")
