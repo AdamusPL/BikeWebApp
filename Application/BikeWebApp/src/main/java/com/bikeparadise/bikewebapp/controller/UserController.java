@@ -39,4 +39,14 @@ public class UserController {
     public ResponseEntity<List<String>> checkRole(){
         return userService.checkRole();
     }
+
+    @PostMapping("/add-phone-number")
+    public ResponseEntity<String> addPhoneNumber(@RequestBody String phoneNumber){
+        return userService.addPhoneNumber(phoneNumber);
+    }
+
+    @PostMapping("/add-email")
+    public ResponseEntity<String> addEmail(@RequestParam String email){
+        return userService.addEmail(email);
+    }
 }

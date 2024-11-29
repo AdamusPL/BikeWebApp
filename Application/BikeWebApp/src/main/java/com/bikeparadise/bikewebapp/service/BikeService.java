@@ -182,11 +182,10 @@ public class BikeService {
             }
         }
 
-        if(attributes.size() == 0){
+        if (attributes.size() == 0) {
             bikes = bikeRepository.findBikeByPriceBetween(filters.getMinPrice(), filters.getMaxPrice());
-        }
-        else {
-            bikes = bikeRepository.findBikeByBikeAttribute_BikeParameterType_TypeInAndPriceBetween(attributes, filters.getMinPrice(), filters.getMaxPrice());
+        } else {
+            bikes = bikeRepository.findBikeByBikeAttribute_BikeParameterAttribute_AttributeInAndPriceBetween(attributes, filters.getMinPrice(), filters.getMaxPrice());
         }
 
         for (Bike bike : bikes) {
@@ -200,7 +199,7 @@ public class BikeService {
         }
 
         return bikeShopDtoList;
-}
+    }
 
     public BikeDetailedInfoDto getDetailedInfoAboutBike(int id) {
         Optional<Bike> bikeOptional = bikeRepository.findById(id);

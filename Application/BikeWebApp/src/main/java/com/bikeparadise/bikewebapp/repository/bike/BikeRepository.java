@@ -1,7 +1,6 @@
 package com.bikeparadise.bikewebapp.repository.bike;
 
 import com.bikeparadise.bikewebapp.model.bike.Bike;
-import com.bikeparadise.bikewebapp.model.part.Part;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,6 +14,6 @@ public interface BikeRepository extends JpaRepository<Bike, Integer> {
     BigDecimal findMaxPrice();
     @Query("SELECT MIN(b.price) FROM Bike b")
     BigDecimal findMinPrice();
-    List<Bike> findBikeByBikeAttribute_BikeParameterType_TypeInAndPriceBetween(List<String> types, BigDecimal minPrice, BigDecimal maxPrice);
+    List<Bike> findBikeByBikeAttribute_BikeParameterAttribute_AttributeInAndPriceBetween(List<String> attributes, BigDecimal minPrice, BigDecimal maxPrice);
     List<Bike> findBikeByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
 }

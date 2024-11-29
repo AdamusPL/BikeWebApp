@@ -43,6 +43,9 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/get-user-data")
                         .hasAnyRole("ADMIN", "USER")
 
+                        .requestMatchers(HttpMethod.POST, "/add-phone-number", "/add-email")
+                        .hasAnyRole("ADMIN", "USER")
+
                         .requestMatchers(HttpMethod.POST, "/get-cart-products")
                         .hasAnyRole("ANONYMOUS", "USER")
 
