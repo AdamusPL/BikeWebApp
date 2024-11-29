@@ -138,7 +138,7 @@ export default function BikeShop() {
     function applyFilter(typeId, attributeId) {
         setFilters(prevFilters => ({
             ...prevFilters,
-            filterCheckboxDtos: prevFilters.filterCheckboxDtos.map(type =>
+            bikeFilterCheckboxDtos: prevFilters.bikeFilterCheckboxDtos.map(type =>
                 type.id === typeId
                     ? {
                         ...type,
@@ -170,8 +170,8 @@ export default function BikeShop() {
             <MDBRow className="h-100">
                 <MDBCol id='sidebar' md="auto">
                     {!isLoading ?
-                        filters?.filterCheckboxDtos?.length > 0 ?
-                            filters.filterCheckboxDtos.map(element => (
+                        filters?.bikeFilterCheckboxDtos?.length > 0 ?
+                            filters.bikeFilterCheckboxDtos.map(element => (
                                 <article key={element.id} className='mt-4'>
                                     <p>{element.type}</p>
                                     {element.attribute.map(item => (
