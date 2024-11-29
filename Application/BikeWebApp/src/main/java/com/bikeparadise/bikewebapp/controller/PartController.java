@@ -1,9 +1,6 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.dto.part.PartDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.part.PartDto;
-import com.bikeparadise.bikewebapp.dto.part.PartShopDto;
-import com.bikeparadise.bikewebapp.dto.part.PartTypeFilterDto;
+import com.bikeparadise.bikewebapp.dto.part.*;
 import com.bikeparadise.bikewebapp.service.PartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -35,19 +32,19 @@ public class PartController {
 
     @GetMapping("/get-part-filters")
     @ResponseBody
-    public List<PartTypeFilterDto> getFilters(){
+    public PartFiltersDto getFilters(){
         return partService.getShopFilters();
     }
 
     @PostMapping("/filter-parts-by-type")
     @ResponseBody
-    public List<PartShopDto> getPartsByType(@RequestBody List<PartTypeFilterDto> partTypeFilterDtos){
+    public List<PartShopDto> getPartsByType(@RequestBody PartFiltersDto partTypeFilterDtos){
         return partService.getFilteredParts(partTypeFilterDtos);
     }
 
     @GetMapping("/get-add-part-filters")
     @ResponseBody
-    public List<PartTypeFilterDto> getAddPartFilters(){
+    public PartFiltersDto getAddPartFilters(){
         return partService.getShopFilters();
     }
 

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FilterAttributeDto {
+public class BikeFilterAttributeDto {
     Integer id;
     String attribute;
     boolean isChecked;

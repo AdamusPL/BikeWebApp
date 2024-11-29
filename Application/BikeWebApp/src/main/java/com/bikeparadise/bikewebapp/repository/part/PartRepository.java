@@ -12,7 +12,8 @@ import java.util.List;
 public interface PartRepository extends JpaRepository<Part, Integer> {
     List<Part> findAllByBike_Id_AndPartParameterAttribute_PartType_Type(Integer id, String type);
     Part findPartByMakeAndModelNameAndPartParameterAttribute_PartType_Type(String make, String modelName, String type);
-    List<Part> findPartByPartParameterAttribute_PartType_TypeIn(List<String> types);
+    List<Part> findPartByPartParameterAttribute_PartType_TypeInAndPriceBetween(List<String> types, BigDecimal minPrice, BigDecimal maxPrice);
+    List<Part> findPartByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
     @Query("SELECT MAX(p.price) FROM Part p")
     BigDecimal findMaxPrice();
     @Query("SELECT MIN(p.price) FROM Part p")

@@ -33,7 +33,7 @@ public class BikeController {
 
     @GetMapping("/get-bike-shop-filters")
     @ResponseBody
-    public FiltersDto getShopFilters(){
+    public BikeFiltersDto getShopFilters(){
         return bikeService.getShopFilters();
     }
 
@@ -45,7 +45,7 @@ public class BikeController {
 
     @PostMapping("/filter-bikes")
     @ResponseBody
-    public List<BikeShopDto> getFilteredBikes(@RequestBody List<FilterCheckboxDto> filters){
+    public List<BikeShopDto> getFilteredBikes(@RequestBody BikeFiltersDto filters){
         return bikeService.getFilteredBikes(filters);
     }
 

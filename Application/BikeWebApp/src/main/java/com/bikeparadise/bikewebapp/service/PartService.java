@@ -1,9 +1,6 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.part.PartDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.part.PartDto;
-import com.bikeparadise.bikewebapp.dto.part.PartShopDto;
-import com.bikeparadise.bikewebapp.dto.part.PartTypeFilterDto;
+import com.bikeparadise.bikewebapp.dto.part.*;
 import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.part.Part;
 import com.bikeparadise.bikewebapp.model.part.PartAttribute;
@@ -72,7 +69,7 @@ public class PartService {
         return null;
     }
 
-    public List<PartTypeFilterDto> getShopFilters() {
+    public PartFiltersDto getShopFilters() {
         List<PartTypeFilterDto> filters = new ArrayList<>();
         List<PartType> partTypeList = partTypeRepository.findAll();
 
@@ -84,32 +81,30 @@ public class PartService {
         BigDecimal maxPrice = partRepository.findMaxPrice();
         BigDecimal minPrice = partRepository.findMinPrice();
 
-        return filters;
+        PartFiltersDto partFiltersDto = new PartFiltersDto(filters, minPrice, maxPrice);
+
+        return partFiltersDto;
     }
 
-    public List<PartShopDto> getFilteredParts(List<PartTypeFilterDto> partTypeFilterDtos){
+    public List<PartShopDto> getFilteredParts(PartFiltersDto partTypeFilterDtos){
         List<String> types = new ArrayList<>();
 
         int checked = 0;
-        for(PartTypeFilterDto partTypeFilterDto : partTypeFilterDtos){
+        for(PartTypeFilterDto partTypeFilterDto : partTypeFilterDtos.getPartTypeFilterDtos()){
             if(partTypeFilterDto.isChecked()){
                 checked++;
-            }
-        }
-
-        if(checked == 0){
-            return getParts();
-        }
-
-        for(PartTypeFilterDto partTypeFilterDto : partTypeFilterDtos){
-            if(partTypeFilterDto.isChecked()){
                 types.add(partTypeFilterDto.getType());
             }
         }
 
-        List<Part> parts = partRepository.findPartByPartParameterAttribute_PartType_TypeIn(types);
+        List<Part> parts;
         List<PartShopDto> partShopDtoList = new ArrayList<>();
-
+        if(checked == 0){
+            parts = partRepository.findPartByPriceBetween(partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+        }
+        else {
+            parts = partRepository.findPartByPartParameterAttribute_PartType_TypeInAndPriceBetween(types, partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+        }
         for(Part part : parts){
             PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
             partShopDtoList.add(partShopDto);

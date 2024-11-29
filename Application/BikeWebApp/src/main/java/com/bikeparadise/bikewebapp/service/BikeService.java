@@ -166,37 +166,37 @@ public class BikeService {
 
     }
 
-    public FiltersDto getShopFilters() {
-        List<FilterCheckboxDto> filters = new ArrayList<>();
+    public BikeFiltersDto getShopFilters() {
+        List<BikeFilterCheckboxDto> filters = new ArrayList<>();
         List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
 
         for (BikeParameterType bikeParameterType :
                 bikeParameterTypeList) {
-            List<FilterAttributeDto> list = new ArrayList<>();
+            List<BikeFilterAttributeDto> list = new ArrayList<>();
             for (BikeParameterAttribute bikeParameterAttribute : bikeParameterType.getBikeParameterAttribute()) {
-                list.add(new FilterAttributeDto(bikeParameterAttribute.getId(), bikeParameterAttribute.getAttribute(), false));
+                list.add(new BikeFilterAttributeDto(bikeParameterAttribute.getId(), bikeParameterAttribute.getAttribute(), false));
             }
-            filters.add(new FilterCheckboxDto(bikeParameterType.getId(), bikeParameterType.getType(), list));
+            filters.add(new BikeFilterCheckboxDto(bikeParameterType.getId(), bikeParameterType.getType(), list));
         }
 
         //find max and min price
         BigDecimal maxPrice = bikeRepository.findMaxPrice();
         BigDecimal minPrice = bikeRepository.findMinPrice();
 
-        FiltersDto filtersDto = new FiltersDto(filters, minPrice, maxPrice);
+        BikeFiltersDto bikeFiltersDto = new BikeFiltersDto(filters, minPrice, maxPrice);
 
-        return filtersDto;
+        return bikeFiltersDto;
 
     }
 
-    public List<BikeShopDto> getFilteredBikes(List<FilterCheckboxDto> filters) {
+    public List<BikeShopDto> getFilteredBikes(BikeFiltersDto filters) {
         List<Bike> bikes;
         List<BikeShopDto> bikeShopDtoList = new ArrayList<>();
         List<String> attributes = new ArrayList<>();
-        for (FilterCheckboxDto filterCheckboxDto : filters) {
-            for (FilterAttributeDto filterAttributeDto : filterCheckboxDto.getAttribute()) {
-                if (filterAttributeDto.isChecked()) {
-                    attributes.add(filterAttributeDto.getAttribute());
+        for (BikeFilterCheckboxDto bikeFilterCheckboxDto : filters.getBikeFilterCheckboxDtos()) {
+            for (BikeFilterAttributeDto bikeFilterAttributeDto : bikeFilterCheckboxDto.getAttribute()) {
+                if (bikeFilterAttributeDto.isChecked()) {
+                    attributes.add(bikeFilterAttributeDto.getAttribute());
                 }
             }
         }

@@ -1,6 +1,6 @@
-package com.bikeparadise.bikewebapp.dto.bike;
+package com.bikeparadise.bikewebapp.dto.part;
 
-import com.bikeparadise.bikewebapp.dto.bike.FilterCheckboxDto;
+import com.bikeparadise.bikewebapp.dto.bike.BikeFilterCheckboxDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,8 +9,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class FiltersDto {
-    List<FilterCheckboxDto> filterCheckboxDtos;
+public class PartFiltersDto {
+    List<PartTypeFilterDto> partTypeFilterDtos;
     BigDecimal minPrice;
     BigDecimal maxPrice;
 }
