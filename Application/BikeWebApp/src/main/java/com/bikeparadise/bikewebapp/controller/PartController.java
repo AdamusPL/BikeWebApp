@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -16,12 +17,6 @@ public class PartController {
 
     public PartController(PartService partService){
         this.partService = partService;
-    }
-
-    @GetMapping("/part-shop")
-    @ResponseBody
-    public List<PartShopDto> getParts(){
-        return partService.getParts();
     }
 
     @GetMapping("/get-detailed-info-about-part")
@@ -44,8 +39,8 @@ public class PartController {
 
     @GetMapping("/get-add-part-filters")
     @ResponseBody
-    public PartFiltersDto getAddPartFilters(){
-        return partService.getShopFilters();
+    public Map<String, List<String>> getAddPartFilters(){
+        return partService.getAddPartFilters();
     }
 
     @PostMapping("/add-part")

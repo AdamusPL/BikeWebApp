@@ -19,12 +19,6 @@ public class BikeController {
         this.bikeService = bikeService;
     }
 
-    @GetMapping("/bike-shop")
-    @ResponseBody
-    public List<BikeShopDto> bikeShop(){
-        return bikeService.getBikes();
-    }
-
     @GetMapping("/get-detailed-info-about-bike")
     @ResponseBody
     public BikeDetailedInfoDto getDetailedInfoBike(@RequestParam int bikeId){
@@ -47,11 +41,6 @@ public class BikeController {
     @ResponseBody
     public List<BikeShopDto> getFilteredBikes(@RequestBody BikeFiltersDto filters){
         return bikeService.getFilteredBikes(filters);
-    }
-
-    @GetMapping("/get-bike-by-price-range")
-    public List<Bike> getBikeByPriceRange(@RequestParam Double lowerRange, @RequestParam Double upperRange){
-        return bikeService.getBikeByPrice(lowerRange, upperRange);
     }
 
     @PostMapping("/add-bike")

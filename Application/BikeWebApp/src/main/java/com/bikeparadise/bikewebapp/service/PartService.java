@@ -86,6 +86,22 @@ public class PartService {
         return partFiltersDto;
     }
 
+    public Map<String, List<String>> getAddPartFilters() {
+        Map<String, List<String>> filters = new HashMap<>();
+        List<PartType> partTypeList = partTypeRepository.findAll();
+
+        for (PartType partType : partTypeList) {
+            String type = partType.getType();
+            List<String> attributes = new ArrayList<>();
+            for(PartAttribute partAttribute : partType.getPartAttribute()){
+                attributes.add(partAttribute.getAttribute());
+            }
+            filters.put(type, attributes);
+        }
+
+        return filters;
+    }
+
     public List<PartShopDto> getFilteredParts(PartFiltersDto partTypeFilterDtos){
         List<String> types = new ArrayList<>();
 
