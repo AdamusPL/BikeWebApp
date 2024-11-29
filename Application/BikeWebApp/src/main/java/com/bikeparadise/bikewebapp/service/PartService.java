@@ -25,15 +25,13 @@ public class PartService {
     private final PartTypeRepository partTypeRepository;
     private final ShopAssistantRepository shopAssistantRepository;
     private final PartAttributeRepository partAttributeRepository;
-    private final PartParameterAttributeRepository partParameterAttributeRepository;
 
     public PartService(PartRepository partRepository, PartTypeRepository partTypeRepository, ShopAssistantRepository shopAssistantRepository,
-                       PartAttributeRepository partAttributeRepository, PartParameterAttributeRepository partParameterAttributeRepository) {
+                       PartAttributeRepository partAttributeRepository) {
         this.partRepository = partRepository;
         this.partTypeRepository = partTypeRepository;
         this.shopAssistantRepository = shopAssistantRepository;
         this.partAttributeRepository = partAttributeRepository;
-        this.partParameterAttributeRepository = partParameterAttributeRepository;
     }
 
     public List<PartShopDto> getParts() {

@@ -37,14 +37,12 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final UserDataRepository userDataRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    public UserService(UserRepository userRepository, UserDataRepository userDataRepository,
+    public UserService(UserRepository userRepository,
                        JwtTokenGenerator jwtTokenGenerator, AuthenticationManager authenticationManager){
         this.userRepository = userRepository;
-        this.userDataRepository = userDataRepository;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.authenticationManager = authenticationManager;
     }

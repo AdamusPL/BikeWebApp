@@ -26,9 +26,6 @@ import java.util.*;
 
 @Service
 public class BikeService {
-    @PersistenceContext
-    private EntityManager entityManager;
-
     private final BikeRepository bikeRepository;
     private final BikeParameterTypeRepository bikeParameterTypeRepository;
     private final BikeAttributeRepository bikeAttributeRepository;
@@ -119,22 +116,6 @@ public class BikeService {
         return type;
     }
 
-    public List<BikeShopDto> getBikes() {
-        List<BikeShopDto> bikeShopDtoList = new ArrayList<>();
-        List<Bike> bikeList = bikeRepository.findAll();
-        for (Bike bike :
-                bikeList) {
-
-            String drive = getDrive(bike);
-            String make = getMake(bike);
-            String type = getType(bike);
-
-            BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
-            bikeShopDtoList.add(bikeShopDto);
-        }
-        return bikeShopDtoList;
-    }
-
     public Map<String, List<String>> getAddBikeFilters() {
         Map<String, List<String>> filters = new HashMap<>();
         List<BikeParameterType> bikeParameterTypeList = bikeParameterTypeRepository.findAll();
@@ -202,25 +183,13 @@ public class BikeService {
         }
 
         if(attributes.size() == 0){
-            return getBikes();
+            bikes = bikeRepository.findBikeByPriceBetween(filters.getMinPrice(), filters.getMaxPrice());
+        }
+        else {
+            bikes = bikeRepository.findBikeByBikeAttribute_BikeParameterType_TypeInAndPriceBetween(attributes, filters.getMinPrice(), filters.getMaxPrice());
         }
 
-        bikes = bikeRepository.findByBikeAttribute_BikeParameterAttribute_AttributeIn(attributes);
-
         for (Bike bike : bikes) {
-            //check if attributes matches demanding
-            int matches = 0;
-            for(String attribute : attributes){
-                for(BikeAttribute bikeAttribute : bike.getBikeAttribute()){
-                    if(bikeAttribute.getBikeParameterAttribute().getAttribute().equals(attribute)){
-                        matches++;
-                    }
-                }
-            }
-
-            if(matches != attributes.size()){
-                continue;
-            }
 
             String drive = getDrive(bike);
             String make = getMake(bike);
@@ -270,14 +239,6 @@ public class BikeService {
         }
 
         return null;
-    }
-
-    public List<Bike> getBikeByPrice(Double lowerRange, Double upperRange) {
-        return bikeRepository.findBikeByPriceBetween(lowerRange, upperRange);
-    }
-
-    public List<Bike> getBikeByPartAttribute(String parameter) {
-        return bikeRepository.findBikeByPart_PartParameterAttribute_PartType_PartAttribute_Attribute(parameter);
     }
 
     public ResponseEntity<String> addBike(BikeAddDto bikeAddDto) {
