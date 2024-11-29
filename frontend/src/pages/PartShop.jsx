@@ -44,7 +44,7 @@ export default function PartShop() {
         filterChanged();
     }, [filters]);
 
-    function checkAvailability(data){
+    function checkAvailability(data) {
         const cart = JSON.parse(localStorage.getItem('cart'));
 
         data.map(item => {
@@ -163,11 +163,14 @@ export default function PartShop() {
                 <MDBCol id='sidebar' md="auto">
                     <p className='mt-4'>Type</p>
                     {!isLoading ?
-                        filters.map(element => (
-                            <article key={element.id} className='mt-4'>
-                                <MDBCheckbox onClick={() => applyFilter(element.id)} key={element.id} name='flexCheck' value='' id='flexCheckDefault' label={element.type} />
-                            </article>
-                        ))
+                        filters?.partTypeFilterDtos?.length > 0 ?
+                            filters.partTypeFilterDtos.map(element => (
+                                <article key={element.id} className='mt-4'>
+                                    <MDBCheckbox onClick={() => applyFilter(element.id)} key={element.id} name='flexCheck' value='' id='flexCheckDefault' label={element.type} />
+                                </article>
+                            ))
+                            :
+                            null
                         :
                         <p>No filters available</p>
                     }
