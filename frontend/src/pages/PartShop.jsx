@@ -29,7 +29,7 @@ export default function PartShop() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [filters, setFilters] = useState([]);
+    const [filters, setFilters] = useState({});
     const { role } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
@@ -41,7 +41,9 @@ export default function PartShop() {
     }, []);
 
     useEffect(() => {
-        filterChanged();
+        if (!isLoading) {
+            filterChanged();
+        }
     }, [filters]);
 
     function checkAvailability(data) {
@@ -68,10 +70,12 @@ export default function PartShop() {
     }
 
     async function getFilters() {
+        debugger;
         const response = await fetch('http://localhost:8080/get-part-filters');
         const data = await response.json();
 
         setFilters(data);
+        console.log(data);
     }
 
     function addToCart(id) {
@@ -131,8 +135,9 @@ export default function PartShop() {
     }
 
     function applyFilter(typeId) {
-        setFilters(prevArray =>
-            prevArray.map(type =>
+        setFilters(prevArray => ({
+            ...prevArray,
+            partTypeFilterDtos: prevArray.partTypeFilterDtos.map(type =>
                 type.id === typeId
                     ? {
                         ...type,
@@ -140,10 +145,26 @@ export default function PartShop() {
                     }
                     : type
             )
-        );
+        }));
+    }
+
+    function applyMinPrice(e){
+        debugger;
+        setFilters(prevArray => ({
+            ...prevArray,
+            minPrice: e.target.value
+        }));
+    }
+
+    function applyMaxPrice(e){
+        setFilters(prevArray => ({
+            ...prevArray,
+            maxPrice: e.target.value
+        }));
     }
 
     async function filterChanged() {
+        debugger;
         const response = await fetch(`http://localhost:8080/filter-parts-by-type`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -177,16 +198,16 @@ export default function PartShop() {
 
                     <p className='mt-4'>Price</p>
                     <article id='price' className='mb-4'>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' onChange={applyMinPrice} defaultValue={filters.minPrice}></input>
                         <p id='minus'>-</p>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' onChange={applyMaxPrice} defaultValue={filters.maxPrice}></input>
                     </article>
                 </MDBCol>
 
                 <MDBCol>
                     {role === 'ROLE_ADMIN' ?
                         <article id="button">
-                            <MDBBtn className="mt-4" style={{ backgroundColor: "#002E80" }} href='/add-part'>Add new part</MDBBtn>
+                            <MDBBtn className="mt-4 classic-button" href='/add-part'>Add new part</MDBBtn>
                         </article>
                         : null
                     }

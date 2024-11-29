@@ -151,98 +151,98 @@ export default function BikeShop() {
                     : type
             )
         }));
-}
+    }
 
-async function filterChanged() {
-    const response = await fetch(`http://localhost:8080/filter-bikes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filters)
-    });
+    async function filterChanged() {
+        const response = await fetch(`http://localhost:8080/filter-bikes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filters)
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    checkAvailability(data);
-}
+        checkAvailability(data);
+    }
 
-return (<>
-    <MDBContainer fluid>
-        <MDBRow className="h-100">
-            <MDBCol id='sidebar' md="auto">
-                {!isLoading ?
-                    filters?.filterCheckboxDtos?.length > 0 ?
-                        filters.filterCheckboxDtos.map(element => (
-                            <article key={element.id} className='mt-4'>
-                                <p>{element.type}</p>
-                                {element.attribute.map(item => (
-                                    <MDBCheckbox onClick={() => applyFilter(element.id, item.id)} key={item.id} name='flexCheck' value='' id='flexCheckDefault' label={item.attribute} />
-                                ))}
-                            </article>
-                        ))
+    return (<>
+        <MDBContainer fluid>
+            <MDBRow className="h-100">
+                <MDBCol id='sidebar' md="auto">
+                    {!isLoading ?
+                        filters?.filterCheckboxDtos?.length > 0 ?
+                            filters.filterCheckboxDtos.map(element => (
+                                <article key={element.id} className='mt-4'>
+                                    <p>{element.type}</p>
+                                    {element.attribute.map(item => (
+                                        <MDBCheckbox onClick={() => applyFilter(element.id, item.id)} key={item.id} name='flexCheck' value='' id='flexCheckDefault' label={item.attribute} />
+                                    ))}
+                                </article>
+                            ))
+                            :
+                            null
                         :
-                        null
-                    :
-                    <p>No filters available</p>
-                }
+                        <p>No filters available</p>
+                    }
 
-                <p className='mt-4'>Price</p>
-                <article id='price' className='mb-4'>
-                    <input className='form-control input' value={filters.minPrice}></input>
-                    <p id='minus'>-</p>
-                    <input className='form-control input' value={filters.maxPrice}></input>
-                </article>
-            </MDBCol>
+                    <p className='mt-4'>Price</p>
+                    <article id='price' className='mb-4'>
+                        <input className='form-control input' defaultValue={filters.minPrice}></input>
+                        <p id='minus'>-</p>
+                        <input className='form-control input' defaultValue={filters.maxPrice}></input>
+                    </article>
+                </MDBCol>
 
-            <MDBCol>
-                {role === 'ROLE_ADMIN' ?
-                    <article id="button">
-                        <MDBBtn className="mt-4 classic-button" href='/add-bike'>Add new bike</MDBBtn>
-                    </article> : null}
+                <MDBCol>
+                    {role === 'ROLE_ADMIN' ?
+                        <article id="button">
+                            <MDBBtn className="mt-4 classic-button" href='/add-bike'>Add new bike</MDBBtn>
+                        </article> : null}
 
-                <MDBCol md="11">
-                    <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
-                        {!isLoading ?
-                            products.length === 0 ?
-                                <p>Currently, we are out of stock</p>
-                                :
-                                products.map(element => (
-                                    <MDBCol key={element.id}>
-                                        {role === 'ROLE_ADMIN' ? <article className='close-button'>
-                                            <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
-                                            <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
-                                                <MDBModalDialog>
-                                                    <MDBModalContent>
-                                                        <MDBModalHeader>
-                                                            <MDBModalTitle>Product removal</MDBModalTitle>
-                                                            <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
-                                                        </MDBModalHeader>
-                                                        <MDBModalBody>Are you sure you want to remove that product?</MDBModalBody>
+                    <MDBCol md="11">
+                        <MDBRow className='row-cols-1 row-cols-md-3 g-4 mt-2'>
+                            {!isLoading ?
+                                products.length === 0 ?
+                                    <p>Currently, we are out of stock</p>
+                                    :
+                                    products.map(element => (
+                                        <MDBCol key={element.id}>
+                                            {role === 'ROLE_ADMIN' ? <article className='close-button'>
+                                                <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
+                                                <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
+                                                    <MDBModalDialog>
+                                                        <MDBModalContent>
+                                                            <MDBModalHeader>
+                                                                <MDBModalTitle>Product removal</MDBModalTitle>
+                                                                <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
+                                                            </MDBModalHeader>
+                                                            <MDBModalBody>Are you sure you want to remove that product?</MDBModalBody>
 
-                                                        <MDBModalFooter>
-                                                            <MDBBtn color='secondary' onClick={toggleOpen}>
-                                                                No
-                                                            </MDBBtn>
-                                                            <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
-                                                        </MDBModalFooter>
-                                                    </MDBModalContent>
-                                                </MDBModalDialog>
-                                            </MDBModal>
-                                        </article> : null}
+                                                            <MDBModalFooter>
+                                                                <MDBBtn color='secondary' onClick={toggleOpen}>
+                                                                    No
+                                                                </MDBBtn>
+                                                                <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                            </MDBModalFooter>
+                                                        </MDBModalContent>
+                                                    </MDBModalDialog>
+                                                </MDBModal>
+                                            </article> : null}
 
-                                        <MDBCard>
-                                            <Link to={`/bike-shop/${element.id}`}>
-                                                <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
-                                                    <MDBCardImage
-                                                        src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
-                                                        alt='...'
-                                                        position='top'
-                                                        width='300px'
-                                                    />
-                                                </MDBRipple>
-                                            </Link>
-                                            <MDBCardBody>
-                                                <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
-                                                <MDBCardText>
+                                            <MDBCard>
+                                                <Link to={`/bike-shop/${element.id}`}>
+                                                    <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
+                                                        <MDBCardImage
+                                                            src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
+                                                            alt='...'
+                                                            position='top'
+                                                            width='300px'
+                                                        />
+                                                    </MDBRipple>
+                                                </Link>
+                                                <MDBCardBody>
+                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
+
                                                     <MDBRow tag='dl'>
                                                         <MDBCol tag='dt'>
                                                             Type:
@@ -275,34 +275,34 @@ return (<>
                                                             {element.quantityInStock}
                                                         </MDBCol>
                                                     </MDBRow>
-                                                </MDBCardText>
-                                                {role !== 'ROLE_ADMIN' ?
-                                                    element.isAvailable ?
-                                                        <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
-                                                        :
-                                                        <article>
-                                                            <MDBBtn className='me-1' color='secondary'>
-                                                                Add to cart
-                                                            </MDBBtn>
-                                                            <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
-                                                        </article>
-                                                    : null
-                                                }
-                                            </MDBCardBody>
-                                        </MDBCard>
-                                    </MDBCol>
-                                ))
-                            :
-                            <article>
-                                <MDBSpinner role='status'>
-                                    <span className='visually-hidden'>Loading...</span>
-                                </MDBSpinner>
-                            </article>
-                        }
-                    </MDBRow>
-                </MDBCol>
-            </MDBCol >
-        </MDBRow >
-    </MDBContainer>
-</>);
+
+                                                    {role !== 'ROLE_ADMIN' ?
+                                                        element.isAvailable ?
+                                                            <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
+                                                            :
+                                                            <article>
+                                                                <MDBBtn className='me-1' color='secondary'>
+                                                                    Add to cart
+                                                                </MDBBtn>
+                                                                <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
+                                                            </article>
+                                                        : null
+                                                    }
+                                                </MDBCardBody>
+                                            </MDBCard>
+                                        </MDBCol>
+                                    ))
+                                :
+                                <article>
+                                    <MDBSpinner role='status'>
+                                        <span className='visually-hidden'>Loading...</span>
+                                    </MDBSpinner>
+                                </article>
+                            }
+                        </MDBRow>
+                    </MDBCol>
+                </MDBCol >
+            </MDBRow >
+        </MDBContainer>
+    </>);
 }
