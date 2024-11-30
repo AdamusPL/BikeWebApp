@@ -45,9 +45,15 @@ export default function Account() {
 
     function addPhoneNumber(newPhoneNumber) {
         debugger;
-        fetch(`http://localhost:8080/add-phone-number?phoneNumber=${newPhoneNumber}`, {
+        const phoneNumberObj = {
+            phoneNumber: newPhoneNumber
+        }
+
+        fetch(`http://localhost:8080/add-phone-number`, {
             credentials: 'include',
-            method: 'POST'
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(phoneNumberObj)
         }).then(response => {
             if (response.ok) {
                 setUserData({
