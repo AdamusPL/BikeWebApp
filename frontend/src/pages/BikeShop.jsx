@@ -32,23 +32,24 @@ export default function BikeShop() {
 
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [filters, setFilters] = useState([]);
-    const [keysArray, setKeysArray] = useState([]);
-    const { isShopAssistant } = useRole();
+    const [filters, setFilters] = useState({});
+    const { role } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
     const toggleOpen = () => setBasicModal(!basicModal);
 
     useEffect(() => {
-        getProducts();
         getFilters();
         setIsLoading(false);
     }, []);
 
-    async function getProducts() {
-        const response = await fetch('http://localhost:8080/bike-shop');
-        const data = await response.json();
+    useEffect(() => {
+        if (!isLoading) {
+            filterChanged();
+        }
+    }, [filters]);
 
+    function checkAvailability(data) {
         const cart = JSON.parse(localStorage.getItem('cart'));
         data.map(item => {
             item.isAvailable = true;
@@ -70,13 +71,12 @@ export default function BikeShop() {
         setProducts(data);
     }
 
-
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-bike-shop-filters');
         const data = await response.json();
 
-        const keysArray = Object.keys(data);
-        setKeysArray(keysArray);
+        debugger;
+
         setFilters(data);
     }
 
@@ -129,11 +129,54 @@ export default function BikeShop() {
         })
             .then(response => {
                 if (response.ok) {
-                    debugger;
                     setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
                     toggleOpen();
                 }
             });
+    }
+
+    function applyFilter(typeId, attributeId) {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            bikeFilterCheckboxDtos: prevFilters.bikeFilterCheckboxDtos.map(type =>
+                type.id === typeId
+                    ? {
+                        ...type,
+                        attribute: type.attribute.map(attribute =>
+                            attribute.id === attributeId
+                                ? { ...attribute, isChecked: !attribute.isChecked }
+                                : attribute
+                        )
+                    }
+                    : type
+            )
+        }));
+    }
+
+    async function filterChanged() {
+        const response = await fetch(`http://localhost:8080/filter-bikes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filters)
+        });
+
+        const data = await response.json();
+
+        checkAvailability(data);
+    }
+
+    function applyMinPrice(e){
+        setFilters(prevArray => ({
+            ...prevArray,
+            minPrice: e.target.value
+        }));
+    }
+
+    function applyMaxPrice(e){
+        setFilters(prevArray => ({
+            ...prevArray,
+            maxPrice: e.target.value
+        }));
     }
 
     return (<>
@@ -141,28 +184,31 @@ export default function BikeShop() {
             <MDBRow className="h-100">
                 <MDBCol id='sidebar' md="auto">
                     {!isLoading ?
-                        keysArray.map(element => (
-                            <article key={element} className='mt-4'>
-                                <p>{element}</p>
-                                {filters[element].map(item => (
-                                    <MDBCheckbox key={item} name='flexCheck' value='' id='flexCheckDefault' label={item} />
-                                ))}
-                            </article>
-                        ))
+                        filters?.bikeFilterCheckboxDtos?.length > 0 ?
+                            filters.bikeFilterCheckboxDtos.map(element => (
+                                <article key={element.id} className='mt-4'>
+                                    <p>{element.type}</p>
+                                    {element.attribute.map(item => (
+                                        <MDBCheckbox onClick={() => applyFilter(element.id, item.id)} key={item.id} name='flexCheck' value='' id='flexCheckDefault' label={item.attribute} />
+                                    ))}
+                                </article>
+                            ))
+                            :
+                            null
                         :
                         <p>No filters available</p>
                     }
 
                     <p className='mt-4'>Price</p>
                     <article id='price' className='mb-4'>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' onChange={applyMinPrice} defaultValue={filters.minPrice}></input>
                         <p id='minus'>-</p>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' onChange={applyMaxPrice} defaultValue={filters.maxPrice}></input>
                     </article>
                 </MDBCol>
 
                 <MDBCol>
-                    {isShopAssistant ?
+                    {role === 'ROLE_ADMIN' ?
                         <article id="button">
                             <MDBBtn className="mt-4 classic-button" href='/add-bike'>Add new bike</MDBBtn>
                         </article> : null}
@@ -175,7 +221,7 @@ export default function BikeShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
-                                            {isShopAssistant ? <article className='close-button'>
+                                            {role === 'ROLE_ADMIN' ? <article className='close-button'>
                                                 <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
                                                 <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
                                                     <MDBModalDialog>
@@ -210,41 +256,41 @@ export default function BikeShop() {
                                                 </Link>
                                                 <MDBCardBody>
                                                     <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
-                                                    <MDBCardText>
-                                                        <MDBRow tag='dl'>
-                                                            <MDBCol tag='dt'>
-                                                                Type:
-                                                            </MDBCol>
-                                                            <MDBCol tag='dd'>
-                                                                {element.type}
-                                                            </MDBCol>
-                                                        </MDBRow>
-                                                        <MDBRow tag='dl'>
-                                                            <MDBCol tag='dt'>
-                                                                Drivetrain:
-                                                            </MDBCol>
-                                                            <MDBCol tag='dd'>
-                                                                {element.drive}
-                                                            </MDBCol>
-                                                        </MDBRow>
-                                                        <MDBRow tag='dl'>
-                                                            <MDBCol tag='dt'>
-                                                                Price:
-                                                            </MDBCol>
-                                                            <MDBCol tag='dd'>
-                                                                {element.price}
-                                                            </MDBCol>
-                                                        </MDBRow>
-                                                        <MDBRow tag='dl'>
-                                                            <MDBCol tag='dt'>
-                                                                Quantity in stock:
-                                                            </MDBCol>
-                                                            <MDBCol tag='dd'>
-                                                                {element.quantityInStock}
-                                                            </MDBCol>
-                                                        </MDBRow>
-                                                    </MDBCardText>
-                                                    {!isShopAssistant ?
+
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Type:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.type}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Drivetrain:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.drive}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Price:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.price}
+                                                        </MDBCol>
+                                                    </MDBRow>
+                                                    <MDBRow tag='dl'>
+                                                        <MDBCol tag='dt'>
+                                                            Quantity in stock:
+                                                        </MDBCol>
+                                                        <MDBCol tag='dd'>
+                                                            {element.quantityInStock}
+                                                        </MDBCol>
+                                                    </MDBRow>
+
+                                                    {role !== 'ROLE_ADMIN' ?
                                                         element.isAvailable ?
                                                             <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
                                                             :

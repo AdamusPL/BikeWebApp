@@ -43,12 +43,39 @@ export default function Account() {
         navigate('/sign-in');
     }
 
-    function addPhoneNumber() {
+    function addPhoneNumber(newPhoneNumber) {
+        debugger;
+        const phoneNumberObj = {
+            phoneNumber: newPhoneNumber
+        }
 
+        fetch(`http://localhost:8080/add-phone-number`, {
+            credentials: 'include',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(phoneNumberObj)
+        }).then(response => {
+            if (response.ok) {
+                setUserData({
+                    ...userData,
+                    phoneNumbers: userData.phoneNumbers + ", " + newPhoneNumber
+                });
+            }
+        })
     }
 
-    function addEmail() {
-
+    function addEmail(newEmail) {
+        fetch(`http://localhost:8080/add-email?email=${newEmail}`, {
+            credentials: 'include',
+            method: 'POST'
+        }).then(response => {
+            if (response.ok) {
+                setUserData({
+                    ...userData,
+                    emails: userData.emails + ", " + newEmail
+                });
+            }
+        })
     }
 
     return (<>
@@ -82,7 +109,7 @@ export default function Account() {
                     <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" min="1" max="13" minLength="9"></input>
                 </MDBCol>
                 <MDBCol>
-                    <MDBBtn onClick={addPhoneNumber} className='classic-button'>Add new phone number</MDBBtn>
+                    <MDBBtn onClick={() => addPhoneNumber(phoneNumber)} className='classic-button'>Add new phone number</MDBBtn>
                 </MDBCol>
             </MDBRow>
 
@@ -97,7 +124,7 @@ export default function Account() {
                     <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" min="1" max="13" minLength="9"></input>
                 </MDBCol>
                 <MDBCol>
-                    <MDBBtn onClick={addEmail} className='classic-button'>Add new e-mail address</MDBBtn>
+                    <MDBBtn onClick={() => addEmail(email)} className='classic-button'>Add new e-mail address</MDBBtn>
                 </MDBCol>
             </MDBRow>
 

@@ -4,7 +4,6 @@ import {
     MDBCardImage,
     MDBCardBody,
     MDBCardTitle,
-    MDBCardText,
     MDBRow,
     MDBCol,
     MDBContainer,
@@ -30,24 +29,24 @@ export default function PartShop() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [keysArray, setKeysArray] = useState([]);
-    const [filters, setFilters] = useState([]);
-    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
-    const { isShopAssistant } = useRole();
+    const [filters, setFilters] = useState({});
+    const { role } = useRole();
 
     const [basicModal, setBasicModal] = useState(false);
     const toggleOpen = () => setBasicModal(!basicModal);
 
     useEffect(() => {
-        getProducts();
         getFilters();
         setIsLoading(false);
     }, []);
 
-    async function getProducts() {
-        const response = await fetch('http://localhost:8080/part-shop');
-        const data = await response.json();
+    useEffect(() => {
+        if (!isLoading) {
+            filterChanged();
+        }
+    }, [filters]);
 
+    function checkAvailability(data) {
         const cart = JSON.parse(localStorage.getItem('cart'));
 
         data.map(item => {
@@ -74,9 +73,8 @@ export default function PartShop() {
         const response = await fetch('http://localhost:8080/get-part-filters');
         const data = await response.json();
 
-        const keysArray = Object.keys(data);
-        setKeysArray(keysArray);
         setFilters(data);
+        console.log(data);
     }
 
     function addToCart(id) {
@@ -89,7 +87,6 @@ export default function PartShop() {
 
             if (index !== -1) {
                 cart.parts[index].quantity += 1;
-                setCart(cart);
             }
 
             else {
@@ -133,38 +130,79 @@ export default function PartShop() {
                     setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
                     toggleOpen();
                 }
-            });;
+            });
+    }
+
+    function applyFilter(typeId) {
+        setFilters(prevArray => ({
+            ...prevArray,
+            partTypeFilterDtos: prevArray.partTypeFilterDtos.map(type =>
+                type.id === typeId
+                    ? {
+                        ...type,
+                        isChecked: !type.isChecked
+                    }
+                    : type
+            )
+        }));
+    }
+
+    function applyMinPrice(e){
+        setFilters(prevArray => ({
+            ...prevArray,
+            minPrice: e.target.value
+        }));
+    }
+
+    function applyMaxPrice(e){
+        setFilters(prevArray => ({
+            ...prevArray,
+            maxPrice: e.target.value
+        }));
+    }
+
+    async function filterChanged() {
+        const response = await fetch(`http://localhost:8080/filter-parts-by-type`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(filters)
+        });
+
+        const data = await response.json();
+
+        checkAvailability(data);
     }
 
     return (<>
         <MDBContainer fluid>
             <MDBRow className="h-100">
                 <MDBCol id='sidebar' md="auto">
+                    <p className='mt-4'>Type</p>
                     {!isLoading ?
-                        keysArray.map(element => (
-                            <article key={element} className='mt-4'>
-                                <p>{element}</p>
-                                {filters[element].map(item => (
-                                    <MDBCheckbox key={item} name='flexCheck' value='' id='flexCheckDefault' label={item} />
-                                ))}
-                            </article>
-                        ))
+                        filters?.partTypeFilterDtos?.length > 0 ?
+                            filters.partTypeFilterDtos.map(element => (
+                                <article key={element.id} className='mt-4'>
+                                    <MDBCheckbox onClick={() => applyFilter(element.id)} key={element.id} name='flexCheck' value='' id='flexCheckDefault' label={element.type} />
+                                </article>
+                            ))
+                            :
+                            null
                         :
                         <p>No filters available</p>
                     }
 
                     <p className='mt-4'>Price</p>
                     <article id='price' className='mb-4'>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' onChange={applyMinPrice} defaultValue={filters.minPrice}></input>
                         <p id='minus'>-</p>
-                        <input className='form-control input'></input>
+                        <input className='form-control input' onChange={applyMaxPrice} defaultValue={filters.maxPrice}></input>
                     </article>
                 </MDBCol>
 
                 <MDBCol>
-                    {isShopAssistant ?
+                    {role === 'ROLE_ADMIN' ?
                         <article id="button">
-                            <MDBBtn className="mt-4" style={{ backgroundColor: "#002E80" }} href='/add-part'>Add new part</MDBBtn>
+                            <MDBBtn className="mt-4 classic-button" href='/add-part'>Add new part</MDBBtn>
                         </article>
                         : null
                     }
@@ -177,7 +215,7 @@ export default function PartShop() {
                                     :
                                     products.map(element => (
                                         <MDBCol key={element.id}>
-                                            {isShopAssistant ? <article className='close-button'>
+                                            {role === 'ROLE_ADMIN' ? <article className='close-button'>
                                                 <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
                                                 <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
                                                     <MDBModalDialog>
@@ -192,7 +230,7 @@ export default function PartShop() {
                                                                 <MDBBtn color='secondary' onClick={toggleOpen}>
                                                                     No
                                                                 </MDBBtn>
-                                                                <MDBBtn style={{ backgroundColor: "#002E80" }} onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
+                                                                <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
                                                             </MDBModalFooter>
                                                         </MDBModalContent>
                                                     </MDBModalDialog>
@@ -243,7 +281,7 @@ export default function PartShop() {
                                                             {element.quantityInStock}
                                                         </MDBCol>
                                                     </MDBRow>
-                                                    {!isShopAssistant ?
+                                                    {role !== 'ROLE_ADMIN' ?
                                                         element.isAvailable ?
                                                             <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
                                                             :

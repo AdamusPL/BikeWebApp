@@ -7,7 +7,7 @@ import { useRole } from "./RoleProvider";
 
 export function Layout({ children }) {
     const [openBasic, setOpenBasic] = useState(false);
-    const { isLoggedIn, isShopAssistant } = useRole();
+    const { role } = useRole();
 
     const isActive = (path) => location.pathname === path ? "active" : "";
 
@@ -43,12 +43,12 @@ export function Layout({ children }) {
                         </ul>
 
                         <ul className="navbar-nav d-flex flex-row me-1">
-                            {isLoggedIn ?
+                            {role !== 'ROLE_ANONYMOUS' ?
                                 <li className="nav-item me-3 me-lg-0">
                                     <a className="nav-link" aria-label="Order list" href="/order-list"><MDBIcon fas icon="envelope" className={`${isActive('/order-list') ? "active-elem" : "navbar-elem"}`} /></a>
                                 </li>
                                 : null}
-                            {!isShopAssistant ?
+                            {role !== 'ROLE_ADMIN' ?
                                 <li className="nav-item me-3 me-lg-0">
                                     <a className="nav-link" aria-label="Shopping cart" href="/cart"><MDBIcon fas icon="shopping-cart" className={`${isActive('/cart') ? "active-elem" : "navbar-elem"}`} /></a>
                                 </li>
