@@ -1,6 +1,7 @@
 package com.bikeparadise.bikewebapp.controller;
 
 import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
+import com.bikeparadise.bikewebapp.dto.user.PhoneNumberDto;
 import com.bikeparadise.bikewebapp.dto.user.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;
 import com.bikeparadise.bikewebapp.dto.user.UserSignInDto;
@@ -41,8 +42,8 @@ public class UserController {
     }
 
     @PostMapping("/add-phone-number")
-    public ResponseEntity<String> addPhoneNumber(@RequestBody String phoneNumber){
-        return userService.addPhoneNumber(phoneNumber);
+    public ResponseEntity<String> addPhoneNumber(@RequestBody PhoneNumberDto phoneNumberDto){
+        return userService.addPhoneNumber(phoneNumberDto);
     }
 
     @PostMapping("/add-email")

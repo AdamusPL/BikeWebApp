@@ -2,6 +2,7 @@ package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.config.JwtTokenGenerator;
 import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
+import com.bikeparadise.bikewebapp.dto.user.PhoneNumberDto;
 import com.bikeparadise.bikewebapp.dto.user.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;
 import com.bikeparadise.bikewebapp.dto.user.UserSignInDto;
@@ -169,7 +170,7 @@ public class UserService {
         return ResponseEntity.ok(roles);
     }
 
-    public ResponseEntity<String> addPhoneNumber(String phoneNumber){
+    public ResponseEntity<String> addPhoneNumber(PhoneNumberDto phoneNumberDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -182,7 +183,7 @@ public class UserService {
 
         User user = foundUsers.get(0);
 
-        UserPhoneNumber userPhoneNumber = new UserPhoneNumber(phoneNumber, user.getUserData());
+        UserPhoneNumber userPhoneNumber = new UserPhoneNumber(phoneNumberDto.getPhoneNumber(), user.getUserData());
         userPhoneNumberRepository.save(userPhoneNumber);
         return ResponseEntity.ok().build();
     }
