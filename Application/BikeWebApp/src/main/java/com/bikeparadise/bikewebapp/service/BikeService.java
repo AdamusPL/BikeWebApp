@@ -16,8 +16,6 @@ import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

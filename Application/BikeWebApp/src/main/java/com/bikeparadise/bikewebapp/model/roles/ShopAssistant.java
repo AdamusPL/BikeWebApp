@@ -5,6 +5,7 @@ import com.bikeparadise.bikewebapp.model.part.Part;
 import com.bikeparadise.bikewebapp.model.user.UserData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class ShopAssistant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
