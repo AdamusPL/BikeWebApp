@@ -2,16 +2,21 @@ package com.bikeparadise.bikewebapp.service;
 
 import com.bikeparadise.bikewebapp.config.JwtTokenGenerator;
 import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
-import com.bikeparadise.bikewebapp.dto.UserInfoDto;
-import com.bikeparadise.bikewebapp.dto.UserRegisterDto;
-import com.bikeparadise.bikewebapp.dto.UserSignInDto;
-import com.bikeparadise.bikewebapp.model.*;
-import com.bikeparadise.bikewebapp.repository.UserDataRepository;
-import com.bikeparadise.bikewebapp.repository.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import com.bikeparadise.bikewebapp.dto.user.PhoneNumberDto;
+import com.bikeparadise.bikewebapp.dto.user.UserInfoDto;
+import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;
+import com.bikeparadise.bikewebapp.dto.user.UserSignInDto;
+import com.bikeparadise.bikewebapp.model.roles.Client;
+import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
+import com.bikeparadise.bikewebapp.model.user.User;
+import com.bikeparadise.bikewebapp.model.user.UserData;
+import com.bikeparadise.bikewebapp.model.user.UserEmail;
+import com.bikeparadise.bikewebapp.model.user.UserPhoneNumber;
+import com.bikeparadise.bikewebapp.repository.user.UserDataRepository;
+import com.bikeparadise.bikewebapp.repository.user.UserEmailRepository;
+import com.bikeparadise.bikewebapp.repository.user.UserPhoneNumberRepository;
+import com.bikeparadise.bikewebapp.repository.user.UserRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +25,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,16 +41,18 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final UserDataRepository userDataRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
+    private final UserPhoneNumberRepository userPhoneNumberRepository;
+    private final UserEmailRepository userEmailRepository;
 
-    public UserService(UserRepository userRepository, UserDataRepository userDataRepository,
+    public UserService(UserRepository userRepository, UserPhoneNumberRepository userPhoneNumberRepository, UserEmailRepository userEmailRepository,
                        JwtTokenGenerator jwtTokenGenerator, AuthenticationManager authenticationManager){
         this.userRepository = userRepository;
-        this.userDataRepository = userDataRepository;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.authenticationManager = authenticationManager;
+        this.userPhoneNumberRepository = userPhoneNumberRepository;
+        this.userEmailRepository = userEmailRepository;
     }
 
     public ResponseEntity<String> registerUser(UserRegisterDto userRegisterDto){
@@ -163,5 +168,41 @@ public class UserService {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(roles);
+    }
+
+    public ResponseEntity<String> addPhoneNumber(PhoneNumberDto phoneNumberDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
+        if(foundUsers.size() == 0){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = foundUsers.get(0);
+
+        UserPhoneNumber userPhoneNumber = new UserPhoneNumber(phoneNumberDto.getPhoneNumber(), user.getUserData());
+        userPhoneNumberRepository.save(userPhoneNumber);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<String> addEmail(String email){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
+        if(foundUsers.size() == 0){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = foundUsers.get(0);
+
+        UserEmail userEmail = new UserEmail(email, user.getUserData());
+        userEmailRepository.save(userEmail);
+        return ResponseEntity.ok().build();
     }
 }

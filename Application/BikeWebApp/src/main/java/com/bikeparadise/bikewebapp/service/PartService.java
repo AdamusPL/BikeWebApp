@@ -1,14 +1,22 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.PartDto;
-import com.bikeparadise.bikewebapp.dto.PartShopDto;
-import com.bikeparadise.bikewebapp.dto.ReviewPrintDto;
-import com.bikeparadise.bikewebapp.model.*;
-import com.bikeparadise.bikewebapp.repository.*;
+import com.bikeparadise.bikewebapp.dto.part.*;
+import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
+import com.bikeparadise.bikewebapp.model.part.Part;
+import com.bikeparadise.bikewebapp.model.part.PartAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartType;
+import com.bikeparadise.bikewebapp.model.review.Review;
+import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
+import com.bikeparadise.bikewebapp.repository.part.PartAttributeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartParameterAttributeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
+import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -17,15 +25,13 @@ public class PartService {
     private final PartTypeRepository partTypeRepository;
     private final ShopAssistantRepository shopAssistantRepository;
     private final PartAttributeRepository partAttributeRepository;
-    private final PartParameterAttributeRepository partParameterAttributeRepository;
 
     public PartService(PartRepository partRepository, PartTypeRepository partTypeRepository, ShopAssistantRepository shopAssistantRepository,
-                       PartAttributeRepository partAttributeRepository, PartParameterAttributeRepository partParameterAttributeRepository) {
+                       PartAttributeRepository partAttributeRepository) {
         this.partRepository = partRepository;
         this.partTypeRepository = partTypeRepository;
         this.shopAssistantRepository = shopAssistantRepository;
         this.partAttributeRepository = partAttributeRepository;
-        this.partParameterAttributeRepository = partParameterAttributeRepository;
     }
 
     public List<PartShopDto> getParts() {
@@ -61,7 +67,24 @@ public class PartService {
         return null;
     }
 
-    public Map<String, List<String>> getFilters() {
+    public PartFiltersDto getShopFilters() {
+        List<PartTypeFilterDto> filters = new ArrayList<>();
+        List<PartType> partTypeList = partTypeRepository.findAll();
+
+        for (PartType partType : partTypeList) {
+            String type = partType.getType();
+            filters.add(new PartTypeFilterDto(partType.getId(), type, false));
+        }
+
+        BigDecimal maxPrice = partRepository.findMaxPrice();
+        BigDecimal minPrice = partRepository.findMinPrice();
+
+        PartFiltersDto partFiltersDto = new PartFiltersDto(filters, minPrice, maxPrice);
+
+        return partFiltersDto;
+    }
+
+    public Map<String, List<String>> getAddPartFilters() {
         Map<String, List<String>> filters = new HashMap<>();
         List<PartType> partTypeList = partTypeRepository.findAll();
 
@@ -75,6 +98,34 @@ public class PartService {
         }
 
         return filters;
+    }
+
+    public List<PartShopDto> getFilteredParts(PartFiltersDto partTypeFilterDtos){
+        List<String> types = new ArrayList<>();
+
+        int checked = 0;
+        for(PartTypeFilterDto partTypeFilterDto : partTypeFilterDtos.getPartTypeFilterDtos()){
+            if(partTypeFilterDto.isChecked()){
+                checked++;
+                types.add(partTypeFilterDto.getType());
+            }
+        }
+
+        List<Part> parts;
+        List<PartShopDto> partShopDtoList = new ArrayList<>();
+        if(checked == 0){
+            parts = partRepository.findPartByPriceBetween(partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+        }
+        else {
+            parts = partRepository.findPartByPartParameterAttribute_PartType_TypeInAndPriceBetween(types, partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+        }
+        for(Part part : parts){
+            PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
+            partShopDtoList.add(partShopDto);
+        }
+
+        return partShopDtoList;
+
     }
 
     public ResponseEntity<String> addPart(PartDto partDto) {

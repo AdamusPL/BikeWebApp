@@ -1,15 +1,18 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.*;
-import com.bikeparadise.bikewebapp.model.Bike;
-import com.bikeparadise.bikewebapp.model.BikeAttribute;
-import com.bikeparadise.bikewebapp.model.BikeParameterType;
-import com.bikeparadise.bikewebapp.model.Part;
-import com.bikeparadise.bikewebapp.repository.BikeRepository;
-import com.bikeparadise.bikewebapp.repository.PartRepository;
+import com.bikeparadise.bikewebapp.dto.cart.BikeCartDto;
+import com.bikeparadise.bikewebapp.dto.cart.BikeCartInfo;
+import com.bikeparadise.bikewebapp.dto.cart.CartDto;
+import com.bikeparadise.bikewebapp.dto.cart.CartItems;
+import com.bikeparadise.bikewebapp.dto.cart.PartCartDto;
+import com.bikeparadise.bikewebapp.dto.cart.PartCartInfo;
+import com.bikeparadise.bikewebapp.model.bike.Bike;
+import com.bikeparadise.bikewebapp.model.bike.BikeAttribute;
+import com.bikeparadise.bikewebapp.model.part.Part;
+import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service

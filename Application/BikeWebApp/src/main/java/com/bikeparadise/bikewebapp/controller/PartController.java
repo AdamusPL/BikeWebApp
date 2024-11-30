@@ -1,8 +1,6 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.dto.PartDetailedInfoDto;
-import com.bikeparadise.bikewebapp.dto.PartDto;
-import com.bikeparadise.bikewebapp.dto.PartShopDto;
+import com.bikeparadise.bikewebapp.dto.part.*;
 import com.bikeparadise.bikewebapp.service.PartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,12 +19,6 @@ public class PartController {
         this.partService = partService;
     }
 
-    @GetMapping("/part-shop")
-    @ResponseBody
-    public List<PartShopDto> getParts(){
-        return partService.getParts();
-    }
-
     @GetMapping("/get-detailed-info-about-part")
     @ResponseBody
     public PartDetailedInfoDto getPartDetailedInfo(@RequestParam int partId){
@@ -35,14 +27,20 @@ public class PartController {
 
     @GetMapping("/get-part-filters")
     @ResponseBody
-    public Map<String, List<String>> getFilters(){
-        return partService.getFilters();
+    public PartFiltersDto getFilters(){
+        return partService.getShopFilters();
+    }
+
+    @PostMapping("/filter-parts-by-type")
+    @ResponseBody
+    public List<PartShopDto> getPartsByType(@RequestBody PartFiltersDto partTypeFilterDtos){
+        return partService.getFilteredParts(partTypeFilterDtos);
     }
 
     @GetMapping("/get-add-part-filters")
     @ResponseBody
     public Map<String, List<String>> getAddPartFilters(){
-        return partService.getFilters();
+        return partService.getAddPartFilters();
     }
 
     @PostMapping("/add-part")

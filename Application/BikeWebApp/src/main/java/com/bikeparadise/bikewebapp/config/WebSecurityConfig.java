@@ -43,6 +43,9 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/get-user-data")
                         .hasAnyRole("ADMIN", "USER")
 
+                        .requestMatchers(HttpMethod.POST, "/add-phone-number", "/add-email")
+                        .hasAnyRole("ADMIN", "USER")
+
                         .requestMatchers(HttpMethod.POST, "/get-cart-products")
                         .hasAnyRole("ANONYMOUS", "USER")
 
@@ -50,7 +53,7 @@ public class WebSecurityConfig {
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/add-bike", "/add-part")
                         .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/delete-bike", "/delete-part")
+                        .requestMatchers(HttpMethod.DELETE, "/delete-bike", "/delete-part", "/delete-review")
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/update-order-status")
                         .hasRole("ADMIN")
@@ -65,7 +68,7 @@ public class WebSecurityConfig {
                                 "/get-detailed-info-about-bike", "/get-bike-shop-filters", "/get-detailed-info-about-part", "/get-part-filters",
                                 "/check-role")
                         .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register")
+                        .requestMatchers(HttpMethod.POST, "/sign-in", "/register", "/filter-bikes", "/filter-parts-by-type")
                         .permitAll()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

@@ -1,9 +1,17 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.BikeReviewDto;
-import com.bikeparadise.bikewebapp.dto.PartReviewDto;
-import com.bikeparadise.bikewebapp.model.*;
-import com.bikeparadise.bikewebapp.repository.*;
+import com.bikeparadise.bikewebapp.dto.review.BikeReviewDto;
+import com.bikeparadise.bikewebapp.dto.review.PartReviewDto;
+import com.bikeparadise.bikewebapp.model.bike.Bike;
+import com.bikeparadise.bikewebapp.model.part.Part;
+import com.bikeparadise.bikewebapp.model.review.Review;
+import com.bikeparadise.bikewebapp.model.roles.Client;
+import com.bikeparadise.bikewebapp.model.user.User;
+import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartRepository;
+import com.bikeparadise.bikewebapp.repository.review.ReviewRepository;
+import com.bikeparadise.bikewebapp.repository.roles.ClientRepository;
+import com.bikeparadise.bikewebapp.repository.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -80,5 +88,18 @@ public class ReviewService {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    public ResponseEntity<String> deleteReview(int reviewId){
+        Optional<Review> reviewOptional = reviewRepository.findById(reviewId);
+
+        if(reviewOptional.isPresent()){
+            Review review = reviewOptional.get();
+            reviewRepository.delete(review);
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
+
     }
 }
