@@ -165,6 +165,20 @@ export default function BikeShop() {
         checkAvailability(data);
     }
 
+    function applyMinPrice(e){
+        setFilters(prevArray => ({
+            ...prevArray,
+            minPrice: e.target.value
+        }));
+    }
+
+    function applyMaxPrice(e){
+        setFilters(prevArray => ({
+            ...prevArray,
+            maxPrice: e.target.value
+        }));
+    }
+
     return (<>
         <MDBContainer fluid>
             <MDBRow className="h-100">
@@ -187,9 +201,9 @@ export default function BikeShop() {
 
                     <p className='mt-4'>Price</p>
                     <article id='price' className='mb-4'>
-                        <input className='form-control input' defaultValue={filters.minPrice}></input>
+                        <input className='form-control input' onChange={applyMinPrice} defaultValue={filters.minPrice}></input>
                         <p id='minus'>-</p>
-                        <input className='form-control input' defaultValue={filters.maxPrice}></input>
+                        <input className='form-control input' onChange={applyMaxPrice} defaultValue={filters.maxPrice}></input>
                     </article>
                 </MDBCol>
 

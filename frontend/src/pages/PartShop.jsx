@@ -70,7 +70,6 @@ export default function PartShop() {
     }
 
     async function getFilters() {
-        debugger;
         const response = await fetch('http://localhost:8080/get-part-filters');
         const data = await response.json();
 
@@ -149,7 +148,6 @@ export default function PartShop() {
     }
 
     function applyMinPrice(e){
-        debugger;
         setFilters(prevArray => ({
             ...prevArray,
             minPrice: e.target.value
@@ -164,14 +162,11 @@ export default function PartShop() {
     }
 
     async function filterChanged() {
-        debugger;
         const response = await fetch(`http://localhost:8080/filter-parts-by-type`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(filters)
         });
-
-        debugger;
 
         const data = await response.json();
 
