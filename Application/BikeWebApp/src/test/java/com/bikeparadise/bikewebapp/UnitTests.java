@@ -10,6 +10,7 @@ import com.bikeparadise.bikewebapp.dto.order.OrderStatusOrderDto;
 import com.bikeparadise.bikewebapp.dto.part.PartFiltersDto;
 import com.bikeparadise.bikewebapp.dto.part.PartShopDto;
 import com.bikeparadise.bikewebapp.dto.part.PartTypeFilterDto;
+import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;
 import com.bikeparadise.bikewebapp.model.bike.Bike;
 import com.bikeparadise.bikewebapp.model.order.Order;
 import com.bikeparadise.bikewebapp.model.order.OrderStatus;
@@ -191,7 +192,7 @@ public class UnitTests {
         }};
 
         for (Map.Entry<String, List<String>> entry : partParameterAttributes.entrySet()) {
-            for (String text : entry.getValue()){
+            for (String text : entry.getValue()) {
                 PartType partType = new PartType(entry.getKey());
                 PartAttribute partAttribute = new PartAttribute(text);
 
@@ -218,7 +219,7 @@ public class UnitTests {
                 )
         );
 
-        for(int i=0; i<5; i++){
+        for (int i = 0; i < 5; i++) {
             //new parts
             Part part = new Part("PFB", modelNames.get(i), prices.get(i), quantities.get(i), "description", partParameterAttributeRepository.findAll().get(i), shopAssistant);
             partRepository.save(part);
@@ -266,8 +267,106 @@ public class UnitTests {
 
     @Test
     @Transactional
-    public void registerTest() {
-        
+    public void registerShortestDataTest() {
+        UserRegisterDto userRegisterDto = new UserRegisterDto(
+                "Ab", "Cd", "abcdef", "test1234",
+                "a@g", "+48333333333", "test1234", false
+        );
+
+        ResponseEntity<String> response = userService.registerUser(userRegisterDto);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    @Transactional
+    public void registerNotMatchingPasswordsTest() {
+        UserRegisterDto userRegisterDto = new UserRegisterDto(
+                "Ab", "Cd", "abcdef", "test1234",
+                "a@g", "+48333333333", "test123", false
+        );
+
+        ResponseEntity<String> response = userService.registerUser(userRegisterDto);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error: Passwords don't match", response.getBody());
+    }
+
+    @Test
+    @Transactional
+    public void registerTooShortFirstName() {
+        UserRegisterDto userRegisterDto = new UserRegisterDto(
+                "A", "Cd", "abcdef", "test1234",
+                "a@g", "+48333333333", "test1234", false
+        );
+
+        ResponseEntity<String> response = userService.registerUser(userRegisterDto);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error: First name must have at least 2 characters", response.getBody());
+    }
+
+    @Test
+    @Transactional
+    public void registerTooShortUsername() {
+        UserRegisterDto userRegisterDto = new UserRegisterDto(
+                "Ab", "Cd", "abcde", "test1234",
+                "a@g", "+48333333333", "test1234", false
+        );
+
+        ResponseEntity<String> response = userService.registerUser(userRegisterDto);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error: Username must have at least 6 characters", response.getBody());
+    }
+
+    @Test
+    @Transactional
+    public void registerWithTooShortPassword() {
+        UserRegisterDto userRegisterDto = new UserRegisterDto(
+                "Ab", "Cd", "abcdef", "test123",
+                "a@g", "+48333333333", "test123", false
+        );
+
+        ResponseEntity<String> response = userService.registerUser(userRegisterDto);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error: Password must have at least 8 characters", response.getBody());
+    }
+
+    @Test
+    @Transactional
+    public void registerWithNotCorrectPhoneNumber() {
+        List<String> notCorrectPhoneNumbers = new ArrayList<>(
+                List.of(
+                        "abcdefghi", "12345678+"
+                )
+        );
+
+        for(String notCorrectNumber : notCorrectPhoneNumbers){
+            UserRegisterDto userRegisterDto = new UserRegisterDto(
+                    "Ab", "Cd", "abcdef", "test1234",
+                    "a@g", notCorrectNumber, "test1234", false
+            );
+
+            ResponseEntity<String> response = userService.registerUser(userRegisterDto);
+            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+            assertEquals("Error: Phone number consists of not allowed signs", response.getBody());
+        }
+    }
+
+    @Test
+    @Transactional
+    public void registerWithCorrectPhoneNumbers() {
+        List<String> notCorrectPhoneNumbers = new ArrayList<>(
+                List.of(
+                        "123456788", "+48333333333", "+123123456789"
+                )
+        );
+
+        for(String notCorrectNumber : notCorrectPhoneNumbers){
+            UserRegisterDto userRegisterDto = new UserRegisterDto(
+                    "Ab", "Cd", "abcdef", "test1234",
+                    "a@g", notCorrectNumber, "test1234", false
+            );
+
+            ResponseEntity<String> response = userService.registerUser(userRegisterDto);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
+    }
 }
