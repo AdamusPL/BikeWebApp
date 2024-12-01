@@ -20,7 +20,7 @@ public class PartType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(unique=true)
+    @Column(unique = true)
     String type;
 
     @OneToMany(mappedBy = "partType")
@@ -28,4 +28,8 @@ public class PartType {
 
     @OneToMany(mappedBy = "partType")
     private List<PartParameterAttribute> partParameterAttribute;
+
+    public PartType(String type) {
+        this.type = type;
+    }
 }

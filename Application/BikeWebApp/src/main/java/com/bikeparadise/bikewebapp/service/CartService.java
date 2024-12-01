@@ -45,9 +45,11 @@ public class CartService {
             if (bikeOptional.isPresent()) {
                 Bike bike = bikeOptional.get();
                 String make = "";
-                for (BikeAttribute bikeAttribute : bike.getBikeAttribute()) {
-                    if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
-                        make = bikeAttribute.getBikeParameterAttribute().getAttribute();
+                if(bike.getBikeAttribute() != null) {
+                    for (BikeAttribute bikeAttribute : bike.getBikeAttribute()) {
+                        if (bikeAttribute.getBikeParameterType().getType().equals("Make")) {
+                            make = bikeAttribute.getBikeParameterAttribute().getAttribute();
+                        }
                     }
                 }
                 BikeCartInfo productDto = new BikeCartInfo(bike.getId(), make + " " + bike.getModelName(), bike.getPrice(), bikeCartDto.getQuantity(), bike.getBikeIdentificationAvailable().size());

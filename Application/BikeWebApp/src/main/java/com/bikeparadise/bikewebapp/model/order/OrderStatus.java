@@ -23,4 +23,8 @@ public class OrderStatus {
     @OneToMany(mappedBy = "orderStatus")
     List<Order> order;
 
+    public OrderStatus(String status){
+        this.status = status;
+    }
+
 }

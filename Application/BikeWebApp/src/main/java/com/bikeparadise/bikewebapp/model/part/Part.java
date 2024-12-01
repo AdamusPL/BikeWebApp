@@ -57,4 +57,13 @@ public class Part {
         this.shopAssistant = shopAssistant;
     }
 
+    public Part(String make, String modelName, BigDecimal price, Integer quantityInStock, String description, ShopAssistant shopAssistant){
+        this.make = make;
+        this.modelName = modelName;
+        this.price = price;
+        this.quantityInStock = quantityInStock;
+        this.description = description;
+        this.shopAssistant = shopAssistant;
+    }
+
 }

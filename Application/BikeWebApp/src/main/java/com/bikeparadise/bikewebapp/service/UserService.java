@@ -12,11 +12,9 @@ import com.bikeparadise.bikewebapp.model.user.User;
 import com.bikeparadise.bikewebapp.model.user.UserData;
 import com.bikeparadise.bikewebapp.model.user.UserEmail;
 import com.bikeparadise.bikewebapp.model.user.UserPhoneNumber;
-import com.bikeparadise.bikewebapp.repository.user.UserDataRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserEmailRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserPhoneNumberRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +46,7 @@ public class UserService {
     private final UserEmailRepository userEmailRepository;
 
     public UserService(UserRepository userRepository, UserPhoneNumberRepository userPhoneNumberRepository, UserEmailRepository userEmailRepository,
-                       JwtTokenGenerator jwtTokenGenerator, AuthenticationManager authenticationManager){
+                       JwtTokenGenerator jwtTokenGenerator, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.authenticationManager = authenticationManager;
@@ -55,12 +54,63 @@ public class UserService {
         this.userEmailRepository = userEmailRepository;
     }
 
-    public ResponseEntity<String> registerUser(UserRegisterDto userRegisterDto){
-        if(userRepository.findUserByUsername(userRegisterDto.getUsername()).size() != 0 ||
+    private ResponseEntity<String> checkConstraints(UserRegisterDto userRegisterDto) {
+        if (userRegisterDto.getFirstName().length() < 2) {
+            return ResponseEntity.badRequest().body("Error: First name must have at least 2 characters");
+        } else if (userRegisterDto.getFirstName().length() > 18) {
+            return ResponseEntity.badRequest().body("Error: First name is too long");
+        }
+
+        if (userRegisterDto.getLastName().length() < 2) {
+            return ResponseEntity.badRequest().body("Error: Last name must have at least 2 characters");
+        } else if (userRegisterDto.getLastName().length() > 48) {
+            return ResponseEntity.badRequest().body("Error: Last name is too long");
+        }
+
+        if (userRegisterDto.getUsername().length() < 6) {
+            return ResponseEntity.badRequest().body("Error: Username must have at least 6 characters");
+        } else if (userRegisterDto.getLastName().length() > 30) {
+            return ResponseEntity.badRequest().body("Error: Username is too long");
+        }
+
+        if (userRegisterDto.getEmail().length() < 3) {
+            return ResponseEntity.badRequest().body("Error: E-mail must have at least 3 characters");
+        } else if (userRegisterDto.getEmail().length() > 64) {
+            return ResponseEntity.badRequest().body("Error: E-mail is too long");
+        }
+
+        if (userRegisterDto.getPhoneNumber().length() < 9) {
+            return ResponseEntity.badRequest().body("Error: Phone number must have at least 9 characters");
+        } else if (userRegisterDto.getPhoneNumber().length() > 13) {
+            return ResponseEntity.badRequest().body("Error: Phone number is too long");
+        }
+
+        if (userRegisterDto.getPassword().length() < 8) {
+            return ResponseEntity.badRequest().body("Error: Password must have at least 8 characters");
+        }
+
+        if (userRegisterDto.getPassword().length() > 128) {
+            return ResponseEntity.badRequest().body("Error: Password is too long");
+        }
+
+        if (!userRegisterDto.getPassword().equals(userRegisterDto.getConfirmedPassword())) {
+            return ResponseEntity.badRequest().body("Error: Passwords don't match");
+        }
+
+        if (userRepository.findUserByUsername(userRegisterDto.getUsername()).size() != 0 ||
                 userRepository.findUserByUserData_UserEmail_Email(userRegisterDto.getEmail()).size() != 0 ||
                 userRepository.findUserByUserData_UserPhoneNumber_PhoneNumber(userRegisterDto.getPhoneNumber()).size() != 0
         ) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<String> registerUser(UserRegisterDto userRegisterDto) {
+        ResponseEntity<String> status = checkConstraints(userRegisterDto);
+        if (!status.getStatusCode().equals(HttpStatus.OK)) {
+            return status;
         }
 
         String encodedPassword = passwordEncoder.encode(userRegisterDto.getPassword());
@@ -79,11 +129,10 @@ public class UserService {
         userPhoneNumberList.add(userPhoneNumber);
         userData.setUserPhoneNumber(userPhoneNumberList);
 
-        if(userRegisterDto.isSelectedRole()){
+        if (userRegisterDto.isSelectedRole()) {
             ShopAssistant shopAssistant = new ShopAssistant(userData);
             userData.setShopAssistant(shopAssistant);
-        }
-        else{
+        } else {
             Client client = new Client(userData);
             userData.setClient(client);
         }
@@ -98,19 +147,18 @@ public class UserService {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        if(foundUsers.size() == 0 || !encoder.matches(userSignInDto.getPassword(), foundUsers.get(0).getPassword())){
+        if (foundUsers.size() == 0 || !encoder.matches(userSignInDto.getPassword(), foundUsers.get(0).getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Authentication authentication;
 
-        if(foundUsers.get(0).getUserData().getShopAssistant() != null){
+        if (foundUsers.get(0).getUserData().getShopAssistant() != null) {
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userSignInDto.getUsername(), userSignInDto.getPassword(), authorities)
             );
-        }
-        else{
+        } else {
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userSignInDto.getUsername(), userSignInDto.getPassword(), authorities)
@@ -129,8 +177,8 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
-        if(foundUsers.size() == 0){
+        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
+        if (foundUsers.size() == 0) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -139,11 +187,11 @@ public class UserService {
         String phoneNumbers = "";
         String emails = "";
 
-        for(UserPhoneNumber userPhoneNumber : user.getUserData().getUserPhoneNumber()){
+        for (UserPhoneNumber userPhoneNumber : user.getUserData().getUserPhoneNumber()) {
             phoneNumbers += userPhoneNumber.getPhoneNumber() + " ";
         }
 
-        for(UserEmail userEmail : user.getUserData().getUserEmail()){
+        for (UserEmail userEmail : user.getUserData().getUserEmail()) {
             emails += userEmail.getEmail() + " ";
         }
 
@@ -151,7 +199,7 @@ public class UserService {
         return ResponseEntity.ok(userInfoDto);
     }
 
-    public ResponseEntity<List<String>> checkRole(){
+    public ResponseEntity<List<String>> checkRole() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {
@@ -170,14 +218,14 @@ public class UserService {
         return ResponseEntity.ok(roles);
     }
 
-    public ResponseEntity<String> addPhoneNumber(PhoneNumberDto phoneNumberDto){
+    public ResponseEntity<String> addPhoneNumber(PhoneNumberDto phoneNumberDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
-        if(foundUsers.size() == 0){
+        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
+        if (foundUsers.size() == 0) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -188,14 +236,14 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<String> addEmail(String email){
+    public ResponseEntity<String> addEmail(String email) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<User> foundUsers =  userRepository.findUserByUsername(authentication.getName());
-        if(foundUsers.size() == 0){
+        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
+        if (foundUsers.size() == 0) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 

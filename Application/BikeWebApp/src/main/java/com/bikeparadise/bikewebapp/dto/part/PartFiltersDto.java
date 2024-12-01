@@ -1,6 +1,5 @@
 package com.bikeparadise.bikewebapp.dto.part;
 
-import com.bikeparadise.bikewebapp.dto.bike.BikeFilterCheckboxDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
