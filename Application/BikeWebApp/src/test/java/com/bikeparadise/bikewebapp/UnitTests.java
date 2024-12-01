@@ -138,22 +138,22 @@ public class UnitTests {
         );
         bike.setBikeIdentificationAvailable(bikeIdentificationAvailableList);
         bikeRepository.save(bike);
-        Part part = new Part("PFB", "E-500 C", BigDecimal.valueOf(69.99), 20, "description", shopAssistant);
-        partRepository.save(part);
-        part = new Part("PFB", "E-500 RD", BigDecimal.valueOf(49.99), 15, "description", shopAssistant);
-        partRepository.save(part);
+        Part part1 = new Part("PFB", "E-500 C", BigDecimal.valueOf(69.99), 20, "description", shopAssistant);
+        partRepository.save(part1);
+        Part part2 = new Part("PFB", "E-500 RD", BigDecimal.valueOf(49.99), 15, "description", shopAssistant);
+        partRepository.save(part2);
 
         //get items from cart
         List<BikeCartDto> bikeCartDtoList = new ArrayList<>(
                 List.of(
-                        new BikeCartDto(1, 2)
+                        new BikeCartDto(bike.getId(), 2)
                 )
         );
 
         List<PartCartDto> partCartDtoList = new ArrayList<>(
                 List.of(
-                        new PartCartDto(1, 2),
-                        new PartCartDto(2, 3)
+                        new PartCartDto(part1.getId(), 2),
+                        new PartCartDto(part2.getId(), 3)
                 )
         );
 
