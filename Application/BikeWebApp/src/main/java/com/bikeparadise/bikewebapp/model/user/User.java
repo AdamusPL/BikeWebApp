@@ -30,4 +30,9 @@ public class User {
         this.password = password;
         this.userData = userData;
     }
+
+    public User(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
 }

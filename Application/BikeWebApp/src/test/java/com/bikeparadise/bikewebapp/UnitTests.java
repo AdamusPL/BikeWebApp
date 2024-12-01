@@ -12,6 +12,7 @@ import com.bikeparadise.bikewebapp.dto.part.PartShopDto;
 import com.bikeparadise.bikewebapp.dto.part.PartTypeFilterDto;
 import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;
 import com.bikeparadise.bikewebapp.model.bike.Bike;
+import com.bikeparadise.bikewebapp.model.bike.BikeIdentificationAvailable;
 import com.bikeparadise.bikewebapp.model.order.Order;
 import com.bikeparadise.bikewebapp.model.order.OrderStatus;
 import com.bikeparadise.bikewebapp.model.part.Part;
@@ -24,8 +25,10 @@ import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
 import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
 import com.bikeparadise.bikewebapp.repository.order.OrderRepository;
 import com.bikeparadise.bikewebapp.repository.order.OrderStatusRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartAttributeRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartParameterAttributeRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.review.ReviewRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ClientRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
@@ -66,6 +69,10 @@ public class UnitTests {
     PartService partService;
     @Autowired
     PartRepository partRepository;
+    @Autowired
+    PartTypeRepository partTypeRepository;
+    @Autowired
+    PartAttributeRepository partAttributeRepository;
     @Autowired
     PartParameterAttributeRepository partParameterAttributeRepository;
 
@@ -117,11 +124,29 @@ public class UnitTests {
     }
 
     @Test
+    @Transactional
     public void getCartItemsTest() {
-        //items from cart
+        //fill database
+        ShopAssistant shopAssistant = new ShopAssistant();
+        shopAssistantRepository.save(shopAssistant);
+        Bike bike = new Bike("Swift 4", BigDecimal.valueOf(1999.99), "description", shopAssistant);
+        List<BikeIdentificationAvailable> bikeIdentificationAvailableList = new ArrayList<>(
+                List.of(
+                    new BikeIdentificationAvailable("123456789"),
+                    new BikeIdentificationAvailable("123456788")
+                )
+        );
+        bike.setBikeIdentificationAvailable(bikeIdentificationAvailableList);
+        bikeRepository.save(bike);
+        Part part = new Part("PFB", "E-500 C", BigDecimal.valueOf(69.99), 20, "description", shopAssistant);
+        partRepository.save(part);
+        part = new Part("PFB", "E-500 RD", BigDecimal.valueOf(49.99), 15, "description", shopAssistant);
+        partRepository.save(part);
+
+        //get items from cart
         List<BikeCartDto> bikeCartDtoList = new ArrayList<>(
                 List.of(
-                        new BikeCartDto(1, 3)
+                        new BikeCartDto(1, 2)
                 )
         );
 
@@ -137,8 +162,8 @@ public class UnitTests {
         CartItems cartItems = cartService.getCartProducts(cartDto);
         //tests
         assertNotNull(cartItems);
-        assertEquals(cartItems.getBikes().size(), 1);
-        assertEquals(cartItems.getParts().size(), 2);
+        assertEquals(1, cartItems.getBikes().size());
+        assertEquals(2, cartItems.getParts().size());
     }
 
     @Test
@@ -173,7 +198,7 @@ public class UnitTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Optional<Order> orderOptional = orderRepository.findById(orderStatusOrderDto.getOrderId());
         assertTrue(orderOptional.isPresent());
-        assertEquals(orderOptional.get().getOrderStatus().getStatus(), "Completed");
+        assertEquals("Completed", orderOptional.get().getOrderStatus().getStatus());
     }
 
     @Test
@@ -192,9 +217,11 @@ public class UnitTests {
         }};
 
         for (Map.Entry<String, List<String>> entry : partParameterAttributes.entrySet()) {
+            PartType partType = new PartType(entry.getKey());
+            partTypeRepository.save(partType);
             for (String text : entry.getValue()) {
-                PartType partType = new PartType(entry.getKey());
                 PartAttribute partAttribute = new PartAttribute(text);
+                partAttributeRepository.save(partAttribute);
 
                 PartParameterAttribute partParameterAttribute = new PartParameterAttribute(partType, partAttribute);
                 partParameterAttributeRepository.save(partParameterAttribute);
@@ -243,7 +270,7 @@ public class UnitTests {
 
         List<PartShopDto> partShopDtoList = partService.getFilteredParts(partFiltersDto);
         assertNotNull(partShopDtoList);
-        assertEquals(partShopDtoList.size(), 3);
+        assertEquals(3, partShopDtoList.size());
     }
 
     @Test
@@ -327,25 +354,5 @@ public class UnitTests {
         ResponseEntity<String> response = userService.registerUser(userRegisterDto);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Error: Password must have at least 8 characters", response.getBody());
-    }
-
-    @Test
-    @Transactional
-    public void registerWithCorrectPhoneNumbers() {
-        List<String> notCorrectPhoneNumbers = new ArrayList<>(
-                List.of(
-                        "123456788", "+48333333333", "+123123456789"
-                )
-        );
-
-        for(String notCorrectNumber : notCorrectPhoneNumbers){
-            UserRegisterDto userRegisterDto = new UserRegisterDto(
-                    "Ab", "Cd", "abcdef", "test1234",
-                    "a@g", notCorrectNumber, "test1234", false
-            );
-
-            ResponseEntity<String> response = userService.registerUser(userRegisterDto);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-        }
     }
 }

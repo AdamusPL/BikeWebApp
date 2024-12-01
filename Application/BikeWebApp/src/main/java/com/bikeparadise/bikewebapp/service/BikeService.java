@@ -207,13 +207,17 @@ public class BikeService {
             Map<String, String> parts = new HashMap<>();
 
             //bike attributes
-            for (BikeAttribute bikeAttribute : bike.getBikeAttribute()) {
-                parts.put(bikeAttribute.getBikeParameterType().getType(), bikeAttribute.getBikeParameterAttribute().getAttribute());
+            if (bike.getBikeAttribute() != null) {
+                for (BikeAttribute bikeAttribute : bike.getBikeAttribute()) {
+                    parts.put(bikeAttribute.getBikeParameterType().getType(), bikeAttribute.getBikeParameterAttribute().getAttribute());
+                }
             }
 
             //part attributes
-            for (Part part : bikeParts) {
-                parts.put(part.getPartParameterAttribute().getPartType().getType(), part.getMake() + " " + part.getModelName() + ", " + part.getPartParameterAttribute().getPartAttribute().toString());
+            if (bikeParts != null) {
+                for (Part part : bikeParts) {
+                    parts.put(part.getPartParameterAttribute().getPartType().getType(), part.getMake() + " " + part.getModelName() + ", " + part.getPartParameterAttribute().getPartAttribute().toString());
+                }
             }
 
             List<Review> reviews = bike.getReview();
@@ -277,10 +281,12 @@ public class BikeService {
                         String modelName = secondPart;
 
                         Part part = partRepository.findPartByMakeAndModelNameAndPartParameterAttribute_PartType_Type(make, modelName, bikeAddFiltersDto.getParameter());
-                        List<Bike> list = part.getBike();
-                        list.add(bike);
-                        part.setBike(list);
-                        partsOfBike.add(part);
+                        if (part != null) {
+                            List<Bike> list = part.getBike();
+                            list.add(bike);
+                            part.setBike(list);
+                            partsOfBike.add(part);
+                        }
                     }
                 }
             }
