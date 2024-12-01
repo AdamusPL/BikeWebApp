@@ -15,42 +15,6 @@ export default function Registration() {
     const [selectedRole, setSelectedRole] = useState(false);
 
     function register() {
-        debugger;
-        if (firstName.length < 2) {
-            setLoginStatus("Error: First name must have at least 2 characters");
-            return;
-        }
-
-        if (lastName.length < 2) {
-            setLoginStatus("Error: Last name must have at least 2 characters");
-            return;
-        }
-
-        if (username.length < 6) {
-            setLoginStatus("Error: Username must have at least 6 characters");
-            return;
-        }
-
-        if (email.length < 3) {
-            setLoginStatus("Error: E-mail must have at least 3 characters");
-            return;
-        }
-
-        if (phoneNumber.length < 9) {
-            setLoginStatus("Error: Phone number must have at least 9 characters");
-            return;
-        }
-
-        if (password.length < 8) {
-            setLoginStatus("Error: Password must have at least 8 characters");
-            return;
-        }
-
-        if (password !== confirmedPassword) {
-            setLoginStatus("Passwords doesn't match");
-            return;
-        }
-
         const userData = {
             firstName: firstName,
             lastName: lastName,
@@ -68,12 +32,9 @@ export default function Registration() {
             body: JSON.stringify(userData)
 
         }).then(response => {
-            if (response.ok) {
-                setLoginStatus("User successfully registered! Now return to sign-in page to use your account.");
-            }
-            else {
-                setLoginStatus("Error: Incorrect credentials");
-            }
+            return response.text()
+        }).then((data) => {
+            setLoginStatus(data);
         })
     }
 
