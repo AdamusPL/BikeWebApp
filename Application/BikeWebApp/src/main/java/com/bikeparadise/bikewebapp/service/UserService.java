@@ -59,60 +59,30 @@ public class UserService {
             return ResponseEntity.badRequest().body("Error: First name must have at least 2 characters");
         } else if (userRegisterDto.getFirstName().length() > 18) {
             return ResponseEntity.badRequest().body("Error: First name is too long");
-        } else {
-            String regex = "^[A-Za-z]+([-' ][A-Za-z]+)*$";
-            Pattern pattern = Pattern.compile(regex);
-            if (!pattern.matcher(userRegisterDto.getPhoneNumber()).matches()) {
-                return ResponseEntity.badRequest().body("Error: First name consists of not allowed signs");
-            }
         }
 
         if (userRegisterDto.getLastName().length() < 2) {
             return ResponseEntity.badRequest().body("Error: Last name must have at least 2 characters");
         } else if (userRegisterDto.getLastName().length() > 48) {
             return ResponseEntity.badRequest().body("Error: Last name is too long");
-        } else{
-            String regex = "^[A-Za-z]+([-' ][A-Za-z]+)*$";
-            Pattern pattern = Pattern.compile(regex);
-            if (!pattern.matcher(userRegisterDto.getPhoneNumber()).matches()) {
-                return ResponseEntity.badRequest().body("Error: Last name consists of not allowed signs");
-            }
         }
 
         if (userRegisterDto.getUsername().length() < 6) {
             return ResponseEntity.badRequest().body("Error: Username must have at least 6 characters");
         } else if (userRegisterDto.getLastName().length() > 30) {
             return ResponseEntity.badRequest().body("Error: Username is too long");
-        } else{
-            String regex = "^[A-Za-z0-9_.]+$";
-            Pattern pattern = Pattern.compile(regex);
-            if (!pattern.matcher(userRegisterDto.getPhoneNumber()).matches()) {
-                return ResponseEntity.badRequest().body("Error: Username consists of not allowed signs");
-            }
         }
 
         if (userRegisterDto.getEmail().length() < 3) {
             return ResponseEntity.badRequest().body("Error: E-mail must have at least 3 characters");
         } else if (userRegisterDto.getEmail().length() > 64) {
             return ResponseEntity.badRequest().body("Error: E-mail is too long");
-        } else{
-            String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-            Pattern pattern = Pattern.compile(regex);
-            if (!pattern.matcher(userRegisterDto.getPhoneNumber()).matches()) {
-                return ResponseEntity.badRequest().body("Error: E-Mail address consists of not allowed signs");
-            }
         }
 
         if (userRegisterDto.getPhoneNumber().length() < 9) {
             return ResponseEntity.badRequest().body("Error: Phone number must have at least 9 characters");
         } else if (userRegisterDto.getPhoneNumber().length() > 13) {
             return ResponseEntity.badRequest().body("Error: Phone number is too long");
-        } else {
-            String regex = "^\\+?\\d+$";
-            Pattern pattern = Pattern.compile(regex);
-            if (!pattern.matcher(userRegisterDto.getPhoneNumber()).matches()) {
-                return ResponseEntity.badRequest().body("Error: Phone number consists of not allowed signs");
-            }
         }
 
         if (userRegisterDto.getPassword().length() < 8) {

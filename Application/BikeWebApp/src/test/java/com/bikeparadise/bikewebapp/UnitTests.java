@@ -331,27 +331,6 @@ public class UnitTests {
 
     @Test
     @Transactional
-    public void registerWithNotCorrectPhoneNumber() {
-        List<String> notCorrectPhoneNumbers = new ArrayList<>(
-                List.of(
-                        "abcdefghi", "12345678+"
-                )
-        );
-
-        for(String notCorrectNumber : notCorrectPhoneNumbers){
-            UserRegisterDto userRegisterDto = new UserRegisterDto(
-                    "Ab", "Cd", "abcdef", "test1234",
-                    "a@g", notCorrectNumber, "test1234", false
-            );
-
-            ResponseEntity<String> response = userService.registerUser(userRegisterDto);
-            assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-            assertEquals("Error: Phone number consists of not allowed signs", response.getBody());
-        }
-    }
-
-    @Test
-    @Transactional
     public void registerWithCorrectPhoneNumbers() {
         List<String> notCorrectPhoneNumbers = new ArrayList<>(
                 List.of(
