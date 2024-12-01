@@ -1,6 +1,5 @@
 package com.bikeparadise.bikewebapp;
 
-import com.bikeparadise.bikewebapp.dto.user.UserSignInDto;
 import com.bikeparadise.bikewebapp.model.bike.Bike;
 import com.bikeparadise.bikewebapp.model.roles.Client;
 import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
@@ -11,12 +10,10 @@ import com.bikeparadise.bikewebapp.model.user.UserPhoneNumber;
 import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ClientRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserRepository;
-import com.bikeparadise.bikewebapp.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.transaction.Transactional;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -49,9 +46,6 @@ class IntegrationTests {
 
 	@Autowired
 	private ClientRepository clientRepository;
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -91,9 +85,6 @@ class IntegrationTests {
 
 		user.setUserData(userData);
 		userRepository.save(user);
-
-		UserSignInDto userSignInDto = new UserSignInDto("test12", "test1234");
-		userService.loginUser(userSignInDto);
 
 		MvcResult result = mockMvc.perform(post("/sign-in")
 						.contentType(MediaType.APPLICATION_JSON)
