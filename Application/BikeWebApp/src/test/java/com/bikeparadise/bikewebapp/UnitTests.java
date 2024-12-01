@@ -7,9 +7,26 @@ import com.bikeparadise.bikewebapp.dto.cart.CartDto;
 import com.bikeparadise.bikewebapp.dto.cart.CartItems;
 import com.bikeparadise.bikewebapp.dto.cart.PartCartDto;
 import com.bikeparadise.bikewebapp.dto.order.OrderStatusOrderDto;
+import com.bikeparadise.bikewebapp.dto.part.PartFiltersDto;
+import com.bikeparadise.bikewebapp.dto.part.PartShopDto;
+import com.bikeparadise.bikewebapp.dto.part.PartTypeFilterDto;
+import com.bikeparadise.bikewebapp.model.bike.Bike;
 import com.bikeparadise.bikewebapp.model.order.Order;
+import com.bikeparadise.bikewebapp.model.order.OrderStatus;
+import com.bikeparadise.bikewebapp.model.part.Part;
+import com.bikeparadise.bikewebapp.model.part.PartAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
+import com.bikeparadise.bikewebapp.model.part.PartType;
+import com.bikeparadise.bikewebapp.model.review.Review;
+import com.bikeparadise.bikewebapp.model.roles.Client;
 import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
+import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
 import com.bikeparadise.bikewebapp.repository.order.OrderRepository;
+import com.bikeparadise.bikewebapp.repository.order.OrderStatusRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartParameterAttributeRepository;
+import com.bikeparadise.bikewebapp.repository.part.PartRepository;
+import com.bikeparadise.bikewebapp.repository.review.ReviewRepository;
+import com.bikeparadise.bikewebapp.repository.roles.ClientRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
 import com.bikeparadise.bikewebapp.service.*;
 import jakarta.transaction.Transactional;
@@ -20,9 +37,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,9 +46,8 @@ public class UnitTests {
 
     @Autowired
     BikeService bikeService;
-
     @Autowired
-    ShopAssistantRepository shopAssistantRepository;
+    BikeRepository bikeRepository;
 
     @Autowired
     CartService cartService;
@@ -45,20 +59,37 @@ public class UnitTests {
     OrderRepository orderRepository;
 
     @Autowired
+    OrderStatusRepository orderStatusRepository;
+
+    @Autowired
     PartService partService;
+    @Autowired
+    PartRepository partRepository;
+    @Autowired
+    PartParameterAttributeRepository partParameterAttributeRepository;
 
     @Autowired
     ReviewService reviewService;
+    @Autowired
+    ReviewRepository reviewRepository;
 
     @Autowired
     UserService userService;
 
+    @Autowired
+    ShopAssistantRepository shopAssistantRepository;
+
+    @Autowired
+    ClientRepository clientRepository;
+
     @Test
     @Transactional
-    public void addBikeTest(){
+    public void addBikeTest() {
+        //create new shop assistant in DB
         ShopAssistant shopAssistant = new ShopAssistant();
         shopAssistantRepository.save(shopAssistant);
 
+        //chosen parts and parameters for bike
         List<BikeAddFiltersDto> bikeAddFiltersDtoList = new ArrayList<>(List.of(
                 new BikeAddFiltersDto("Make", "AeroBike"),
                 new BikeAddFiltersDto("Frame size", "M"),
@@ -70,20 +101,23 @@ public class UnitTests {
                 new BikeAddFiltersDto("Front Shifters", "PFB E-500 FS"),
                 new BikeAddFiltersDto("Tyres", "SwiftZPart Bumpy"),
                 new BikeAddFiltersDto("Front Derailleur", "PFB E-500 FD")
-                )
+        )
         );
 
+        //create new bike
         BikeAddDto bikeAddDto = new BikeAddDto("Swift 4", BigDecimal.valueOf(1999.99),
                 "3x7 bike, perfect for starting story with MTB",
                 "0123456789, 1234567890, 2345678901", bikeAddFiltersDtoList,
                 shopAssistant.getId());
 
+        //tests
         ResponseEntity<String> response = bikeService.addBike(bikeAddDto);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    public void getCartItemsTest(){
+    public void getCartItemsTest() {
+        //items from cart
         List<BikeCartDto> bikeCartDtoList = new ArrayList<>(
                 List.of(
                         new BikeCartDto(1, 3)
@@ -98,7 +132,9 @@ public class UnitTests {
         );
 
         CartDto cartDto = new CartDto(bikeCartDtoList, partCartDtoList);
+        //get products
         CartItems cartItems = cartService.getCartProducts(cartDto);
+        //tests
         assertNotNull(cartItems);
         assertEquals(cartItems.getBikes().size(), 1);
         assertEquals(cartItems.getParts().size(), 2);
@@ -106,26 +142,132 @@ public class UnitTests {
 
     @Test
     @Transactional
-    public void updateOrderStatusTest(){
-        OrderStatusOrderDto orderStatusOrderDto = new OrderStatusOrderDto(4, 1002);
+    public void updateOrderStatusTest() {
+        //fill DB with order status
+        List<String> statuses = new ArrayList<>(List.of(
+                "Ordered", "In-Progress", "Ready to collect", "Completed"
+        ));
 
+        for (String status : statuses) {
+            OrderStatus orderStatus = new OrderStatus(status);
+            orderStatusRepository.save(orderStatus);
+        }
+
+        //create new client
+        Client client = new Client();
+        clientRepository.save(client);
+
+        //create new order
+        Date date = new Date();
+        Order order = new Order(date, client, orderStatusRepository.findAll().get(0));
+        orderRepository.save(order);
+
+        //new order status
+        OrderStatusOrderDto orderStatusOrderDto = new OrderStatusOrderDto(orderStatusRepository.findAll().get(3).getId(), order.getId());
+
+        //change order status
         ResponseEntity<String> response = orderService.updateOrderStatus(orderStatusOrderDto);
 
+        //tests
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        Optional<Order> order = orderRepository.findById(orderStatusOrderDto.getOrderId());
-        assertTrue(order.isPresent());
-        assertEquals(order.get().getOrderStatus().getStatus(), "Completed");
-    }
-
-    @Test
-    public void filterPartsByTypeTest(){
-        
+        Optional<Order> orderOptional = orderRepository.findById(orderStatusOrderDto.getOrderId());
+        assertTrue(orderOptional.isPresent());
+        assertEquals(orderOptional.get().getOrderStatus().getStatus(), "Completed");
     }
 
     @Test
     @Transactional
-    public void deleteReviewTest(){
+    public void filterPartsByTypeTest() {
+        //new shop assistant
+        ShopAssistant shopAssistant = new ShopAssistant();
+        shopAssistantRepository.save(shopAssistant);
 
+        //new part parameter attributes
+        Map<String, List<String>> partParameterAttributes = new HashMap<>() {{
+            put("Rear Derailleur", List.of("7 rows", "8 rows"));
+            put("Front Derailleur", List.of("7 rows"));
+            put("Cassette", List.of("12 rows"));
+            put("Chain", List.of("12 rows"));
+        }};
+
+        for (Map.Entry<String, List<String>> entry : partParameterAttributes.entrySet()) {
+            for (String text : entry.getValue()){
+                PartType partType = new PartType(entry.getKey());
+                PartAttribute partAttribute = new PartAttribute(text);
+
+                PartParameterAttribute partParameterAttribute = new PartParameterAttribute(partType, partAttribute);
+                partParameterAttributeRepository.save(partParameterAttribute);
+            }
+        }
+
+        List<String> modelNames = new ArrayList<>(
+                List.of(
+                        "E-500 RD", "E-600 RD", "E-500 FD", "E-1200 CS", "E-1200 C"
+                )
+        );
+
+        List<Integer> quantities = new ArrayList<>(
+                List.of(
+                        20, 15, 10, 10, 10
+                )
+        );
+
+        List<BigDecimal> prices = new ArrayList<>(
+                List.of(
+                        BigDecimal.valueOf(69.99), BigDecimal.valueOf(49.99), BigDecimal.valueOf(39.99), BigDecimal.valueOf(39.99), BigDecimal.valueOf(39.99)
+                )
+        );
+
+        for(int i=0; i<5; i++){
+            //new parts
+            Part part = new Part("PFB", modelNames.get(i), prices.get(i), quantities.get(i), "description", partParameterAttributeRepository.findAll().get(i), shopAssistant);
+            partRepository.save(part);
+        }
+
+        //filters from shop
+        List<PartTypeFilterDto> partTypeFilterDtos = new ArrayList<>(
+                List.of(
+                        new PartTypeFilterDto(1, "Rear Derailleur", true),
+                        new PartTypeFilterDto(2, "Front Derailleur", true),
+                        new PartTypeFilterDto(3, "Cassette", false),
+                        new PartTypeFilterDto(4, "Crankset", false),
+                        new PartTypeFilterDto(5, "Front Shifters", false),
+                        new PartTypeFilterDto(6, "Rear Shifters", false),
+                        new PartTypeFilterDto(7, "Chain", false),
+                        new PartTypeFilterDto(8, "Brakes", false),
+                        new PartTypeFilterDto(9, "Tyres", false)
+                )
+        );
+        PartFiltersDto partFiltersDto = new PartFiltersDto(partTypeFilterDtos, partRepository.findMinPrice(), partRepository.findMaxPrice());
+
+        List<PartShopDto> partShopDtoList = partService.getFilteredParts(partFiltersDto);
+        assertNotNull(partShopDtoList);
+        assertEquals(partShopDtoList.size(), 3);
+    }
+
+    @Test
+    @Transactional
+    public void deleteReviewTest() {
+        ShopAssistant shopAssistant = new ShopAssistant();
+        shopAssistantRepository.save(shopAssistant);
+        Bike bike = new Bike("Swift 4", BigDecimal.valueOf(1999.99), "description", shopAssistant);
+        bikeRepository.save(bike);
+        Client client = new Client();
+        clientRepository.save(client);
+        Review review = new Review(5, "Good", client, bike);
+        reviewRepository.save(review);
+
+        int reviewsNumber = reviewRepository.findAll().size();
+        ResponseEntity<String> response = reviewService.deleteReview(review.getId());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(reviewsNumber - 1, reviewRepository.findAll().size());
+    }
+
+    @Test
+    @Transactional
+    public void registerTest() {
+        
     }
 
 }

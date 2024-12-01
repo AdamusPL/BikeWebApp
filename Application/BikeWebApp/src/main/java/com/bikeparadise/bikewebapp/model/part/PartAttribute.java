@@ -30,4 +30,8 @@ public class PartAttribute {
     @JoinColumn(name = "PartAttributeId")
     private List<PartParameterAttribute> partParameterAttribute;
 
+    public PartAttribute(String attribute){
+        this.attribute = attribute;
+    }
+
 }
