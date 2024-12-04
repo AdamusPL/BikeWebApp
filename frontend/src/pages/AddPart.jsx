@@ -15,7 +15,7 @@ export default function AddPart() {
     const [description, setDescription] = useState("");
     const [quantityInStock, setQuantityInStock] = useState(0);
 
-    const [isPosted, setIsPosted] = useState(false);
+    const [postStatus, setIsPosted] = useState("");
 
     const navigate = useNavigate();
 
@@ -62,9 +62,9 @@ export default function AddPart() {
             body: JSON.stringify(part)
 
         }).then(response => {
-            if (response.ok) {
-                setIsPosted(true);
-            }
+            return response.text();
+        }).then(data => {
+            setIsPosted(data);
         })
     }
 
@@ -130,11 +130,11 @@ export default function AddPart() {
                 <p>No data found</p>
             }
 
-            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button">Add part</MDBBtn>
+            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button mb-4">Add part</MDBBtn>
 
-            {isPosted ? <p>Part successfully added</p>
-                :
-                null}
+            <div>
+                <MDBTypography id="info" tag='strong' className="mt-5">{postStatus}</MDBTypography>
+            </div>
 
         </MDBContainer>
     </>)

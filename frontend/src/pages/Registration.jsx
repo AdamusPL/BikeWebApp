@@ -1,4 +1,4 @@
-import { MDBBtn, MDBContainer, MDBInput, MDBRadio } from "mdb-react-ui-kit";
+import { MDBBtn, MDBContainer, MDBInput, MDBRadio, MDBTypography } from "mdb-react-ui-kit";
 import logo from "../assets/logo.png";
 import { useState } from "react";
 
@@ -68,10 +68,10 @@ export default function Registration() {
                 <MDBRadio name='flexRadioDefault' id='shop-assistant' label='Shop Assistant' value={true} onChange={handleRadioButtonChange} />
             </MDBContainer>
 
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center mb-4">
                 <MDBBtn className="mt-4" style={{ backgroundColor: "#002E80" }} onClick={register}>Create an account</MDBBtn>
             </div>
-            <p className="mt-4">{loginStatus}</p>
+            <MDBTypography id="info" tag='strong'>{loginStatus}</MDBTypography>
         </MDBContainer>
     </>)
 }

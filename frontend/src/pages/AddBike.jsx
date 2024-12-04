@@ -15,7 +15,7 @@ export default function AddBike() {
     const [description, setDescription] = useState("");
     const [serialNumbers, setSerialNumbers] = useState("");
 
-    const [isPosted, setIsPosted] = useState(false);
+    const [postStatus, setIsPosted] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export default function AddBike() {
         const response = await fetch('http://localhost:8080/get-add-bike-filters', { credentials: 'include' });
         debugger;
 
-        if(response.status === 401){
+        if (response.status === 401) {
             navigate('/unauthorized');
         }
 
@@ -65,9 +65,9 @@ export default function AddBike() {
             body: JSON.stringify(bike)
 
         }).then(response => {
-            if (response.ok) {
-                setIsPosted(true);
-            }
+            return response.text();
+        }).then(data => {
+            setIsPosted(data);
         })
     }
 
@@ -109,11 +109,10 @@ export default function AddBike() {
                 :
                 <p>Nothing found</p>
             }
-            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button">Add bike</MDBBtn>
-
-            {isPosted ? <p>Bike successfully added</p>
-                :
-                null}
+            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button mb-4">Add bike</MDBBtn>
+            <div>
+                <MDBTypography id="info" tag='strong' className="mt-5">{postStatus}</MDBTypography>
+            </div>
         </MDBContainer>
     </>)
 }
