@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto) {
+    public ResponseEntity<Object> loginUser(@RequestBody UserSignInDto userSignInDto) {
         return userService.loginUser(userSignInDto);
     }
 

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BikeIdentificationReservedRepository extends JpaRepository<BikeIdentificationReserved, Integer> {
+    BikeIdentificationReserved findBikeIdentificationReservedBySerialNumber(String serialNumber);
 }

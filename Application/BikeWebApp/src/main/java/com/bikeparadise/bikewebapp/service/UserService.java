@@ -142,13 +142,17 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto) {
+    public ResponseEntity<Object> loginUser(UserSignInDto userSignInDto) {
         List<User> foundUsers = userRepository.findUserByUsername(userSignInDto.getUsername());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        if (foundUsers.size() == 0 || !encoder.matches(userSignInDto.getPassword(), foundUsers.get(0).getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if (foundUsers.size() == 0) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: User with that username wasn't found");
+        }
+
+        if(!encoder.matches(userSignInDto.getPassword(), foundUsers.get(0).getPassword())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: Wrong password");
         }
 
         Authentication authentication;

@@ -13,6 +13,7 @@ import com.bikeparadise.bikewebapp.repository.part.PartParameterAttributeReposit
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -128,7 +129,52 @@ public class PartService {
 
     }
 
+    private ResponseEntity<String> addPartConstraints(PartDto partDto){
+        if(partDto.getMake().equals("")){
+            return ResponseEntity.badRequest().body("Error: Make field is missing");
+        }
+
+        if(partDto.getMake().length() > 23){
+            return ResponseEntity.badRequest().body("Error: Make field can have max. 23 characters");
+        }
+
+        if(partDto.getModelName().equals("")){
+            return ResponseEntity.badRequest().body("Error: Model name field is missing");
+        }
+
+        if(partDto.getModelName().length() > 50){
+            return ResponseEntity.badRequest().body("Error: Model name field can have max. 50 characters");
+        }
+
+        if(partDto.getPrice() == null){
+            return ResponseEntity.badRequest().body("Error: Price field is missing");
+        }
+
+        if(partDto.getPrice().scale() > 2) {
+            return ResponseEntity.badRequest().body("Error: Price can only have 2 places after comma");
+        }
+
+        if(partDto.getDescription().length() > 500){
+            return ResponseEntity.badRequest().body("Error: Description can have max. 500 characters");
+        }
+
+        if(partDto.getQuantityInStock() == 0){
+            return ResponseEntity.badRequest().body("Error: Quantity in stock field is missing / can't have 0 value");
+        }
+
+        if(partDto.getQuantityInStock().toString().length() > 10){
+            return ResponseEntity.badRequest().body("Error: Quantity in stock can have up to 10 digits");
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
     public ResponseEntity<String> addPart(PartDto partDto) {
+        ResponseEntity<String> response = addPartConstraints(partDto);
+        if(!response.getStatusCode().equals(HttpStatus.OK)){
+            return response;
+        }
+
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(partDto.getShopAssistantId());
         PartType partType = partTypeRepository.findFirstByType(partDto.getType());
         PartAttribute partAttribute = partAttributeRepository.findFirstByAttribute(partDto.getAttribute());
@@ -139,7 +185,7 @@ public class PartService {
             partParameterAttribute.setPart(new ArrayList<>(List.of(part)));
             part.setPartParameterAttribute(partParameterAttribute);
             partRepository.save(part);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Part successfully added");
         }
 
         return ResponseEntity.notFound().build();
