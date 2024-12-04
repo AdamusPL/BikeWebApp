@@ -13,6 +13,8 @@ export default function Account() {
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
 
+    const [infoStatus, setInfoStatus] = useState("");
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -61,6 +63,9 @@ export default function Account() {
                     phoneNumbers: userData.phoneNumbers + ", " + newPhoneNumber
                 });
             }
+            return response.text();
+        }).then(data => {
+            setInfoStatus(data);
         })
     }
 
@@ -75,6 +80,9 @@ export default function Account() {
                     emails: userData.emails + ", " + newEmail
                 });
             }
+            return response.text();
+        }).then(data => {
+            setInfoStatus(data);
         })
     }
 
@@ -133,6 +141,10 @@ export default function Account() {
                     <MDBBtn className='classic-button' onClick={logOut}>Log out</MDBBtn>
                 </MDBCol>
             </MDBRow>
+
+            <div>
+                <MDBTypography id="info" tag='strong'>{infoStatus}</MDBTypography>
+            </div>
         </MDBContainer>
     </>)
 }
