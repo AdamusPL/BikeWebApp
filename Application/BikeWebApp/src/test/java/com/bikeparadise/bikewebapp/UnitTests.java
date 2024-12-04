@@ -297,7 +297,7 @@ public class UnitTests {
     public void registerShortestDataTest() {
         UserRegisterDto userRegisterDto = new UserRegisterDto(
                 "Ab", "Cd", "abcdef", "test1234",
-                "a@g", "+48333333333", "test1234", false
+                "a@g", "333333333", "test1234", false
         );
 
         ResponseEntity<String> response = userService.registerUser(userRegisterDto);
@@ -309,7 +309,7 @@ public class UnitTests {
     public void registerNotMatchingPasswordsTest() {
         UserRegisterDto userRegisterDto = new UserRegisterDto(
                 "Ab", "Cd", "abcdef", "test1234",
-                "a@g", "+48333333333", "test123", false
+                "a@g", "333333333", "test123", false
         );
 
         ResponseEntity<String> response = userService.registerUser(userRegisterDto);
