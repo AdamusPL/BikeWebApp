@@ -18,3 +18,16 @@
 .active-elem{
     color: #002E80;
 }
+
+.nav-icons {
+    display: flex;
+    gap: 16px;
+    margin-left: auto;
+    align-items: center;
+}
+
+@media (min-width: 990px) {
+    #mobile-navbar {
+      display: none;
+    }
+  }

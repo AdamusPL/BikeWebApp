@@ -33,7 +33,7 @@ export default function SignIn() {
                     navigate('/');
                 }
                 else {
-                    setLoginStatus("Error: Incorrect credentials");
+                    setLoginStatus("Error: Wrong username or password");
                 }
             })
     }

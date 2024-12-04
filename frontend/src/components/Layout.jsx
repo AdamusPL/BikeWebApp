@@ -22,9 +22,8 @@ export function Layout({ children }) {
                         <path d="M51.5375 5.5415C51.7953 5.5415 52.0531 5.70557 52.1937 5.93994L54.4906 10.1821C54.7719 10.1118 55.0766 10.0415 55.4047 10.0415C57.0453 10.0415 58.4047 11.4009 58.4047 13.0415C58.4047 14.7056 57.0453 16.0415 55.4047 16.0415C53.7406 16.0415 52.4047 14.7056 52.4047 13.0415C52.4047 12.104 52.8266 11.2837 53.5062 10.7212L52.9906 9.78369L50.9984 13.1587C50.9047 13.3228 50.7172 13.4165 50.5297 13.4165H49.3812C49.1937 14.9165 47.9281 16.0415 46.4047 16.0415C44.7406 16.0415 43.4047 14.7056 43.4047 13.0415C43.4047 11.4009 44.7406 10.0415 46.4047 10.0415C46.6391 10.0415 46.8969 10.0884 47.1312 10.1353L47.7406 8.89307L47.225 8.1665H46.2172C45.8891 8.1665 45.6547 7.93213 45.6547 7.604C45.6547 7.29932 45.8891 7.0415 46.2172 7.0415H47.5297C47.6937 7.0415 47.8578 7.13525 47.975 7.27588L48.6078 8.1665H52.1234L51.3031 6.6665H50.6937C50.3891 6.6665 50.1312 6.43213 50.1312 6.104C50.1312 5.79932 50.3891 5.5415 50.6937 5.5415H51.5375ZM53.7172 13.0415C53.7172 13.979 54.4672 14.729 55.4047 14.729C56.3187 14.729 57.0922 13.979 57.0922 13.0415C57.0922 12.1274 56.3187 11.354 55.4047 11.354C55.3109 11.354 55.2172 11.3774 55.1234 11.3774L55.8969 12.7837C56.0375 13.0649 55.9437 13.3931 55.6625 13.5571C55.3812 13.6978 55.0531 13.604 54.8891 13.3228L54.1391 11.9165C53.8812 12.2212 53.7172 12.6196 53.7172 13.0415ZM45.9359 12.5024L46.5219 11.3774C46.475 11.3774 46.4281 11.354 46.3812 11.354C45.4672 11.354 44.6937 12.1274 44.6937 13.0415C44.6937 13.979 45.4672 14.729 46.3812 14.729C47.2016 14.729 47.8578 14.1899 48.0453 13.4165H46.5219C46.0297 13.4165 45.725 12.9243 45.9359 12.5024ZM50.2016 12.2915L48.4906 9.92432L47.2953 12.2915H50.2016ZM49.4281 9.2915L50.8344 11.2368L51.9594 9.2915H49.4281Z" fill="black" />
                     </svg>
 
-
                     <button className="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i className="fas fa-bars navbar-elem"></i>
+                        <i onClick={() => setOpenBasic(!openBasic)} className="fas fa-bars navbar-elem"></i>
                     </button>
 
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -61,6 +60,38 @@ export function Layout({ children }) {
                     </div>
                 </div>
             </nav>
+
+            {openBasic ?
+                <div style={{ backgroundColor: "#D9D9D9" }} id="mobile-navbar">
+                    <ul className="navbar-nav mb-2 mb-lg-0">
+                        <li className="nav-item">
+                            <a className="nav-link" aria-label="Home page" href="/"><MDBIcon fas icon="home" className={`${isActive('/') ? "active-elem" : "navbar-elem"}`} /></a>
+                        </li>
+                        <li className="nav-item">
+                            <a className={`nav-link ${isActive('/bike-shop') ? "active-elem" : "navbar-elem"}`} aria-label="Bike shop" href="/bike-shop">Bikes</a>
+                        </li>
+
+                        <li className="nav-item">
+                            <a className={`nav-link ${isActive('/part-shop') ? "active-elem" : "navbar-elem"}`} aria-label="Part shop" href="/part-shop">Parts</a>
+                        </li>
+
+                        {role !== 'ROLE_ANONYMOUS' ?
+                            <li className="nav-item me-3 me-lg-0">
+                                <a className="nav-link" aria-label="Order list" href="/order-list"><MDBIcon fas icon="envelope" className={`${isActive('/order-list') ? "active-elem" : "navbar-elem"}`} /></a>
+                            </li>
+                            : null}
+                        {role !== 'ROLE_ADMIN' ?
+                            <li className="nav-item me-3 me-lg-0">
+                                <a className="nav-link" aria-label="Shopping cart" href="/cart"><MDBIcon fas icon="shopping-cart" className={`${isActive('/cart') ? "active-elem" : "navbar-elem"}`} /></a>
+                            </li>
+                            : null}
+                        <li className="nav-item me-3 me-lg-0">
+                            <a className="nav-link" aria-label="Account" href="/account"><MDBIcon fas icon="user-alt" className={`${isActive('/account') || isActive('/sign-in') || isActive('/register') ? "active-elem" : "navbar-elem"}`} /></a>
+                        </li>
+                    </ul>
+                </div>
+                : null
+            }
 
             <main>
                 {children}
