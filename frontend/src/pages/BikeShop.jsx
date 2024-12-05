@@ -6,27 +6,18 @@ import {
     MDBSpinner,
     MDBBtn,
     MDBCheckbox,
-    MDBModalDialog,
-    MDBModalContent,
-    MDBModalHeader,
-    MDBModalTitle,
-    MDBModalBody,
-    MDBModalFooter,
-    MDBModal
 } from 'mdb-react-ui-kit';
 
 import '../css/BikeShop.css'
 import { useRole } from '../components/RoleProvider';
 import ProductCard from '../components/ProductCard';
+import RemovalModal from '../components/RemovalModal';
 
 export default function BikeShop() {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState({});
     const { role } = useRole();
-
-    const [basicModal, setBasicModal] = useState(false);
-    const toggleOpen = () => setBasicModal(!basicModal);
 
     useEffect(() => {
         getFilters();
@@ -66,19 +57,6 @@ export default function BikeShop() {
         const data = await response.json();
 
         setFilters(data);
-    }
-
-    function removeFromDb(id) {
-        fetch(`http://localhost:8080/delete-bike?bikeId=${id}`, {
-            credentials: 'include',
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok) {
-                    setProducts((prevItems) => prevItems.filter((item) => item.id !== id));
-                    toggleOpen();
-                }
-            });
     }
 
     function applyFilter(typeId, attributeId) {
@@ -168,25 +146,7 @@ export default function BikeShop() {
                                     products.map(element => (
                                         <MDBCol key={element.id}>
                                             {role === 'ROLE_ADMIN' ? <article className='close-button'>
-                                                <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
-                                                <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
-                                                    <MDBModalDialog>
-                                                        <MDBModalContent>
-                                                            <MDBModalHeader>
-                                                                <MDBModalTitle>Product removal</MDBModalTitle>
-                                                                <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
-                                                            </MDBModalHeader>
-                                                            <MDBModalBody>Are you sure you want to remove that product?</MDBModalBody>
-
-                                                            <MDBModalFooter>
-                                                                <MDBBtn color='secondary' onClick={toggleOpen}>
-                                                                    No
-                                                                </MDBBtn>
-                                                                <MDBBtn className="classic-button" onClick={() => removeFromDb(element.id)}>Yes</MDBBtn>
-                                                            </MDBModalFooter>
-                                                        </MDBModalContent>
-                                                    </MDBModalDialog>
-                                                </MDBModal>
+                                                <RemovalModal isBike={true} element={element} setProducts={setProducts} />
                                             </article> : null}
 
                                             <ProductCard isBike={true} element={element} role={role} products={products} setProducts={setProducts} />
