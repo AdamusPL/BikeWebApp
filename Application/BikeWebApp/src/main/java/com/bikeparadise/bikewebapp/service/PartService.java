@@ -1,9 +1,7 @@
 package com.bikeparadise.bikewebapp.service;
 
-import com.bikeparadise.bikewebapp.dto.bike.BikeShopDto;
 import com.bikeparadise.bikewebapp.dto.part.*;
 import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
-import com.bikeparadise.bikewebapp.model.bike.Bike;
 import com.bikeparadise.bikewebapp.model.part.Part;
 import com.bikeparadise.bikewebapp.model.part.PartAttribute;
 import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
@@ -11,7 +9,6 @@ import com.bikeparadise.bikewebapp.model.part.PartType;
 import com.bikeparadise.bikewebapp.model.review.Review;
 import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
 import com.bikeparadise.bikewebapp.repository.part.PartAttributeRepository;
-import com.bikeparadise.bikewebapp.repository.part.PartParameterAttributeRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;

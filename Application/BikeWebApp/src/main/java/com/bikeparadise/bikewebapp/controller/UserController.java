@@ -1,6 +1,5 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
 import com.bikeparadise.bikewebapp.dto.user.PhoneNumberDto;
 import com.bikeparadise.bikewebapp.dto.user.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;

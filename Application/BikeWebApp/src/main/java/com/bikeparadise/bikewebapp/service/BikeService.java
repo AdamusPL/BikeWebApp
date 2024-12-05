@@ -4,7 +4,6 @@ import com.bikeparadise.bikewebapp.dto.bike.*;
 import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.bike.*;
 import com.bikeparadise.bikewebapp.model.part.Part;
-import com.bikeparadise.bikewebapp.model.part.PartAttribute;
 import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
 import com.bikeparadise.bikewebapp.model.part.PartType;
 import com.bikeparadise.bikewebapp.model.review.Review;
@@ -228,12 +227,7 @@ public class BikeService {
         if (typesAndAttributes.size() == 0) {
             bikes = bikeRepository.findBikeByPriceBetween(new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice()));
         } else {
-            //search all combinations
-            List<List<String>> combinations = getCombinations(typesAndAttributes);
             List<Bike> bikeCase = new ArrayList<>();
-            for (List<String> combination : combinations) {
-//                bikeCase.addAll(bikeRepository.findBikeByAttributesAndPrice(combination, combination.size(), new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice()));
-            }
 
             List<Integer> bikeIds = new ArrayList<>();
             for (Bike bike : bikeCase) {

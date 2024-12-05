@@ -1,6 +1,5 @@
 package com.bikeparadise.bikewebapp.model.user;
 
-import com.bikeparadise.bikewebapp.model.user.UserData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
