@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-    MDBCard,
-    MDBCardImage,
-    MDBCardBody,
-    MDBCardTitle,
     MDBRow,
     MDBCol,
     MDBContainer,
     MDBSpinner,
     MDBBtn,
     MDBCheckbox,
-    MDBRipple,
-    MDBTypography,
     MDBModal,
     MDBModalDialog,
     MDBModalContent,
@@ -20,10 +14,9 @@ import {
     MDBModalBody,
     MDBModalFooter
 } from 'mdb-react-ui-kit';
-import { Link } from 'react-router-dom';
-import Dialog from '../components/Dialog';
 import { useRole } from '../components/RoleProvider';
 import '../css/PartShop.css'
+import ProductCard from '../components/ProductCard';
 
 export default function PartShop() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -74,46 +67,6 @@ export default function PartShop() {
         const data = await response.json();
 
         setFilters(data);
-        console.log(data);
-    }
-
-    function addToCart(id) {
-        if (localStorage.getItem('cart') === null) {
-            localStorage.setItem('cart', JSON.stringify({ bikes: [], parts: [{ id: id, quantity: 1 }] }));
-        }
-        else {
-            let cart = JSON.parse(localStorage.getItem('cart'));
-            const index = cart.parts.findIndex(b => b.id === id);
-
-            if (index !== -1) {
-                cart.parts[index].quantity += 1;
-            }
-
-            else {
-                cart = {
-                    ...cart,
-                    parts: [...cart.parts, { id: id, quantity: 1 }]
-                };
-            }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
-
-        let cartAfterModifying = JSON.parse(localStorage.getItem('cart'));
-
-        let productsCopy = products;
-        const product = productsCopy.find(item => item.id === id);
-
-        const index = cartAfterModifying.parts.findIndex(b => b.id === id);
-
-        if (cartAfterModifying.parts[index].quantity >= product.quantityInStock) {
-            product.isAvailable = false;
-        }
-
-        setProducts(productsCopy);
-
-        setIsDialogOpen(!isDialogOpen);
-
     }
 
     function closeDialog() {
@@ -236,65 +189,7 @@ export default function PartShop() {
                                                     </MDBModalDialog>
                                                 </MDBModal>
                                             </article> : null}
-                                            <MDBCard>
-                                                <Link to={`/part-shop/${element.id}`}>
-                                                    <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
-                                                        <MDBCardImage
-                                                            src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
-                                                            alt='...'
-                                                            position='top'
-                                                            width='300px'
-                                                        />
-                                                    </MDBRipple>
-                                                </Link>
-                                                <MDBCardBody>
-                                                    <MDBCardTitle tag='h2' className='mb-4'>{element.make} {element.modelName}</MDBCardTitle>
-                                                    <MDBRow tag='dl'>
-                                                        <MDBCol tag='dt'>
-                                                            Type:
-                                                        </MDBCol>
-                                                        <MDBCol tag='dd'>
-                                                            {element.type}
-                                                        </MDBCol>
-                                                    </MDBRow>
-                                                    <MDBRow tag='dl'>
-                                                        <MDBCol tag='dt'>
-                                                            Kind:
-                                                        </MDBCol>
-                                                        <MDBCol tag='dd'>
-                                                            {element.attribute}
-                                                        </MDBCol>
-                                                    </MDBRow>
-                                                    <MDBRow tag='dl'>
-                                                        <MDBCol tag='dt'>
-                                                            Price:
-                                                        </MDBCol>
-                                                        <MDBCol tag='dd'>
-                                                            {element.price}
-                                                        </MDBCol>
-                                                    </MDBRow>
-                                                    <MDBRow tag='dl'>
-                                                        <MDBCol tag='dt'>
-                                                            Quantity in stock:
-                                                        </MDBCol>
-                                                        <MDBCol tag='dd'>
-                                                            {element.quantityInStock}
-                                                        </MDBCol>
-                                                    </MDBRow>
-                                                    {role !== 'ROLE_ADMIN' ?
-                                                        element.isAvailable ?
-                                                            <Dialog isOpen={isDialogOpen} toggleOpen={() => addToCart(element.id)} toggleClose={closeDialog} />
-                                                            :
-                                                            <article>
-                                                                <MDBBtn className='me-1' color='secondary'>
-                                                                    Add to cart
-                                                                </MDBBtn>
-                                                                <MDBTypography tag='dt' sm='3' className='mt-2'>It's not available anymore!</MDBTypography>
-                                                            </article>
-                                                        : null
-                                                    }
-                                                </MDBCardBody>
-                                            </MDBCard>
+                                            <ProductCard isBike={false} element={element} role={role} />
                                         </MDBCol>
                                     ))
                                 :

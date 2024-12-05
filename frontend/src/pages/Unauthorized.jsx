@@ -1,4 +1,4 @@
-import { MDBContainer, MDBTypography } from "mdb-react-ui-kit";
+import { MDBTypography } from "mdb-react-ui-kit";
 
 import '../css/Unauthorized.css'
 

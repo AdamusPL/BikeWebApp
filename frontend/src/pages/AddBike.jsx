@@ -25,7 +25,6 @@ export default function AddBike() {
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-add-bike-filters', { credentials: 'include' });
-        debugger;
 
         if (response.status === 401) {
             navigate('/unauthorized');

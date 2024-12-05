@@ -26,7 +26,6 @@ export default function AddPart() {
 
     async function getFilters() {
         const response = await fetch('http://localhost:8080/get-add-part-filters', {credentials: 'include'});
-        debugger;
 
         if(response.status === 401){
             navigate('/unauthorized');

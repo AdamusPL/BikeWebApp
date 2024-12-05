@@ -1,5 +1,5 @@
 import {
-    MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBInput, MDBIcon,
+    MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBIcon,
     MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter,
     MDBCol
 } from "mdb-react-ui-kit";
@@ -16,7 +16,7 @@ export default function Cart() {
     const [isLoading, setIsLoading] = useState(true);
     const [summaryPrice, setSummaryPrice] = useState(0.0);
     const [basicModal, setBasicModal] = useState(false);
-    const [cookies, setCookie] = useCookies(['token']);
+    const [cookies] = useCookies(['token']);
     const { role } = useRole();
 
     const navigate = useNavigate();

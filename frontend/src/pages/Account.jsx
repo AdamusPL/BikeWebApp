@@ -6,9 +6,8 @@ import { useCookies } from "react-cookie";
 import '../css/Account.css';
 
 export default function Account() {
-    const [isLoading, setIsLoading] = useState(true);
     const [userData, setUserData] = useState([]);
-    const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const [cookies, removeCookie] = useCookies(['token']);
 
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -19,7 +18,6 @@ export default function Account() {
 
     useEffect(() => {
         checkLogin();
-        setIsLoading(false);
     }, []);
 
     function checkLogin() {
@@ -46,7 +44,6 @@ export default function Account() {
     }
 
     function addPhoneNumber(newPhoneNumber) {
-        debugger;
         const phoneNumberObj = {
             phoneNumber: newPhoneNumber
         }
