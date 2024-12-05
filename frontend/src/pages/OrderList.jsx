@@ -15,7 +15,6 @@ export default function OrderList() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        debugger;
         if (role === 'ROLE_ADMIN' && !isLoading) {
             getOrderStatuses();
             getAllOrders();

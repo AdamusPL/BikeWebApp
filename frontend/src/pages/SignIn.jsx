@@ -29,7 +29,6 @@ export default function SignIn() {
             body: JSON.stringify(userData)
 
         }).then(response => {
-            debugger;
             if (response.status === 401) {
                 return response.text();
             }
@@ -39,7 +38,6 @@ export default function SignIn() {
         }
         )
             .then(data => {
-                debugger;
                 if (typeof data !== 'string') {
                     if (data.accessToken !== null) {
                         setCookie('token', data.accessToken, { path: '/' });
