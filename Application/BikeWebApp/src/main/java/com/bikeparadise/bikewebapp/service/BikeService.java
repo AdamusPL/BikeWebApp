@@ -12,6 +12,7 @@ import com.bikeparadise.bikewebapp.repository.bike.*;
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
+import com.bikeparadise.bikewebapp.service.shared.GetReviews;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -199,15 +200,7 @@ public class BikeService {
         if(!filters.getMinPrice().matches("^\\d+(\\.\\d{1,2})?$")
         || !filters.getMaxPrice().matches("^\\d+(\\.\\d{1,2})?$")){
             bikes = bikeRepository.findAll();
-            for (Bike bike : bikes) {
-                String drive = getDrive(bike);
-                String make = getMake(bike);
-                String type = getType(bike);
-
-                BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
-                bikeShopDtoList.add(bikeShopDto);
-            }
-            return bikeShopDtoList;
+            return getBikeShopDtos(bikes, bikeShopDtoList);
         }
 
         Map<String, List<String>> typesAndAttributes = new HashMap<>();
@@ -227,7 +220,12 @@ public class BikeService {
         if (typesAndAttributes.size() == 0) {
             bikes = bikeRepository.findBikeByPriceBetween(new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice()));
         } else {
+            //search all combinations
+            List<List<String>> combinations = getCombinations(typesAndAttributes);
             List<Bike> bikeCase = new ArrayList<>();
+            for (List<String> combination : combinations) {
+//                bikeCase.addAll(bikeRepository.findBikeByAttributesAndPrice(combination, combination.size(), new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice())));
+            }
 
             List<Integer> bikeIds = new ArrayList<>();
             for (Bike bike : bikeCase) {
@@ -249,6 +247,10 @@ public class BikeService {
         }
 
         //retrieve parameters
+        return getBikeShopDtos(bikes, bikeShopDtoList);
+    }
+
+    private List<BikeShopDto> getBikeShopDtos(List<Bike> bikes, List<BikeShopDto> bikeShopDtoList) {
         for (Bike bike : bikes) {
             String drive = getDrive(bike);
             String make = getMake(bike);
@@ -257,7 +259,6 @@ public class BikeService {
             BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
             bikeShopDtoList.add(bikeShopDto);
         }
-
         return bikeShopDtoList;
     }
 
@@ -282,12 +283,7 @@ public class BikeService {
                 }
             }
 
-            List<Review> reviews = bike.getReview();
-            List<ReviewPrintDto> reviewPrintDtos = new ArrayList<>();
-            for (Review review : reviews) {
-                ReviewPrintDto reviewPrintDto = new ReviewPrintDto(review.getId(), review.getClient().getUserData().getFirstName(), review.getClient().getUserData().getLastName(), review.getNumberOfStars(), review.getDescription());
-                reviewPrintDtos.add(reviewPrintDto);
-            }
+            List<ReviewPrintDto> reviewPrintDtos = GetReviews.getReviews(bike.getReview());
 
             //get make
             String make = "";
@@ -342,8 +338,8 @@ public class BikeService {
             String[] words = bikeAddDto.getBikeIdentificationsAvailable().split(" ");
             List<BikeIdentificationAvailable> bikeIdsAvailable = new ArrayList<>();
             for (String word : words) {
-                if(word.length() != 9){
-                    return ResponseEntity.badRequest().body("Error: Serial number must consists of exactly 9 digits");
+                if(word.length() != 10){
+                    return ResponseEntity.badRequest().body("Error: Serial number must consists of exactly 10 digits");
                 }
                 if(!word.matches("\\d+")){
                     return ResponseEntity.badRequest().body("Error: Serial number must consists of only digits");

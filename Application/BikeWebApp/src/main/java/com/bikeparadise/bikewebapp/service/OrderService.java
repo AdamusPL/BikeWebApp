@@ -20,10 +20,9 @@ import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartReservedRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ClientRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserRepository;
+import com.bikeparadise.bikewebapp.service.shared.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -59,21 +58,11 @@ public class OrderService {
         this.partReservedRepository = partReservedRepository;
     }
 
-
     public ResponseEntity<String> buy(OrderDto orderDto) {
-        //retrieve client id
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        User user = AuthService.checkAuth(userRepository);
+        if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
-
-        if (foundUsers.size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = foundUsers.get(0);
 
         Optional<Client> client = clientRepository.findById(user.getUserData().getClient().getId());
         //default order status
@@ -147,19 +136,10 @@ public class OrderService {
     }
 
     public ResponseEntity<List<OrderListDto>> getOrderList() {
-        //retrieve client id
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        User user = AuthService.checkAuth(userRepository);
+        if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
-
-        if (foundUsers.size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = foundUsers.get(0);
 
         List<OrderListDto> score = new ArrayList<>();
         List<Order> orderList = orderRepository.findByClientId(user.getUserData().getClient().getId());

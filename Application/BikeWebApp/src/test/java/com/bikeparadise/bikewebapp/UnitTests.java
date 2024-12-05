@@ -115,7 +115,7 @@ public class UnitTests {
         //create new bike
         BikeAddDto bikeAddDto = new BikeAddDto("Swift 4", BigDecimal.valueOf(1999.99),
                 "3x7 bike, perfect for starting story with MTB",
-                "0123456789, 1234567890, 2345678901", bikeAddFiltersDtoList,
+                "0123456789 1234567890 2345678901", bikeAddFiltersDtoList,
                 shopAssistant.getId());
 
         //tests
@@ -266,7 +266,7 @@ public class UnitTests {
                         new PartTypeFilterDto(9, "Tyres", false)
                 )
         );
-        PartFiltersDto partFiltersDto = new PartFiltersDto(partTypeFilterDtos, partRepository.findMinPrice(), partRepository.findMaxPrice());
+        PartFiltersDto partFiltersDto = new PartFiltersDto(partTypeFilterDtos, partRepository.findMinPrice().toString(), partRepository.findMaxPrice().toString());
 
         List<PartShopDto> partShopDtoList = partService.getFilteredParts(partFiltersDto);
         assertNotNull(partShopDtoList);

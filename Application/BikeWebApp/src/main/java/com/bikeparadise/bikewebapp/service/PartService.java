@@ -12,6 +12,7 @@ import com.bikeparadise.bikewebapp.repository.part.PartAttributeRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
+import com.bikeparadise.bikewebapp.service.shared.GetReviews;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -54,12 +55,7 @@ public class PartService {
         if (partOptional.isPresent()) {
             Part part = partOptional.get();
 
-            List<Review> reviews = part.getReview();
-            List<ReviewPrintDto> reviewPrintDtos = new ArrayList<>();
-            for (Review review : reviews) {
-                ReviewPrintDto reviewPrintDto = new ReviewPrintDto(review.getId(), review.getClient().getUserData().getFirstName(), review.getClient().getUserData().getLastName(), review.getNumberOfStars(), review.getDescription());
-                reviewPrintDtos.add(reviewPrintDto);
-            }
+            List<ReviewPrintDto> reviewPrintDtos = GetReviews.getReviews(part.getReview());
 
             PartDetailedInfoDto partDetailedInfoDto = new PartDetailedInfoDto(part.getId(), part.getMake() + " " + part.getModelName(), part.getPrice(), part.getQuantityInStock(), part.getDescription(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), reviewPrintDtos);
             return partDetailedInfoDto;
