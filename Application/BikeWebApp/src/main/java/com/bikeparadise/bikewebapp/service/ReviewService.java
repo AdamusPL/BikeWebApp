@@ -12,6 +12,7 @@ import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.review.ReviewRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ClientRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserRepository;
+import com.bikeparadise.bikewebapp.service.shared.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -46,19 +47,10 @@ public class ReviewService {
             return ResponseEntity.badRequest().body("Error: Review text can't be longer than 500 characters");
         }
 
-        //retrieve client id
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        User user = AuthService.checkAuth(userRepository);
+        if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
-
-        if (foundUsers.size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = foundUsers.get(0);
 
         Optional<Client> clientOptional = clientRepository.findById(user.getUserData().getClient().getId());
         Optional<Bike> bikeOptional = bikeRepository.findById(bikeReviewDto.getBikeId());
@@ -79,19 +71,10 @@ public class ReviewService {
             return ResponseEntity.badRequest().body("Error: Review text can't be longer than 500 characters");
         }
 
-        //retrieve client id
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        User user = AuthService.checkAuth(userRepository);
+        if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
-
-        if (foundUsers.size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = foundUsers.get(0);
 
         Optional<Client> clientOptional = clientRepository.findById(user.getUserData().getClient().getId());
         Optional<Part> partOptional = partRepository.findById(partReviewDto.getPartId());

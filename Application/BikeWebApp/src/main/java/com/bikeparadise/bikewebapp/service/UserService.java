@@ -15,6 +15,7 @@ import com.bikeparadise.bikewebapp.model.user.UserPhoneNumber;
 import com.bikeparadise.bikewebapp.repository.user.UserEmailRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserPhoneNumberRepository;
 import com.bikeparadise.bikewebapp.repository.user.UserRepository;
+import com.bikeparadise.bikewebapp.service.shared.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -175,17 +176,10 @@ public class UserService {
     }
 
     public ResponseEntity<UserInfoDto> getUserData() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        User user = AuthService.checkAuth(userRepository);
+        if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
-        if (foundUsers.size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = foundUsers.get(0);
 
         String phoneNumbers = "";
         String emails = "";
@@ -234,17 +228,10 @@ public class UserService {
             return ResponseEntity.badRequest().body("Error: This phone number is already taken");
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        User user = AuthService.checkAuth(userRepository);
+        if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
-        if (foundUsers.size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = foundUsers.get(0);
 
         UserPhoneNumber userPhoneNumber = new UserPhoneNumber(phoneNumberDto.getPhoneNumber(), user.getUserData());
         userPhoneNumberRepository.save(userPhoneNumber);
@@ -263,17 +250,10 @@ public class UserService {
             return ResponseEntity.badRequest().body("Error: This e-mail is already taken");
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
+        User user = AuthService.checkAuth(userRepository);
+        if(user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<User> foundUsers = userRepository.findUserByUsername(authentication.getName());
-        if (foundUsers.size() == 0) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = foundUsers.get(0);
 
         UserEmail userEmail = new UserEmail(email, user.getUserData());
         userEmailRepository.save(userEmail);
