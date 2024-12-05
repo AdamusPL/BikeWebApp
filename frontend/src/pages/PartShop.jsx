@@ -193,9 +193,9 @@ export default function PartShop() {
 
                     <p className='mt-4'>Price</p>
                     <article id='price' className='mb-4'>
-                        <input className='form-control input' onChange={applyMinPrice} defaultValue={filters.minPrice}></input>
+                        <input className='form-control input' maxLength="8" onChange={applyMinPrice} defaultValue={filters.minPrice}></input>
                         <p id='minus'>-</p>
-                        <input className='form-control input' onChange={applyMaxPrice} defaultValue={filters.maxPrice}></input>
+                        <input className='form-control input' maxLength="8" onChange={applyMaxPrice} defaultValue={filters.maxPrice}></input>
                     </article>
                 </MDBCol>
 

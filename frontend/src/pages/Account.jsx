@@ -114,7 +114,7 @@ export default function Account() {
                     {userData.phoneNumbers}
                 </MDBCol>
                 <MDBCol>
-                    <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" min="1" max="13" minLength="9"></input>
+                    <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" type="tel" maxLength="13" minLength="9"></input>
                 </MDBCol>
                 <MDBCol>
                     <MDBBtn onClick={() => addPhoneNumber(phoneNumber)} className='classic-button'>Add new phone number</MDBBtn>
@@ -129,7 +129,7 @@ export default function Account() {
                     {userData.emails}
                 </MDBCol>
                 <MDBCol>
-                    <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" min="1" max="13" minLength="9"></input>
+                    <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" type="email" maxLength="64" minLength="1"></input>
                 </MDBCol>
                 <MDBCol>
                     <MDBBtn onClick={() => addEmail(email)} className='classic-button'>Add new e-mail address</MDBBtn>

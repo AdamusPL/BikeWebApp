@@ -65,8 +65,8 @@ export default function SignIn() {
                 />
                 <figcaption className='figure-caption d-flex justify-content-center'>Let's start your story with Bike Paradise!</figcaption>
             </figure>
-            <MDBInput label="Username" id="typeText" type="text" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
-            <MDBInput label="Password" id="typePassword" type="password" className="mt-3" onChange={(e) => { setPassword(e.target.value) }} />
+            <MDBInput label="Username" maxLength="30" id="typeText" type="text" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
+            <MDBInput label="Password" id="typePassword" maxLength="128" type="password" className="mt-3" onChange={(e) => { setPassword(e.target.value) }} />
             <div className="d-flex justify-content-center">
                 <MDBBtn aria-label="Sign-in to account" className="mt-4" style={{ backgroundColor: "#002E80" }} onClick={signIn}>Sign-in</MDBBtn>
             </div>

@@ -87,15 +87,15 @@ export default function AddPart() {
         <MDBContainer>
             <MDBTypography variant='h1 mt-2'>Add new part</MDBTypography>
 
-            <MDBInput label="Make" id="typeText" type="text" className="mt-5" onChange={(e) => { setMake(e.target.value) }} />
+            <MDBInput label="Make" id="typeText" type="text" maxLength="23" className="mt-5" onChange={(e) => { setMake(e.target.value) }} />
 
-            <MDBInput label="Model Name" id="typeText" type="text" className="mt-5" onChange={(e) => { setModelName(e.target.value) }} />
+            <MDBInput label="Model Name" id="typeText" type="text" maxLength="50" className="mt-5" onChange={(e) => { setModelName(e.target.value) }} />
 
-            <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
+            <MDBInput label="Price" id="typeText" type="text" maxLength="38" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
 
-            <MDBTextArea label="Description" id="textAreaExample" className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
+            <MDBTextArea label="Description" id="textAreaExample" maxLength="500" className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
 
-            <MDBInput label="Quantity in stock" id="typeText" type="text" className="mt-5" onChange={(e) => { setQuantityInStock(e.target.value) }} />
+            <MDBInput label="Quantity in stock" id="typeText" maxLength="10" type="text" className="mt-5" onChange={(e) => { setQuantityInStock(e.target.value) }} />
 
 
             {!isLoading ?
