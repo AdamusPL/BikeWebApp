@@ -1,8 +1,10 @@
-import { MDBBtn, MDBContainer, MDBInput } from "mdb-react-ui-kit";
+import { MDBBtn, MDBContainer, MDBInput, MDBTypography } from "mdb-react-ui-kit";
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
+
+import '../css/SignIn.css';
 
 export default function SignIn() {
     const [username, setUsername] = useState("");
@@ -26,14 +28,29 @@ export default function SignIn() {
             },
             body: JSON.stringify(userData)
 
-        }).then(response => response.json())
+        }).then(response => {
+            debugger;
+            if (response.status === 401) {
+                return response.text();
+            }
+            else {
+                return response.json();
+            }
+        }
+        )
             .then(data => {
-                if (data.accessToken !== null) {
-                    setCookie('token', data.accessToken, {path: '/'});
-                    navigate('/');
+                debugger;
+                if (typeof data !== 'string') {
+                    if (data.accessToken !== null) {
+                        setCookie('token', data.accessToken, { path: '/' });
+                        navigate('/');
+                    }
+                    else {
+                        setLoginStatus("Error: Wrong username or password");
+                    }
                 }
-                else {
-                    setLoginStatus("Error: Incorrect credentials");
+                else{
+                    setLoginStatus(data);
                 }
             })
     }
@@ -48,13 +65,13 @@ export default function SignIn() {
                 />
                 <figcaption className='figure-caption d-flex justify-content-center'>Let's start your story with Bike Paradise!</figcaption>
             </figure>
-            <MDBInput label="Username" id="typeText" type="text" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
-            <MDBInput label="Password" id="typePassword" type="password" className="mt-3" onChange={(e) => { setPassword(e.target.value) }} />
+            <MDBInput label="Username" maxLength="30" id="typeText" type="text" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
+            <MDBInput label="Password" id="typePassword" maxLength="128" type="password" className="mt-3" onChange={(e) => { setPassword(e.target.value) }} />
             <div className="d-flex justify-content-center">
-                <MDBBtn aria-label="Sign-in to account" className="mt-4" style={{backgroundColor: "#002E80"}} onClick={signIn}>Sign-in</MDBBtn>
+                <MDBBtn aria-label="Sign-in to account" className="mt-4" style={{ backgroundColor: "#002E80" }} onClick={signIn}>Sign-in</MDBBtn>
             </div>
-            <p className="mt-5">Don't have an account? Register <Link color="#002E80" style={{fontWeight: 'bold'}} to='/register'>here</Link></p>
-            <p className="mt-5">{loginStatus}</p>
+            <p className="mt-5">Don't have an account? Register <Link color="#002E80" style={{ fontWeight: 'bold' }} to='/register'>here</Link></p>
+            <MDBTypography id="info" tag='strong' className="mt-5">{loginStatus}</MDBTypography>
         </MDBContainer>
     );
 }

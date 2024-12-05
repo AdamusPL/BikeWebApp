@@ -1,4 +1,4 @@
-import { MDBBtn, MDBContainer, MDBInput, MDBRadio } from "mdb-react-ui-kit";
+import { MDBBtn, MDBContainer, MDBInput, MDBRadio, MDBTypography } from "mdb-react-ui-kit";
 import logo from "../assets/logo.png";
 import { useState } from "react";
 
@@ -15,42 +15,6 @@ export default function Registration() {
     const [selectedRole, setSelectedRole] = useState(false);
 
     function register() {
-        debugger;
-        if (firstName.length < 2) {
-            setLoginStatus("Error: First name must have at least 2 characters");
-            return;
-        }
-
-        if (lastName.length < 2) {
-            setLoginStatus("Error: Last name must have at least 2 characters");
-            return;
-        }
-
-        if (username.length < 6) {
-            setLoginStatus("Error: Username must have at least 6 characters");
-            return;
-        }
-
-        if (email.length < 3) {
-            setLoginStatus("Error: E-mail must have at least 3 characters");
-            return;
-        }
-
-        if (phoneNumber.length < 9) {
-            setLoginStatus("Error: Phone number must have at least 9 characters");
-            return;
-        }
-
-        if (password.length < 8) {
-            setLoginStatus("Error: Password must have at least 8 characters");
-            return;
-        }
-
-        if (password !== confirmedPassword) {
-            setLoginStatus("Passwords doesn't match");
-            return;
-        }
-
         const userData = {
             firstName: firstName,
             lastName: lastName,
@@ -68,12 +32,9 @@ export default function Registration() {
             body: JSON.stringify(userData)
 
         }).then(response => {
-            if (response.ok) {
-                setLoginStatus("User successfully registered! Now return to sign-in page to use your account.");
-            }
-            else {
-                setLoginStatus("Error: Incorrect credentials");
-            }
+            return response.text()
+        }).then((data) => {
+            setLoginStatus(data);
         })
     }
 
@@ -92,25 +53,25 @@ export default function Registration() {
                 />
                 <figcaption className='figure-caption d-flex justify-content-center'>Let's start your story with Bike Paradise!</figcaption>
             </figure>
-            <MDBInput label="First Name" id="typeText" type="text" className="mt-5" minLength={2} maxLength={18} pattern="^[A-Za-z]+([-' ][A-Za-z]+)*$" required onChange={(e) => { setFirstName(e.target.value) }} />
-            <MDBInput label="Last Name" id="typeText" type="text" className="mt-3" minLength={2} maxLength={48} pattern="^[A-Za-z]+([-' ][A-Za-z]+)*$" required onChange={(e) => { setLastName(e.target.value) }} />
+            <MDBInput label="First Name" id="typeText" type="text" maxLength="18" className="mt-5" onChange={(e) => { setFirstName(e.target.value) }} />
+            <MDBInput label="Last Name" id="typeText" type="text" maxLength="48" className="mt-3" onChange={(e) => { setLastName(e.target.value) }} />
 
-            <MDBInput label="Username" id="typeText" type="text" className="mt-5" minLength={6} maxLength={30} pattern="^[A-Za-z0-9_.]+$" required onChange={(e) => { setUsername(e.target.value) }} />
-            <MDBInput label="E-mail Address" id="typeEmail" type="email" className="mt-3" minLength={3} maxLength={64} pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$" required onChange={(e) => { setEmail(e.target.value) }} />
-            <MDBInput label="Phone Number" id="typePhone" type="tel" className="mt-3" minLength={9} maxLength={13} pattern="^\+?\d+$" required onChange={(e) => { setPhoneNumber(e.target.value) }} />
+            <MDBInput label="Username" id="typeText" type="text" maxLength="30" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
+            <MDBInput label="E-mail Address" id="typeEmail" type="email" maxLength="64" className="mt-3" required onChange={(e) => { setEmail(e.target.value) }} />
+            <MDBInput label="Phone Number" id="typePhone" type="tel" maxLength="13" className="mt-3" onChange={(e) => { setPhoneNumber(e.target.value) }} />
 
-            <MDBInput label="Password" id="typePassword" type="password" className="mt-5" minLength={8} maxLength={128} required onChange={(e) => { setPassword(e.target.value) }} />
-            <MDBInput label="Confirm Password" id="typePassword" type="password" className="mt-3" minLength={8} maxLength={128} required onChange={(e) => { setConfirmedPassword(e.target.value) }} />
+            <MDBInput label="Password" id="typePassword" type="password" maxLength="128" className="mt-5" onChange={(e) => { setPassword(e.target.value) }} />
+            <MDBInput label="Confirm Password" id="typePassword" type="password" maxLength="128" className="mt-3" onChange={(e) => { setConfirmedPassword(e.target.value) }} />
 
             <MDBContainer className="mt-3">
                 <MDBRadio name='flexRadioDefault' id='client' label='Customer' value={false} onChange={handleRadioButtonChange} defaultChecked />
                 <MDBRadio name='flexRadioDefault' id='shop-assistant' label='Shop Assistant' value={true} onChange={handleRadioButtonChange} />
             </MDBContainer>
 
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center mb-4">
                 <MDBBtn className="mt-4" style={{ backgroundColor: "#002E80" }} onClick={register}>Create an account</MDBBtn>
             </div>
-            <p className="mt-4">{loginStatus}</p>
+            <MDBTypography id="info" tag='strong'>{loginStatus}</MDBTypography>
         </MDBContainer>
     </>)
 }

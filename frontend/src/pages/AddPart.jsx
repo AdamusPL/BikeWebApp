@@ -15,7 +15,7 @@ export default function AddPart() {
     const [description, setDescription] = useState("");
     const [quantityInStock, setQuantityInStock] = useState(0);
 
-    const [isPosted, setIsPosted] = useState(false);
+    const [postStatus, setIsPosted] = useState("");
 
     const navigate = useNavigate();
 
@@ -62,9 +62,9 @@ export default function AddPart() {
             body: JSON.stringify(part)
 
         }).then(response => {
-            if (response.ok) {
-                setIsPosted(true);
-            }
+            return response.text();
+        }).then(data => {
+            setIsPosted(data);
         })
     }
 
@@ -87,15 +87,15 @@ export default function AddPart() {
         <MDBContainer>
             <MDBTypography variant='h1 mt-2'>Add new part</MDBTypography>
 
-            <MDBInput label="Make" id="typeText" type="text" className="mt-5" onChange={(e) => { setMake(e.target.value) }} />
+            <MDBInput label="Make" id="typeText" type="text" maxLength="23" className="mt-5" onChange={(e) => { setMake(e.target.value) }} />
 
-            <MDBInput label="Model Name" id="typeText" type="text" className="mt-5" onChange={(e) => { setModelName(e.target.value) }} />
+            <MDBInput label="Model Name" id="typeText" type="text" maxLength="50" className="mt-5" onChange={(e) => { setModelName(e.target.value) }} />
 
-            <MDBInput label="Price" id="typeText" type="text" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
+            <MDBInput label="Price" id="typeText" type="text" maxLength="38" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
 
-            <MDBTextArea label="Description" id="textAreaExample" className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
+            <MDBTextArea label="Description" id="textAreaExample" maxLength="500" className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
 
-            <MDBInput label="Quantity in stock" id="typeText" type="text" className="mt-5" onChange={(e) => { setQuantityInStock(e.target.value) }} />
+            <MDBInput label="Quantity in stock" id="typeText" maxLength="10" type="text" className="mt-5" onChange={(e) => { setQuantityInStock(e.target.value) }} />
 
 
             {!isLoading ?
@@ -130,11 +130,11 @@ export default function AddPart() {
                 <p>No data found</p>
             }
 
-            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button">Add part</MDBBtn>
+            <MDBBtn onClick={addPartToDB} className="mt-4 classic-button mb-4">Add part</MDBBtn>
 
-            {isPosted ? <p>Part successfully added</p>
-                :
-                null}
+            <div>
+                <MDBTypography id="info" tag='strong' className="mt-5">{postStatus}</MDBTypography>
+            </div>
 
         </MDBContainer>
     </>)

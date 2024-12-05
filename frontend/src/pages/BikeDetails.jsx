@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner, MDBIcon, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from "mdb-react-ui-kit";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTextArea, MDBSpinner, MDBIcon, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter, MDBTypography } from "mdb-react-ui-kit";
 import '../css/BikeDetails.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -20,7 +20,7 @@ export default function BikeDetails() {
     const [opinion, setOpinion] = useState("");
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
 
-    const [isReviewPosted, setIsReviewPosted] = useState(false);
+    const [reviewStatus, setIsReviewPosted] = useState("");
     const navigate = useNavigate();
 
     const [basicModal, setBasicModal] = useState(false);
@@ -117,14 +117,15 @@ export default function BikeDetails() {
 
         }).then(response => {
             if (response.ok) {
-                setIsReviewPosted(true);
+                setChosenProduct((chosenProduct) => ({
+                    ...chosenProduct,
+                    reviews: [...chosenProduct.reviews, review],
+                }));
             }
+            return response.text();
+        }).then(data => {
+            setIsReviewPosted(data);
         })
-
-        setChosenProduct((chosenProduct) => ({
-            ...chosenProduct,
-            reviews: [...chosenProduct.reviews, review],
-        }));
     }
 
     function backToShop() {
@@ -205,14 +206,11 @@ export default function BikeDetails() {
                         <input id="stars" className="form-control" label="1-5" min="1" max="5" maxLength="1" onChange={(e) => { setNumberOfStars(e.target.value) }}></input>
                         <span>/5</span>
                     </article>
-                    <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" onChange={(e) => { setOpinion(e.target.value) }} />
-                    <MDBBtn className="mt-2 classic-button" onClick={addReview}>Add review</MDBBtn>
-                    {
-                        isReviewPosted ?
-                            <p>Review posted successfully</p>
-                            :
-                            null
-                    }
+                    <MDBTextArea label="Opinion" id="textAreaExample" rows="{4}" maxLength="500" onChange={(e) => { setOpinion(e.target.value) }} />
+                    <MDBBtn className="mt-2 classic-button mb-4" onClick={addReview}>Add review</MDBBtn>
+                    <div>
+                        <MDBTypography id="info" tag='strong'>{reviewStatus}</MDBTypography>
+                    </div>
                 </article>
                 : <p>You must be signed-in to post a review</p>
             }
