@@ -1,22 +1,18 @@
 import {
     MDBCard, MDBListGroup, MDBListGroupItem, MDBTypography, MDBBtn, MDBContainer, MDBIcon,
-    MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter,
     MDBCol
 } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 
 import '../css/Cart.css'
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 import { useRole } from "../components/RoleProvider";
+import BuyModal from "../components/BuyModal";
 
 export default function Cart() {
-
     const [products, setProducts] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [summaryPrice, setSummaryPrice] = useState(0.0);
-    const [basicModal, setBasicModal] = useState(false);
-    const [cookies] = useCookies(['token']);
     const { role } = useRole();
 
     const navigate = useNavigate();
@@ -105,23 +101,6 @@ export default function Cart() {
 
         localStorage.setItem('cart', JSON.stringify(cart));
         setProducts(productsCopy);
-    }
-
-    function handleClick() {
-        if (isLoading) {
-            return;
-        }
-
-        if (cookies.token === undefined) {
-            navigate('/sign-in');
-        }
-        else {
-            setBasicModal(!basicModal);
-        }
-    }
-
-    function toggleOpen() {
-        setBasicModal(!basicModal);
     }
 
     function minusPart(id) {
@@ -224,26 +203,6 @@ export default function Cart() {
         setProducts(productsCopy);
     }
 
-    function submitOrder() {
-        const order = {
-            bikes: JSON.parse(localStorage.getItem('cart')).bikes,
-            parts: JSON.parse(localStorage.getItem('cart')).parts
-        };
-
-        fetch(`http://localhost:8080/buy`, {
-            credentials: 'include',
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(order)
-
-        }).then(response => {
-            if (response.ok) {
-                localStorage.removeItem('cart');
-                navigate('/order-list')
-            }
-        })
-    }
-
     return (<>
         <MDBContainer>
             <MDBCard className="mt-4">
@@ -313,25 +272,9 @@ export default function Cart() {
                     </MDBListGroupItem>
                 </MDBListGroup>
             </MDBCard>
-            <MDBBtn className="mt-4 classic-button" onClick={handleClick}>Buy now</MDBBtn>
-            <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
-                <MDBModalDialog>
-                    <MDBModalContent>
-                        <MDBModalHeader>
-                            <MDBModalTitle>Are you sure you want to buy?</MDBModalTitle>
-                            <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
-                        </MDBModalHeader>
-                        <MDBModalBody>By clicking "Yes" button, you accept the store policy and order with obligation to pay on-site.</MDBModalBody>
 
-                        <MDBModalFooter>
-                            <MDBBtn color='secondary' onClick={toggleOpen}>
-                                Give me more time
-                            </MDBBtn>
-                            <MDBBtn onClick={submitOrder} className="classic-button">Yes</MDBBtn>
-                        </MDBModalFooter>
-                    </MDBModalContent>
-                </MDBModalDialog>
-            </MDBModal>
-        </MDBContainer >
+            <BuyModal />
+            
+        </MDBContainer>
     </>)
 }

@@ -6,13 +6,6 @@ import {
     MDBSpinner,
     MDBBtn,
     MDBCheckbox,
-    MDBModal,
-    MDBModalDialog,
-    MDBModalContent,
-    MDBModalHeader,
-    MDBModalTitle,
-    MDBModalBody,
-    MDBModalFooter
 } from 'mdb-react-ui-kit';
 import { useRole } from '../components/RoleProvider';
 import '../css/PartShop.css'
