@@ -4,7 +4,13 @@ import { Link } from "react-router-dom";
 import Dialog from "./Dialog";
 
 
-export default function ProductCard({ isBike, element, role }) {
+export default function ProductCard({ isBike, element, role, products, setProducts }) {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    function closeDialog() {
+        setIsDialogOpen(!isDialogOpen);
+    }
+
     function addBikeToCart(id) {
         if (localStorage.getItem('cart') === null) {
             localStorage.setItem('cart', JSON.stringify({ bikes: [{ id: id, quantity: 1 }], parts: [] }));

@@ -189,7 +189,7 @@ export default function PartShop() {
                                                     </MDBModalDialog>
                                                 </MDBModal>
                                             </article> : null}
-                                            <ProductCard isBike={false} element={element} role={role} />
+                                            <ProductCard isBike={false} element={element} role={role} products={products} setProducts={setProducts} />
                                         </MDBCol>
                                     ))
                                 :

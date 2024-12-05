@@ -20,8 +20,6 @@ import { useRole } from '../components/RoleProvider';
 import ProductCard from '../components/ProductCard';
 
 export default function BikeShop() {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState({});
@@ -68,10 +66,6 @@ export default function BikeShop() {
         const data = await response.json();
 
         setFilters(data);
-    }
-
-    function closeDialog() {
-        setIsDialogOpen(!isDialogOpen);
     }
 
     function removeFromDb(id) {
@@ -195,7 +189,7 @@ export default function BikeShop() {
                                                 </MDBModal>
                                             </article> : null}
 
-                                            <ProductCard isBike={true} element={element} role={role} />
+                                            <ProductCard isBike={true} element={element} role={role} products={products} setProducts={setProducts} />
                                         </MDBCol>
                                     ))
                                 :
