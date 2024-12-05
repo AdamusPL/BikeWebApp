@@ -12,8 +12,9 @@ import java.util.List;
 public interface BikeRepository extends JpaRepository<Bike, Integer> {
     @Query("SELECT MAX(b.price) FROM Bike b")
     BigDecimal findMaxPrice();
+
     @Query("SELECT MIN(b.price) FROM Bike b")
     BigDecimal findMinPrice();
-    List<Bike> findBikeByBikeAttribute_BikeParameterAttribute_AttributeInAndPriceBetween(List<String> attributes, BigDecimal minPrice, BigDecimal maxPrice);
+
     List<Bike> findBikeByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
 }

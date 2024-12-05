@@ -9,10 +9,10 @@ import com.bikeparadise.bikewebapp.model.part.PartType;
 import com.bikeparadise.bikewebapp.model.review.Review;
 import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
 import com.bikeparadise.bikewebapp.repository.part.PartAttributeRepository;
-import com.bikeparadise.bikewebapp.repository.part.PartParameterAttributeRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +79,7 @@ public class PartService {
         BigDecimal maxPrice = partRepository.findMaxPrice();
         BigDecimal minPrice = partRepository.findMinPrice();
 
-        PartFiltersDto partFiltersDto = new PartFiltersDto(filters, minPrice, maxPrice);
+        PartFiltersDto partFiltersDto = new PartFiltersDto(filters, minPrice.toString(), maxPrice.toString());
 
         return partFiltersDto;
     }
@@ -101,6 +101,19 @@ public class PartService {
     }
 
     public List<PartShopDto> getFilteredParts(PartFiltersDto partTypeFilterDtos){
+        List<Part> parts;
+        List<PartShopDto> partShopDtoList = new ArrayList<>();
+
+        if(!partTypeFilterDtos.getMinPrice().matches("^\\d+(\\.\\d{1,2})?$")
+                || !partTypeFilterDtos.getMaxPrice().matches("^\\d+(\\.\\d{1,2})?$")){
+            parts = partRepository.findAll();
+            for(Part part : parts){
+                PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
+                partShopDtoList.add(partShopDto);
+            }
+            return partShopDtoList;
+        }
+
         List<String> types = new ArrayList<>();
 
         int checked = 0;
@@ -111,13 +124,11 @@ public class PartService {
             }
         }
 
-        List<Part> parts;
-        List<PartShopDto> partShopDtoList = new ArrayList<>();
         if(checked == 0){
-            parts = partRepository.findPartByPriceBetween(partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+            parts = partRepository.findPartByPriceBetween(new BigDecimal(partTypeFilterDtos.getMinPrice()), new BigDecimal(partTypeFilterDtos.getMaxPrice()));
         }
         else {
-            parts = partRepository.findPartByPartParameterAttribute_PartType_TypeInAndPriceBetween(types, partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+            parts = partRepository.findPartByPartParameterAttribute_PartType_TypeInAndPriceBetween(types, new BigDecimal(partTypeFilterDtos.getMinPrice()), new BigDecimal(partTypeFilterDtos.getMaxPrice()));
         }
         for(Part part : parts){
             PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
@@ -128,7 +139,52 @@ public class PartService {
 
     }
 
+    private ResponseEntity<String> addPartConstraints(PartDto partDto){
+        if(partDto.getMake().equals("")){
+            return ResponseEntity.badRequest().body("Error: Make field is missing");
+        }
+
+        if(partDto.getMake().length() > 23){
+            return ResponseEntity.badRequest().body("Error: Make field can have max. 23 characters");
+        }
+
+        if(partDto.getModelName().equals("")){
+            return ResponseEntity.badRequest().body("Error: Model name field is missing");
+        }
+
+        if(partDto.getModelName().length() > 50){
+            return ResponseEntity.badRequest().body("Error: Model name field can have max. 50 characters");
+        }
+
+        if(partDto.getPrice() == null){
+            return ResponseEntity.badRequest().body("Error: Price field is missing");
+        }
+
+        if(partDto.getPrice().scale() > 2) {
+            return ResponseEntity.badRequest().body("Error: Price can only have 2 places after comma");
+        }
+
+        if(partDto.getDescription().length() > 500){
+            return ResponseEntity.badRequest().body("Error: Description can have max. 500 characters");
+        }
+
+        if(partDto.getQuantityInStock() == 0){
+            return ResponseEntity.badRequest().body("Error: Quantity in stock field is missing / can't have 0 value");
+        }
+
+        if(partDto.getQuantityInStock().toString().length() > 10){
+            return ResponseEntity.badRequest().body("Error: Quantity in stock can have up to 10 digits");
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
     public ResponseEntity<String> addPart(PartDto partDto) {
+        ResponseEntity<String> response = addPartConstraints(partDto);
+        if(!response.getStatusCode().equals(HttpStatus.OK)){
+            return response;
+        }
+
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(partDto.getShopAssistantId());
         PartType partType = partTypeRepository.findFirstByType(partDto.getType());
         PartAttribute partAttribute = partAttributeRepository.findFirstByAttribute(partDto.getAttribute());
@@ -139,7 +195,7 @@ public class PartService {
             partParameterAttribute.setPart(new ArrayList<>(List.of(part)));
             part.setPartParameterAttribute(partParameterAttribute);
             partRepository.save(part);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Part successfully added");
         }
 
         return ResponseEntity.notFound().build();

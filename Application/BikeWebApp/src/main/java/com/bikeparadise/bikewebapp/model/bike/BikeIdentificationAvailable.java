@@ -1,6 +1,5 @@
 package com.bikeparadise.bikewebapp.model.bike;
 
-import com.bikeparadise.bikewebapp.model.bike.Bike;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

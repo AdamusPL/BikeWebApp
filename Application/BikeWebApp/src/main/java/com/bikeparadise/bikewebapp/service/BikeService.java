@@ -4,18 +4,15 @@ import com.bikeparadise.bikewebapp.dto.bike.*;
 import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.bike.*;
 import com.bikeparadise.bikewebapp.model.part.Part;
-import com.bikeparadise.bikewebapp.model.part.PartAttribute;
 import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
 import com.bikeparadise.bikewebapp.model.part.PartType;
 import com.bikeparadise.bikewebapp.model.review.Review;
 import com.bikeparadise.bikewebapp.model.roles.ShopAssistant;
-import com.bikeparadise.bikewebapp.repository.bike.BikeAttributeRepository;
-import com.bikeparadise.bikewebapp.repository.bike.BikeIdentificationAvailableRepository;
-import com.bikeparadise.bikewebapp.repository.bike.BikeParameterTypeRepository;
-import com.bikeparadise.bikewebapp.repository.bike.BikeRepository;
+import com.bikeparadise.bikewebapp.repository.bike.*;
 import com.bikeparadise.bikewebapp.repository.part.PartRepository;
 import com.bikeparadise.bikewebapp.repository.part.PartTypeRepository;
 import com.bikeparadise.bikewebapp.repository.roles.ShopAssistantRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +28,13 @@ public class BikeService {
     private final PartTypeRepository partTypeRepository;
     private final PartRepository partRepository;
     private final BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository;
+    private final BikeIdentificationReservedRepository bikeIdentificationReservedRepository;
 
     public BikeService(BikeRepository bikeRepository, BikeParameterTypeRepository bikeParameterTypeRepository,
                        BikeAttributeRepository bikeAttributeRepository, ShopAssistantRepository shopAssistantRepository,
-                       PartRepository partRepository, PartTypeRepository partTypeRepository, BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository) {
+                       PartRepository partRepository, PartTypeRepository partTypeRepository,
+                       BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository,
+                       BikeIdentificationReservedRepository bikeIdentificationReservedRepository) {
         this.bikeRepository = bikeRepository;
         this.bikeParameterTypeRepository = bikeParameterTypeRepository;
         this.bikeAttributeRepository = bikeAttributeRepository;
@@ -42,6 +42,7 @@ public class BikeService {
         this.partRepository = partRepository;
         this.partTypeRepository = partTypeRepository;
         this.bikeIdentificationAvailableRepository = bikeIdentificationAvailableRepository;
+        this.bikeIdentificationReservedRepository = bikeIdentificationReservedRepository;
     }
 
     private String getDrive(Bike bike) {
@@ -162,32 +163,93 @@ public class BikeService {
         BigDecimal maxPrice = bikeRepository.findMaxPrice();
         BigDecimal minPrice = bikeRepository.findMinPrice();
 
-        BikeFiltersDto bikeFiltersDto = new BikeFiltersDto(filters, minPrice, maxPrice);
+        BikeFiltersDto bikeFiltersDto = new BikeFiltersDto(filters, minPrice.toString(), maxPrice.toString());
 
         return bikeFiltersDto;
 
     }
 
+    public static List<List<String>> getCombinations(Map<String, List<String>> map) {
+        List<String> keys = new ArrayList<>(map.keySet());
+        List<List<String>> results = new ArrayList<>();
+        generateCombinations(map, keys, 0, new ArrayList<>(), results);
+        return results;
+    }
+
+    private static void generateCombinations(Map<String, List<String>> map, List<String> keys, int index, List<String> current, List<List<String>> results) {
+        if (index == keys.size()) {
+            // Base case: all keys are processed, add the current combination to results
+            results.add(new ArrayList<>(current));
+            return;
+        }
+
+        // Recursive case: iterate over the values of the current key
+        String key = keys.get(index);
+        for (String value : map.get(key)) {
+            current.add(value);
+            generateCombinations(map, keys, index + 1, current, results);
+            current.remove(current.size() - 1); // Backtrack
+        }
+    }
+
     public List<BikeShopDto> getFilteredBikes(BikeFiltersDto filters) {
-        List<Bike> bikes;
+        List<Bike> bikes = new ArrayList<>();
         List<BikeShopDto> bikeShopDtoList = new ArrayList<>();
-        List<String> attributes = new ArrayList<>();
+
+        if(!filters.getMinPrice().matches("^\\d+(\\.\\d{1,2})?$")
+        || !filters.getMaxPrice().matches("^\\d+(\\.\\d{1,2})?$")){
+            bikes = bikeRepository.findAll();
+            for (Bike bike : bikes) {
+                String drive = getDrive(bike);
+                String make = getMake(bike);
+                String type = getType(bike);
+
+                BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
+                bikeShopDtoList.add(bikeShopDto);
+            }
+            return bikeShopDtoList;
+        }
+
+        Map<String, List<String>> typesAndAttributes = new HashMap<>();
         for (BikeFilterCheckboxDto bikeFilterCheckboxDto : filters.getBikeFilterCheckboxDtos()) {
+            String type = bikeFilterCheckboxDto.getType();
+            List<String> attributes = new ArrayList<>();
             for (BikeFilterAttributeDto bikeFilterAttributeDto : bikeFilterCheckboxDto.getAttribute()) {
                 if (bikeFilterAttributeDto.isChecked()) {
                     attributes.add(bikeFilterAttributeDto.getAttribute());
                 }
             }
+            if (attributes.size() != 0) {
+                typesAndAttributes.put(type, attributes);
+            }
         }
 
-        if (attributes.size() == 0) {
-            bikes = bikeRepository.findBikeByPriceBetween(filters.getMinPrice(), filters.getMaxPrice());
+        if (typesAndAttributes.size() == 0) {
+            bikes = bikeRepository.findBikeByPriceBetween(new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice()));
         } else {
-            bikes = bikeRepository.findBikeByBikeAttribute_BikeParameterAttribute_AttributeInAndPriceBetween(attributes, filters.getMinPrice(), filters.getMaxPrice());
+            List<Bike> bikeCase = new ArrayList<>();
+
+            List<Integer> bikeIds = new ArrayList<>();
+            for (Bike bike : bikeCase) {
+
+                boolean skip = false;
+
+                for (Integer id : bikeIds) {
+                    if (id.equals(bike.getId())) {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (!skip) {
+                    bikes.add(bike);
+                    bikeIds.add(bike.getId());
+                }
+            }
         }
 
+        //retrieve parameters
         for (Bike bike : bikes) {
-
             String drive = getDrive(bike);
             String make = getMake(bike);
             String type = getType(bike);
@@ -242,7 +304,37 @@ public class BikeService {
         return null;
     }
 
+    private ResponseEntity<String> checkAddBikeConstraints(BikeAddDto bikeAddDto){
+        if(bikeAddDto.getModelName().equals("")){
+            return ResponseEntity.badRequest().body("Error: Model name field is missing");
+        }
+
+        if(bikeAddDto.getModelName().length() > 50){
+            return ResponseEntity.badRequest().body("Error: Model name can have max. 50 characters");
+        }
+
+        if(bikeAddDto.getPrice() == null){
+            return ResponseEntity.badRequest().body("Error: Price field is missing");
+        }
+
+        if(bikeAddDto.getPrice().scale() > 2) {
+            return ResponseEntity.badRequest().body("Error: Price can only have 2 places after comma");
+        }
+
+        if(bikeAddDto.getDescription().length() > 500){
+            return ResponseEntity.badRequest().body("Error: Description can have max. 500 characters");
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
     public ResponseEntity<String> addBike(BikeAddDto bikeAddDto) {
+        ResponseEntity<String> response = checkAddBikeConstraints(bikeAddDto);
+
+        if(!response.getStatusCode().equals(HttpStatus.OK)){
+            return response;
+        }
+
         Optional<ShopAssistant> shopAssistant = shopAssistantRepository.findById(bikeAddDto.getShopAssistantId());
 
         if (shopAssistant.isPresent()) {
@@ -250,6 +342,18 @@ public class BikeService {
             String[] words = bikeAddDto.getBikeIdentificationsAvailable().split(" ");
             List<BikeIdentificationAvailable> bikeIdsAvailable = new ArrayList<>();
             for (String word : words) {
+                if(word.length() != 9){
+                    return ResponseEntity.badRequest().body("Error: Serial number must consists of exactly 9 digits");
+                }
+                if(!word.matches("\\d+")){
+                    return ResponseEntity.badRequest().body("Error: Serial number must consists of only digits");
+                }
+                BikeIdentificationReserved bikeIdentificationReserved = bikeIdentificationReservedRepository.findBikeIdentificationReservedBySerialNumber(word);
+
+                if(bikeIdentificationReserved != null){
+                    return ResponseEntity.badRequest().body("One of given serial numbers already exists in database");
+                }
+
                 BikeIdentificationAvailable bikeIdentificationAvailable = new BikeIdentificationAvailable(word);
                 bikeIdentificationAvailableRepository.save(bikeIdentificationAvailable);
                 bikeIdentificationAvailable.setBike(bike);
@@ -257,7 +361,6 @@ public class BikeService {
             }
             bike.setBikeIdentificationAvailable(bikeIdsAvailable);
             List<Part> partsOfBike = new ArrayList<>();
-            List<PartAttribute> partAttributes = new ArrayList<>();
 
             List<BikeAttribute> bikeAttributes = new ArrayList<>();
 
@@ -294,7 +397,7 @@ public class BikeService {
             bike.setPart(partsOfBike);
             bike.setBikeAttribute(bikeAttributes);
             bikeRepository.save(bike);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Bike successfully added");
         }
 
         return ResponseEntity.notFound().build();

@@ -1,7 +1,6 @@
 package com.bikeparadise.bikewebapp.controller;
 
 import com.bikeparadise.bikewebapp.dto.bike.*;
-import com.bikeparadise.bikewebapp.model.bike.Bike;
 import com.bikeparadise.bikewebapp.service.BikeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

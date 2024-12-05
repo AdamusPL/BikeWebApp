@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -142,13 +141,17 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<SecurityFilterDto> loginUser(UserSignInDto userSignInDto) {
+    public ResponseEntity<Object> loginUser(UserSignInDto userSignInDto) {
         List<User> foundUsers = userRepository.findUserByUsername(userSignInDto.getUsername());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        if (foundUsers.size() == 0 || !encoder.matches(userSignInDto.getPassword(), foundUsers.get(0).getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if (foundUsers.size() == 0) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: User with that username wasn't found");
+        }
+
+        if(!encoder.matches(userSignInDto.getPassword(), foundUsers.get(0).getPassword())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: Wrong password");
         }
 
         Authentication authentication;
@@ -219,6 +222,18 @@ public class UserService {
     }
 
     public ResponseEntity<String> addPhoneNumber(PhoneNumberDto phoneNumberDto) {
+        if (phoneNumberDto.getPhoneNumber().length() < 9) {
+            return ResponseEntity.badRequest().body("Error: Phone number must have at least 9 characters");
+        } else if (phoneNumberDto.getPhoneNumber().length() > 13) {
+            return ResponseEntity.badRequest().body("Error: Phone number is too long");
+        }
+
+        UserPhoneNumber userPhoneNumberCheck = userPhoneNumberRepository.findUserPhoneNumberByPhoneNumber(phoneNumberDto.getPhoneNumber());
+
+        if(userPhoneNumberCheck != null){
+            return ResponseEntity.badRequest().body("Error: This phone number is already taken");
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -233,10 +248,21 @@ public class UserService {
 
         UserPhoneNumber userPhoneNumber = new UserPhoneNumber(phoneNumberDto.getPhoneNumber(), user.getUserData());
         userPhoneNumberRepository.save(userPhoneNumber);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("Phone number successfully added");
     }
 
     public ResponseEntity<String> addEmail(String email) {
+        if (email.length() < 3) {
+            return ResponseEntity.badRequest().body("Error: E-mail must have at least 3 characters");
+        } else if (email.length() > 64) {
+            return ResponseEntity.badRequest().body("Error: E-mail is too long");
+        }
+
+        UserEmail userEmailCheck = userEmailRepository.findUserEmailByEmail(email);
+        if(userEmailCheck != null){
+            return ResponseEntity.badRequest().body("Error: This e-mail is already taken");
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -251,6 +277,6 @@ public class UserService {
 
         UserEmail userEmail = new UserEmail(email, user.getUserData());
         userEmailRepository.save(userEmail);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("E-mail address successfully added");
     }
 }

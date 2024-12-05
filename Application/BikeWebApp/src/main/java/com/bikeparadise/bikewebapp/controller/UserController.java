@@ -1,6 +1,5 @@
 package com.bikeparadise.bikewebapp.controller;
 
-import com.bikeparadise.bikewebapp.dto.SecurityFilterDto;
 import com.bikeparadise.bikewebapp.dto.user.PhoneNumberDto;
 import com.bikeparadise.bikewebapp.dto.user.UserInfoDto;
 import com.bikeparadise.bikewebapp.dto.user.UserRegisterDto;
@@ -27,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<SecurityFilterDto> loginUser(@RequestBody UserSignInDto userSignInDto) {
+    public ResponseEntity<Object> loginUser(@RequestBody UserSignInDto userSignInDto) {
         return userService.loginUser(userSignInDto);
     }
 
