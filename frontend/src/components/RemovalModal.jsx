@@ -1,7 +1,7 @@
 import { MDBBtn, MDBModal, MDBModalBody, MDBModalContent, MDBModalDialog, MDBModalFooter, MDBModalHeader, MDBModalTitle } from "mdb-react-ui-kit"
 import { useState } from "react"
 
-export default function RemovalModal({ isBike, element, setProducts }) {
+export default function RemovalModal({ isBike, isReview, element, setProducts, setChosenProduct }) {
     const [basicModal, setBasicModal] = useState(false);
     const toggleOpen = () => setBasicModal(!basicModal);
 
@@ -31,23 +31,45 @@ export default function RemovalModal({ isBike, element, setProducts }) {
             });
     }
 
+    function removeReviewFromDb(id) {
+        fetch(`http://localhost:8080/delete-review?reviewId=${id}`, {
+            credentials: 'include',
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    setChosenProduct((chosenProduct) => ({
+                        ...chosenProduct,
+                        reviews: chosenProduct.reviews.filter((r) => r.id !== id),
+                    }));
+                    toggleOpen();
+                }
+            });
+    }
+
     return (<>
         <MDBBtn onClick={toggleOpen} className="btn-close" color="none" aria-label="Close" />
         <MDBModal open={basicModal} onClose={() => setBasicModal(false)} tabIndex='-1'>
             <MDBModalDialog>
                 <MDBModalContent>
                     <MDBModalHeader>
-                        <MDBModalTitle>Product removal</MDBModalTitle>
+                        <MDBModalTitle>Removal</MDBModalTitle>
                         <MDBBtn className='btn-close' color='none' onClick={toggleOpen}></MDBBtn>
                     </MDBModalHeader>
-                    <MDBModalBody>Are you sure you want to remove that product?</MDBModalBody>
+                    <MDBModalBody>Are you sure you want to remove it?</MDBModalBody>
 
                     <MDBModalFooter>
                         <MDBBtn color='secondary' onClick={toggleOpen}>
                             No
                         </MDBBtn>
-                        {isBike ? <MDBBtn className="classic-button" onClick={() => removeBikeFromDb(element.id)}>Yes</MDBBtn>
-                            : <MDBBtn className="classic-button" onClick={() => removePartFromDb(element.id)}>Yes</MDBBtn>}
+                        {isReview ?
+                            <MDBBtn className="classic-button" onClick={() => removeReviewFromDb(element.id)}>Yes</MDBBtn>
+                            :
+                            isBike ?
+                                <MDBBtn className="classic-button" onClick={() => removeBikeFromDb(element.id)}>Yes</MDBBtn>
+                                :
+                                <MDBBtn className="classic-button" onClick={() => removePartFromDb(element.id)}>Yes</MDBBtn>
+                        }
                     </MDBModalFooter>
                 </MDBModalContent>
             </MDBModalDialog>

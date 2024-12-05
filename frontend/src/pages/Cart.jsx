@@ -219,7 +219,7 @@ export default function Cart() {
                                     </MDBCol>
                                     <MDBCol className='middle'>
                                         <MDBIcon className='minus' fas icon="minus" onClick={() => minusBike(element.id)} />
-                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
+                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} readOnly />
                                         <MDBIcon className='plus' fas icon="plus" onClick={() => plusBike(element.id)} />
                                     </MDBCol>
                                     <MDBCol className='middle'>
@@ -242,7 +242,7 @@ export default function Cart() {
                                     </MDBCol>
                                     <MDBCol className='middle'>
                                         <MDBIcon className='minus' fas icon="minus" onClick={() => minusPart(element.id)} />
-                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} />
+                                        <input className="form-control" style={{ width: '50px', marginLeft: '10px', marginRight: '10px' }} value={element.quantity} readOnly />
                                         <MDBIcon className='plus' fas icon="plus" onClick={() => plusPart(element.id)} />
                                     </MDBCol>
                                     <MDBCol className='middle'>

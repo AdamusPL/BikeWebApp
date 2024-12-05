@@ -146,7 +146,7 @@ export default function BikeShop() {
                                     products.map(element => (
                                         <MDBCol key={element.id}>
                                             {role === 'ROLE_ADMIN' ? <article className='close-button'>
-                                                <RemovalModal isBike={true} element={element} setProducts={setProducts} />
+                                                <RemovalModal isBike={true} isReview={false} element={element} setProducts={setProducts} setChosenProduct={null} />
                                             </article> : null}
 
                                             <ProductCard isBike={true} element={element} role={role} products={products} setProducts={setProducts} />
