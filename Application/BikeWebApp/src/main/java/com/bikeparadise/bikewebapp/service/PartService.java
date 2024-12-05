@@ -1,7 +1,9 @@
 package com.bikeparadise.bikewebapp.service;
 
+import com.bikeparadise.bikewebapp.dto.bike.BikeShopDto;
 import com.bikeparadise.bikewebapp.dto.part.*;
 import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
+import com.bikeparadise.bikewebapp.model.bike.Bike;
 import com.bikeparadise.bikewebapp.model.part.Part;
 import com.bikeparadise.bikewebapp.model.part.PartAttribute;
 import com.bikeparadise.bikewebapp.model.part.PartParameterAttribute;
@@ -80,7 +82,7 @@ public class PartService {
         BigDecimal maxPrice = partRepository.findMaxPrice();
         BigDecimal minPrice = partRepository.findMinPrice();
 
-        PartFiltersDto partFiltersDto = new PartFiltersDto(filters, minPrice, maxPrice);
+        PartFiltersDto partFiltersDto = new PartFiltersDto(filters, minPrice.toString(), maxPrice.toString());
 
         return partFiltersDto;
     }
@@ -102,6 +104,19 @@ public class PartService {
     }
 
     public List<PartShopDto> getFilteredParts(PartFiltersDto partTypeFilterDtos){
+        List<Part> parts;
+        List<PartShopDto> partShopDtoList = new ArrayList<>();
+
+        if(!partTypeFilterDtos.getMinPrice().matches("^\\d+(\\.\\d{1,2})?$")
+                || !partTypeFilterDtos.getMaxPrice().matches("^\\d+(\\.\\d{1,2})?$")){
+            parts = partRepository.findAll();
+            for(Part part : parts){
+                PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());
+                partShopDtoList.add(partShopDto);
+            }
+            return partShopDtoList;
+        }
+
         List<String> types = new ArrayList<>();
 
         int checked = 0;
@@ -112,13 +127,11 @@ public class PartService {
             }
         }
 
-        List<Part> parts;
-        List<PartShopDto> partShopDtoList = new ArrayList<>();
         if(checked == 0){
-            parts = partRepository.findPartByPriceBetween(partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+            parts = partRepository.findPartByPriceBetween(new BigDecimal(partTypeFilterDtos.getMinPrice()), new BigDecimal(partTypeFilterDtos.getMaxPrice()));
         }
         else {
-            parts = partRepository.findPartByPartParameterAttribute_PartType_TypeInAndPriceBetween(types, partTypeFilterDtos.getMinPrice(), partTypeFilterDtos.getMaxPrice());
+            parts = partRepository.findPartByPartParameterAttribute_PartType_TypeInAndPriceBetween(types, new BigDecimal(partTypeFilterDtos.getMinPrice()), new BigDecimal(partTypeFilterDtos.getMaxPrice()));
         }
         for(Part part : parts){
             PartShopDto partShopDto = new PartShopDto(part.getId(), part.getMake(), part.getModelName(), part.getPartParameterAttribute().getPartType().getType(), part.getPartParameterAttribute().getPartAttribute().getAttribute(), part.getPrice(), part.getQuantityInStock());

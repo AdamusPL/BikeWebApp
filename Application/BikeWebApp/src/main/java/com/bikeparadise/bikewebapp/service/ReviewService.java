@@ -39,6 +39,13 @@ public class ReviewService {
     }
 
     public ResponseEntity<String> postBikeReview(BikeReviewDto bikeReviewDto){
+        if(bikeReviewDto.getNumberOfStars() < 1 || bikeReviewDto.getNumberOfStars() > 5){
+            return ResponseEntity.badRequest().body("Error: You have to review in scale 1 to 5");
+        }
+        if(bikeReviewDto.getDescription().length() > 500){
+            return ResponseEntity.badRequest().body("Error: Review text can't be longer than 500 characters");
+        }
+
         //retrieve client id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
@@ -59,12 +66,19 @@ public class ReviewService {
         if(clientOptional.isPresent() && bikeOptional.isPresent()){
             Review review = new Review(bikeReviewDto.getNumberOfStars(), bikeReviewDto.getDescription(), clientOptional.get(), bikeOptional.get());
             reviewRepository.save(review);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Review posted successfully");
         }
         return ResponseEntity.notFound().build();
     }
 
     public ResponseEntity<String> postPartReview(PartReviewDto partReviewDto){
+        if(partReviewDto.getNumberOfStars() < 1 || partReviewDto.getNumberOfStars() > 5){
+            return ResponseEntity.badRequest().body("Error: You have to review in scale 1 to 5");
+        }
+        if(partReviewDto.getDescription().length() > 500){
+            return ResponseEntity.badRequest().body("Error: Review text can't be longer than 500 characters");
+        }
+
         //retrieve client id
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
@@ -85,7 +99,7 @@ public class ReviewService {
         if(clientOptional.isPresent() && partOptional.isPresent()){
             Review review = new Review(partReviewDto.getNumberOfStars(), partReviewDto.getDescription(), clientOptional.get(), partOptional.get());
             reviewRepository.save(review);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Review posted successfully");
         }
         return ResponseEntity.notFound().build();
     }

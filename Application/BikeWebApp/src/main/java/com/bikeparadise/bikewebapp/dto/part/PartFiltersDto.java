@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 public class PartFiltersDto {
     List<PartTypeFilterDto> partTypeFilterDtos;
-    BigDecimal minPrice;
-    BigDecimal maxPrice;
+    String minPrice;
+    String maxPrice;
 }

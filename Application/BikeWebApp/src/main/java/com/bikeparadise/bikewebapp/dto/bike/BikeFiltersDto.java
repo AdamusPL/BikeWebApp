@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 public class BikeFiltersDto {
     List<BikeFilterCheckboxDto> bikeFilterCheckboxDtos;
-    BigDecimal minPrice;
-    BigDecimal maxPrice;
+    String minPrice;
+    String maxPrice;
 }

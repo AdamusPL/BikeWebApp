@@ -164,7 +164,7 @@ public class BikeService {
         BigDecimal maxPrice = bikeRepository.findMaxPrice();
         BigDecimal minPrice = bikeRepository.findMinPrice();
 
-        BikeFiltersDto bikeFiltersDto = new BikeFiltersDto(filters, minPrice, maxPrice);
+        BikeFiltersDto bikeFiltersDto = new BikeFiltersDto(filters, minPrice.toString(), maxPrice.toString());
 
         return bikeFiltersDto;
 
@@ -196,6 +196,21 @@ public class BikeService {
     public List<BikeShopDto> getFilteredBikes(BikeFiltersDto filters) {
         List<Bike> bikes = new ArrayList<>();
         List<BikeShopDto> bikeShopDtoList = new ArrayList<>();
+
+        if(!filters.getMinPrice().matches("^\\d+(\\.\\d{1,2})?$")
+        || !filters.getMaxPrice().matches("^\\d+(\\.\\d{1,2})?$")){
+            bikes = bikeRepository.findAll();
+            for (Bike bike : bikes) {
+                String drive = getDrive(bike);
+                String make = getMake(bike);
+                String type = getType(bike);
+
+                BikeShopDto bikeShopDto = new BikeShopDto(bike.getId(), make, bike.getModelName(), type, drive, bike.getPrice(), bike.getBikeIdentificationAvailable().size());
+                bikeShopDtoList.add(bikeShopDto);
+            }
+            return bikeShopDtoList;
+        }
+
         Map<String, List<String>> typesAndAttributes = new HashMap<>();
         for (BikeFilterCheckboxDto bikeFilterCheckboxDto : filters.getBikeFilterCheckboxDtos()) {
             String type = bikeFilterCheckboxDto.getType();
@@ -211,13 +226,13 @@ public class BikeService {
         }
 
         if (typesAndAttributes.size() == 0) {
-            bikes = bikeRepository.findBikeByPriceBetween(filters.getMinPrice(), filters.getMaxPrice());
+            bikes = bikeRepository.findBikeByPriceBetween(new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice()));
         } else {
             //search all combinations
             List<List<String>> combinations = getCombinations(typesAndAttributes);
             List<Bike> bikeCase = new ArrayList<>();
             for (List<String> combination : combinations) {
-//                bikeCase.addAll(bikeRepository.findBikeByAttributesAndPrice(combination, combination.size(), filters.getMinPrice(), filters.getMaxPrice()));
+//                bikeCase.addAll(bikeRepository.findBikeByAttributesAndPrice(combination, combination.size(), new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice()));
             }
 
             List<Integer> bikeIds = new ArrayList<>();
