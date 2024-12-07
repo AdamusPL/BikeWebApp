@@ -30,12 +30,14 @@ public class BikeService {
     private final PartRepository partRepository;
     private final BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository;
     private final BikeIdentificationReservedRepository bikeIdentificationReservedRepository;
+    private final BikeExtendedRepository bikeExtendedRepository;
 
     public BikeService(BikeRepository bikeRepository, BikeParameterTypeRepository bikeParameterTypeRepository,
                        BikeAttributeRepository bikeAttributeRepository, ShopAssistantRepository shopAssistantRepository,
                        PartRepository partRepository, PartTypeRepository partTypeRepository,
                        BikeIdentificationAvailableRepository bikeIdentificationAvailableRepository,
-                       BikeIdentificationReservedRepository bikeIdentificationReservedRepository) {
+                       BikeIdentificationReservedRepository bikeIdentificationReservedRepository,
+                       BikeExtendedRepository bikeExtendedRepository) {
         this.bikeRepository = bikeRepository;
         this.bikeParameterTypeRepository = bikeParameterTypeRepository;
         this.bikeAttributeRepository = bikeAttributeRepository;
@@ -44,6 +46,7 @@ public class BikeService {
         this.partTypeRepository = partTypeRepository;
         this.bikeIdentificationAvailableRepository = bikeIdentificationAvailableRepository;
         this.bikeIdentificationReservedRepository = bikeIdentificationReservedRepository;
+        this.bikeExtendedRepository = bikeExtendedRepository;
     }
 
     private String getDrive(Bike bike) {
@@ -222,10 +225,7 @@ public class BikeService {
         } else {
             //search all combinations
             List<List<String>> combinations = getCombinations(typesAndAttributes);
-            List<Bike> bikeCase = new ArrayList<>();
-            for (List<String> combination : combinations) {
-//                bikeCase.addAll(bikeRepository.findBikeByAttributesAndPrice(combination, combination.size(), new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice())));
-            }
+            List<Bike> bikeCase = new ArrayList<>(bikeExtendedRepository.findBikesByCombinationsAndPrice(combinations, new BigDecimal(filters.getMinPrice()), new BigDecimal(filters.getMaxPrice())));
 
             List<Integer> bikeIds = new ArrayList<>();
             for (Bike bike : bikeCase) {
