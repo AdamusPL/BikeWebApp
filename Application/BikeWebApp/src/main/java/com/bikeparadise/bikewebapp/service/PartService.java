@@ -1,5 +1,6 @@
 package com.bikeparadise.bikewebapp.service;
 
+import com.bikeparadise.bikewebapp.dto.bike.BikeFiltersDto;
 import com.bikeparadise.bikewebapp.dto.part.*;
 import com.bikeparadise.bikewebapp.dto.review.ReviewPrintDto;
 import com.bikeparadise.bikewebapp.model.part.Part;
@@ -74,6 +75,10 @@ public class PartService {
 
         BigDecimal maxPrice = partRepository.findMaxPrice();
         BigDecimal minPrice = partRepository.findMinPrice();
+
+        if(maxPrice == null || minPrice == null) {
+            return new PartFiltersDto(filters, "0", "0");
+        }
 
         PartFiltersDto partFiltersDto = new PartFiltersDto(filters, minPrice.toString(), maxPrice.toString());
 
