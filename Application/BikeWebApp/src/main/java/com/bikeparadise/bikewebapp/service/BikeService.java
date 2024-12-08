@@ -167,6 +167,10 @@ public class BikeService {
         BigDecimal maxPrice = bikeRepository.findMaxPrice();
         BigDecimal minPrice = bikeRepository.findMinPrice();
 
+        if(maxPrice == null || minPrice == null) {
+            return new BikeFiltersDto(filters, "0", "0");
+        }
+
         BikeFiltersDto bikeFiltersDto = new BikeFiltersDto(filters, minPrice.toString(), maxPrice.toString());
 
         return bikeFiltersDto;

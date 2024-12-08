@@ -97,11 +97,16 @@ public class UserService {
             return ResponseEntity.badRequest().body("Error: Passwords don't match");
         }
 
-        if (userRepository.findUserByUsername(userRegisterDto.getUsername()).size() != 0 ||
-                userRepository.findUserByUserData_UserEmail_Email(userRegisterDto.getEmail()).size() != 0 ||
-                userRepository.findUserByUserData_UserPhoneNumber_PhoneNumber(userRegisterDto.getPhoneNumber()).size() != 0
-        ) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        if (userRepository.findUserByUsername(userRegisterDto.getUsername()).size() != 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: That username is already taken");
+        }
+
+        if(userRepository.findUserByUserData_UserEmail_Email(userRegisterDto.getEmail()).size() != 0){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: That e-mail address is already taken");
+        }
+
+        if(userRepository.findUserByUserData_UserPhoneNumber_PhoneNumber(userRegisterDto.getPhoneNumber()).size() != 0){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: That phone number is already taken");
         }
 
         return ResponseEntity.ok().build();
@@ -139,7 +144,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("User successfully registered");
     }
 
     public ResponseEntity<Object> loginUser(UserSignInDto userSignInDto) {
