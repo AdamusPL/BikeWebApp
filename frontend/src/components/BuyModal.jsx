@@ -11,18 +11,28 @@ export default function BuyModal() {
     const navigate = useNavigate();
 
     function handleClick() {
+        if (!localStorage.getItem('cart')) {
+            return;
+        }
+        if (JSON.parse(localStorage.getItem('cart')).bikes.length === 0 &&
+            JSON.parse(localStorage.getItem('cart')).parts.length === 0) {
+            return;
+        }
         if (cookies.token === undefined) {
             navigate('/sign-in');
         }
-        else{
+        else {
             toggleOpen();
         }
     }
 
     function submitOrder() {
+        const bikes = JSON.parse(localStorage.getItem('cart')).bikes;
+        const parts = JSON.parse(localStorage.getItem('cart')).parts;
+
         const order = {
-            bikes: JSON.parse(localStorage.getItem('cart')).bikes,
-            parts: JSON.parse(localStorage.getItem('cart')).parts
+            bikes: bikes,
+            parts: parts
         };
 
         fetch(`http://localhost:8080/buy`, {

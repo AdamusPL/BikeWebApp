@@ -3,6 +3,8 @@ import { useState } from "react"
 import { Link } from "react-router-dom";
 import Dialog from "./Dialog";
 
+import part1 from "../assets/part_1.png";
+import bike1 from "../assets/bike_1.jpg";
 
 export default function ProductCard({ isBike, element, role, products, setProducts }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -94,10 +96,10 @@ export default function ProductCard({ isBike, element, role, products, setProduc
                 <Link to={`/bike-shop/${element.id}`}>
                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
                         <MDBCardImage
-                            src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
+                            src={bike1}
                             alt='...'
                             position='top'
-                            width='300px'
+                            width='800px'
                         />
                     </MDBRipple>
                 </Link>
@@ -105,10 +107,10 @@ export default function ProductCard({ isBike, element, role, products, setProduc
                 <Link to={`/part-shop/${element.id}`}>
                     <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
                         <MDBCardImage
-                            src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
+                            src={part1}
                             alt='...'
                             position='top'
-                            width='300px'
+                            width='800px'
                         />
                     </MDBRipple>
                 </Link>
