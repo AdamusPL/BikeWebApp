@@ -82,13 +82,13 @@ export default function AddBike() {
         <MDBContainer>
             <MDBTypography variant='h1 mt-2'>Add new bike</MDBTypography>
 
-            <MDBInput label="Model Name" id="typeText" maxLength="50" type="text" className="mt-5" onChange={(e) => { setModelName(e.target.value) }} />
+            <MDBInput label="Model Name*" id="typeText" maxLength="50" type="text" className="mt-5" onChange={(e) => { setModelName(e.target.value) }} />
 
-            <MDBInput label="Price" id="typeText" type="text" maxLength="38" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
+            <MDBInput label="Price*" id="typeText" type="text" maxLength="38" className="mt-5" onChange={(e) => { setPrice(e.target.value) }} />
 
             <MDBTextArea label="Description" id="textAreaExample" maxLength="500" className="mt-5" rows="{4}" onChange={(e) => { setDescription(e.target.value) }} />
 
-            <MDBInput label="Serial numbers" id="typeText" type="text" className="mt-5 mb-5" onChange={(e) => { setSerialNumbers(e.target.value) }} />
+            <MDBInput label="Serial numbers*" id="typeText" type="text" className="mt-5 mb-5" onChange={(e) => { setSerialNumbers(e.target.value) }} />
 
             {!isLoading ?
                 keysArray.map((element, index) => {

@@ -53,15 +53,15 @@ export default function Registration() {
                 />
                 <figcaption className='figure-caption d-flex justify-content-center'>Let's start your story with Bike Paradise!</figcaption>
             </figure>
-            <MDBInput label="First Name" id="typeText" type="text" maxLength="18" className="mt-5" onChange={(e) => { setFirstName(e.target.value) }} />
-            <MDBInput label="Last Name" id="typeText" type="text" maxLength="48" className="mt-3" onChange={(e) => { setLastName(e.target.value) }} />
+            <MDBInput label="First Name*" id="typeText" type="text" maxLength="18" className="mt-5" onChange={(e) => { setFirstName(e.target.value) }} />
+            <MDBInput label="Last Name*" id="typeText" type="text" maxLength="48" className="mt-3" onChange={(e) => { setLastName(e.target.value) }} />
 
-            <MDBInput label="Username" id="typeText" type="text" maxLength="30" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
-            <MDBInput label="E-mail Address" id="typeEmail" type="email" maxLength="64" className="mt-3" required onChange={(e) => { setEmail(e.target.value) }} />
-            <MDBInput label="Phone Number" id="typePhone" type="tel" maxLength="13" className="mt-3" onChange={(e) => { setPhoneNumber(e.target.value) }} />
+            <MDBInput label="Username*" id="typeText" type="text" maxLength="30" className="mt-5" onChange={(e) => { setUsername(e.target.value) }} />
+            <MDBInput label="E-mail Address*" id="typeEmail" type="email" maxLength="64" className="mt-3" required onChange={(e) => { setEmail(e.target.value) }} />
+            <MDBInput label="Phone Number*" id="typePhone" type="tel" maxLength="13" className="mt-3" onChange={(e) => { setPhoneNumber(e.target.value) }} />
 
-            <MDBInput label="Password" id="typePassword" type="password" maxLength="128" className="mt-5" onChange={(e) => { setPassword(e.target.value) }} />
-            <MDBInput label="Confirm Password" id="typePassword" type="password" maxLength="128" className="mt-3" onChange={(e) => { setConfirmedPassword(e.target.value) }} />
+            <MDBInput label="Password*" id="typePassword" type="password" maxLength="128" className="mt-5" onChange={(e) => { setPassword(e.target.value) }} />
+            <MDBInput label="Confirm Password*" id="typePassword" type="password" maxLength="128" className="mt-3" onChange={(e) => { setConfirmedPassword(e.target.value) }} />
 
             <MDBContainer className="mt-3">
                 <MDBRadio name='flexRadioDefault' id='client' label='Customer' value={false} onChange={handleRadioButtonChange} defaultChecked />

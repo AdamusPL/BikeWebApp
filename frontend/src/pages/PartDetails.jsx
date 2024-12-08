@@ -7,6 +7,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useRole } from "../components/RoleProvider";
 import Dialog from "../components/Dialog";
 import RemovalModal from "../components/RemovalModal";
+import part1 from "../assets/part_1.jpg"
 
 export default function PartDetails() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -137,10 +138,10 @@ export default function PartDetails() {
                 <MDBCol md="8">
                     <figure className='bg-image' style={{ position: 'relative', display: 'inline-block' }}>
                         <img
-                            src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
+                            src={part1}
                             className='img-fluid rounded shadow-3'
                             alt='...'
-                            width='700px'
+                            width='400px'
                         />
                     </figure>
                     <h1>{chosenProduct.fullModelName}</h1>

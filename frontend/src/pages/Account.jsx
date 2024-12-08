@@ -1,4 +1,4 @@
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBTypography } from "mdb-react-ui-kit";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBTypography, MDBInput } from "mdb-react-ui-kit";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -111,7 +111,7 @@ export default function Account() {
                     {userData.phoneNumbers}
                 </MDBCol>
                 <MDBCol>
-                    <input onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number" type="tel" maxLength="13" minLength="9"></input>
+                    <MDBInput onChange={(e) => { setPhoneNumber(e.target.value) }} className="form-control data-input" label="Phone Number*" type="tel" maxLength="13" minLength="9"></MDBInput>
                 </MDBCol>
                 <MDBCol>
                     <MDBBtn onClick={() => addPhoneNumber(phoneNumber)} className='classic-button'>Add new phone number</MDBBtn>
@@ -126,7 +126,7 @@ export default function Account() {
                     {userData.emails}
                 </MDBCol>
                 <MDBCol>
-                    <input onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address" type="email" maxLength="64" minLength="1"></input>
+                    <MDBInput onChange={(e) => { setEmail(e.target.value) }} className="form-control data-input" label="E-Mail Address*" type="email" maxLength="64" minLength="1"></MDBInput>
                 </MDBCol>
                 <MDBCol>
                     <MDBBtn onClick={() => addEmail(email)} className='classic-button'>Add new e-mail address</MDBBtn>

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Dialog from "../components/Dialog";
 import { useRole } from "../components/RoleProvider";
+import bikeDetails from "../assets/bike_details.jpg"
 
 export default function BikeDetails() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -155,10 +156,10 @@ export default function BikeDetails() {
                 <MDBCol md="8">
                     <figure id="image-product" className='bg-image'>
                         <img
-                            src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp"
+                            src={bikeDetails}
                             className='img-fluid rounded shadow-3'
                             alt='...'
-                            width='700px'
+                            width='400px'
                         />
                     </figure>
                     <h1>{chosenProduct.fullModelName}</h1>
