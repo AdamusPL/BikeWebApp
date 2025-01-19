@@ -17,6 +17,9 @@ E-commerce web app which enables the provision of bicycles and parts sales servi
 - Postman
 - React.js + Material Design for Bootstrap (MDB)
 
+## Example home page mock-up from Figma
+![image](https://github.com/user-attachments/assets/eb6ae4d8-f979-4766-a0fb-e85c2d3244d0)
+
 ## Database diagram
 ![image](https://github.com/user-attachments/assets/1cbb8c08-178f-44a7-ba99-6c7e14349c44)
 
