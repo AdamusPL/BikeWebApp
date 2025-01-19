@@ -1,5 +1,5 @@
 # BikeWebApp
-E-commerce web app which enables the provision of bicycle and parts sales services
+E-commerce web app which enables the provision of bicycles and parts sales services. Went through the entire software development cycle - incl.: creating mock-ups in Figma, designing DB diagram & writing tests
 
 ## Functionalities
 - Authentication with cookie & JWT Token
