@@ -14,6 +14,7 @@ E-commerce web app which enables the provision of bicycles and parts sales servi
 - Java Spring Boot
 - Java Spring Security
 - Microsoft SQL Server 22
+- Postman
 - React.js + Material Design for Bootstrap (MDB)
 
 ## Database diagram
