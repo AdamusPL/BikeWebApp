@@ -42,9 +42,6 @@ E-commerce web app which enables the provision of bicycles and parts sales servi
 - Cart
 ![image](https://github.com/user-attachments/assets/a77c5289-e82f-4ed9-86d5-c20334842ee9)
 
-- Sign-In + Registration
-![image](https://github.com/user-attachments/assets/f7168802-1c72-4948-8001-8bbb62f13af6)
-
 - Order management from shop assistant's perspective
 ![image](https://github.com/user-attachments/assets/49d2d97a-5ba6-4ad1-954b-3081fe58d9e4)
 
