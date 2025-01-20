@@ -45,9 +45,6 @@ E-commerce web app which enables the provision of bicycles and parts sales servi
 - Order management from shop assistant's perspective
 ![image](https://github.com/user-attachments/assets/49d2d97a-5ba6-4ad1-954b-3081fe58d9e4)
 
-- User profile management
-![image](https://github.com/user-attachments/assets/bb0905a6-f6b1-4b21-8c35-972410361d6e)
-
 ## WCAG test score
 ![image](https://github.com/user-attachments/assets/d4ad2a4c-0e35-4575-bc0d-0e38ad4fb923)
 
